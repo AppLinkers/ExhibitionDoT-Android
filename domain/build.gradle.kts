@@ -7,3 +7,8 @@ java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
 }
+
+dependencies {
+    // paging-common
+    implementation(libs.androidx.paging3.common)
+}
