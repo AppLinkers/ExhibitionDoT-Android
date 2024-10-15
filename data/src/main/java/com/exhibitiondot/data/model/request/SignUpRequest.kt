@@ -1,6 +1,6 @@
 package com.exhibitiondot.data.model.request
 
-data class SingUpRequest(
+data class SignUpRequest(
     val email: String,
     val name: String,
     val phone: String,
