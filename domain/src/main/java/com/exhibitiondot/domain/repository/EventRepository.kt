@@ -10,13 +10,11 @@ import kotlinx.coroutines.flow.Flow
 
 interface EventRepository {
     fun getEventList(
-        page: Int = 1,
-        size: Int = 10,
         region: Region,
         categoryList: List<Category>,
         eventTypeList: List<EventType>,
         query: String
-    ): Flow<PagingData<List<Event>>>
+    ): Flow<PagingData<Event>>
 
     fun getEventDetail(eventId: Long): Flow<EventDetail>
 
