@@ -27,7 +27,7 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun signUp(user: User): Result<Unit> {
         val response = userDataSource.signUp(user.toSignUpRequest())
         return when (response) {
-            is NetworkState.Success -> Result.success(Unit)
+            is NetworkState.Success -> Result.success(response.data)
             is NetworkState.Failure -> Result.failure(
                 NetworkFailException(response.code, response.error)
             )
@@ -38,7 +38,7 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun changeUserInfo(user: User): Result<Unit> {
         val response = userDataSource.changeUserInfo(user.toChangeUserInfoRequest())
         return when (response) {
-            is NetworkState.Success -> Result.success(Unit)
+            is NetworkState.Success -> Result.success(response.data)
             is NetworkState.Failure -> Result.failure(
                 NetworkFailException(response.code, response.error)
             )

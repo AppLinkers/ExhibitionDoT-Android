@@ -62,7 +62,7 @@ class EventRepositoryImpl @Inject constructor(
     override suspend fun toggleEventLike(eventId: Long): Result<Unit> {
         val response = eventDataSource.toggleEventLike(eventId)
         return when (response) {
-            is NetworkState.Success -> Result.success(Unit)
+            is NetworkState.Success -> Result.success(response.data)
             else -> Result.failure(IllegalStateException())
         }
     }
