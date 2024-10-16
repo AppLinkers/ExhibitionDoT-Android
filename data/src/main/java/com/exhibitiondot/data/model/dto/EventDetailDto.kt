@@ -1,5 +1,8 @@
 package com.exhibitiondot.data.model.dto
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class EventDetailDto(
     val id: Long,
     val name: String,

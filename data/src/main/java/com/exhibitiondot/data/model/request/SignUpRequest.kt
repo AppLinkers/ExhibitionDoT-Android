@@ -1,5 +1,8 @@
 package com.exhibitiondot.data.model.request
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class SignUpRequest(
     val email: String,
     val name: String,
