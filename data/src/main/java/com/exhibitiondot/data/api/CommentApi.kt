@@ -21,5 +21,5 @@ interface CommentApi {
     suspend fun addComment(
         @Path("event-id") eventId: Long,
         @Body addCommentRequest: AddCommentRequest
-    ): NetworkState<Void>
+    ): NetworkState<Unit>
 }

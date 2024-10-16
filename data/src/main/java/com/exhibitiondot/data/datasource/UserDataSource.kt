@@ -9,7 +9,7 @@ import com.exhibitiondot.data.network.NetworkState
 interface UserDataSource {
     suspend fun sigIn(signInRequest: SignInRequest): NetworkState<SignInResponse>
 
-    suspend fun signUp(signUpRequest: SignUpRequest): NetworkState<Void>
+    suspend fun signUp(signUpRequest: SignUpRequest): NetworkState<Unit>
 
-    suspend fun changeUserInfo(changeUserInfoRequest: ChangeUserInfoRequest): NetworkState<Void>
+    suspend fun changeUserInfo(changeUserInfoRequest: ChangeUserInfoRequest): NetworkState<Unit>
 }

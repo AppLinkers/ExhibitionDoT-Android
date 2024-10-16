@@ -14,8 +14,8 @@ interface UserApi {
     suspend fun signIn(@Body signInRequest: SignInRequest): NetworkState<SignInResponse>
 
     @POST("user")
-    suspend fun signUp(@Body signUpRequest: SignUpRequest): NetworkState<Void>
+    suspend fun signUp(@Body signUpRequest: SignUpRequest): NetworkState<Unit>
 
     @PATCH("user")
-    suspend fun changeUserInfo(@Body changeUserInfoRequest: ChangeUserInfoRequest): NetworkState<Void>
+    suspend fun changeUserInfo(@Body changeUserInfoRequest: ChangeUserInfoRequest): NetworkState<Unit>
 }

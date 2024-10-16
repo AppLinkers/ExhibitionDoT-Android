@@ -15,5 +15,5 @@ interface CommentDataSource {
     suspend fun addComment(
         eventId: Long,
         addCommentRequest: AddCommentRequest
-    ): NetworkState<Void>
+    ): NetworkState<Unit>
 }

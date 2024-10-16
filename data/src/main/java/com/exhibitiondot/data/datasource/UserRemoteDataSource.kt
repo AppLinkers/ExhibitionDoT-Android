@@ -14,11 +14,11 @@ class UserRemoteDataSource(
         return userApi.signIn(signInRequest)
     }
 
-    override suspend fun signUp(signUpRequest: SignUpRequest): NetworkState<Void> {
+    override suspend fun signUp(signUpRequest: SignUpRequest): NetworkState<Unit> {
         return userApi.signUp(signUpRequest)
     }
 
-    override suspend fun changeUserInfo(changeUserInfoRequest: ChangeUserInfoRequest): NetworkState<Void> {
+    override suspend fun changeUserInfo(changeUserInfoRequest: ChangeUserInfoRequest): NetworkState<Unit> {
         return userApi.changeUserInfo(changeUserInfoRequest)
     }
 }

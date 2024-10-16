@@ -8,5 +8,5 @@ import kotlinx.coroutines.flow.Flow
 interface EventDataSource {
     fun getEventDetail(eventId: Long): Flow<EventDetailDto?>
 
-    suspend fun toggleEventLike(eventId: Long): NetworkState<Void>
+    suspend fun toggleEventLike(eventId: Long): NetworkState<Unit>
 }

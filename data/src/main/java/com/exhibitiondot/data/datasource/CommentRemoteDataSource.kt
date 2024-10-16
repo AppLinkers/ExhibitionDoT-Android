@@ -27,7 +27,7 @@ class CommentRemoteDataSource(
     override suspend fun addComment(
         eventId: Long,
         addCommentRequest: AddCommentRequest
-    ): NetworkState<Void> {
+    ): NetworkState<Unit> {
         return commentApi.addComment(eventId, addCommentRequest)
     }
 }

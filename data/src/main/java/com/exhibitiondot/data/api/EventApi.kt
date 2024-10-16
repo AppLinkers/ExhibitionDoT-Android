@@ -23,5 +23,5 @@ interface EventApi {
     suspend fun getEventDetail(@Path("event-id") eventId: Long): NetworkState<EventDetailDto>
 
     @POST("event/{event-id}/like")
-    suspend fun toggleEventLike(@Path("event-id") eventId: Long): NetworkState<Void>
+    suspend fun toggleEventLike(@Path("event-id") eventId: Long): NetworkState<Unit>
 }

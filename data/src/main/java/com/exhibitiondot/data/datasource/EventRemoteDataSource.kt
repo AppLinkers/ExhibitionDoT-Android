@@ -19,7 +19,7 @@ class EventRemoteDataSource(
         }
     }.flowOn(Dispatchers.IO)
 
-    override suspend fun toggleEventLike(eventId: Long): NetworkState<Void> {
+    override suspend fun toggleEventLike(eventId: Long): NetworkState<Unit> {
         return eventApi.toggleEventLike(eventId)
     }
 }
