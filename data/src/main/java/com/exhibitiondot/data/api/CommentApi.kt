@@ -11,7 +11,7 @@ import retrofit2.http.Query
 
 interface CommentApi {
     @GET("event/{event-id}/comment")
-    fun getCommentList(
+    suspend fun getCommentList(
         @Path("event-id") eventId: Long,
         @Query("page") page: Int? = null,
         @Query("size") size: Int? = null,
