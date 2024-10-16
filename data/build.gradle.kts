@@ -39,4 +39,7 @@ dependencies {
 
     // kotlinx-serialization
     implementation(libs.kotlinx.serialization)
+
+    // paging-common
+    implementation(libs.androidx.paging3.common)
 }
