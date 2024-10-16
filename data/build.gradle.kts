@@ -37,6 +37,9 @@ dependencies {
 
     // retrofit
     implementation(libs.retrofit)
+    implementation(libs.retrofit.converter)
+    implementation(libs.okHttp)
+    implementation(libs.okHttp.logging)
 
     // kotlinx-serialization
     implementation(libs.kotlinx.serialization)
