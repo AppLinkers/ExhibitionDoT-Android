@@ -23,8 +23,9 @@ import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
-class EventRepositoryImpl(
+class EventRepositoryImpl @Inject constructor(
     private val eventApi: EventApi,
     private val eventDataSource: EventDataSource
 ) : EventRepository {

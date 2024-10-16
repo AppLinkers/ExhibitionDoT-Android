@@ -8,8 +8,9 @@ import com.exhibitiondot.data.network.NetworkState
 import com.exhibitiondot.domain.exception.NetworkFailException
 import com.exhibitiondot.domain.model.User
 import com.exhibitiondot.domain.repository.UserRepository
+import javax.inject.Inject
 
-class UserRepositoryImpl(
+class UserRepositoryImpl @Inject constructor(
     private val userDataSource: UserDataSource
 ) : UserRepository {
     override suspend fun signIn(email: String): Result<Long> {

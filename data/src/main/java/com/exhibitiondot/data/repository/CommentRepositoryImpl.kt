@@ -16,8 +16,9 @@ import com.exhibitiondot.domain.model.Comment
 import com.exhibitiondot.domain.repository.CommentRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
-class CommentRepositoryImpl(
+class CommentRepositoryImpl @Inject constructor(
     private val commentApi: CommentApi,
     private val commentDataSource: CommentDataSource
 ) : CommentRepository {

@@ -7,8 +7,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import javax.inject.Inject
 
-class EventRemoteDataSource(
+class EventRemoteDataSource @Inject constructor(
     private val eventApi: EventApi
 ) : EventDataSource {
     override fun getEventDetail(eventId: Long): Flow<EventDetailDto?> = flow<EventDetailDto?> {
