@@ -2,6 +2,7 @@ package com.exhibitiondot.data.di
 
 import com.exhibitiondot.data.BuildConfig
 import com.exhibitiondot.data.constant.ApiConst
+import com.exhibitiondot.data.network.retrofit.AuthInterceptor
 import com.exhibitiondot.data.network.retrofit.CustomCallAdapter
 import dagger.Module
 import dagger.Provides
@@ -28,10 +29,11 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(): OkHttpClient =
+    fun provideOkHttpClient(authInterceptor: AuthInterceptor): OkHttpClient =
         OkHttpClient.Builder().apply {
             readTimeout(5_000, TimeUnit.MILLISECONDS)
             connectTimeout(5_000, TimeUnit.MILLISECONDS)
+            addInterceptor(authInterceptor)
             if (BuildConfig.DEBUG) {
                 addInterceptor(
                     HttpLoggingInterceptor().apply {

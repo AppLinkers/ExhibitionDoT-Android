@@ -19,7 +19,7 @@ internal class AuthLocalDataSource @Inject constructor(
     private val _currentUser = MutableStateFlow(User.NONE)
     override val currentUser: StateFlow<User> = _currentUser
 
-    override val userId: Flow<Long?> = authStore.data.map { store -> store[KEY_USER_ID] }
+    override val userId: Flow<String?> = authStore.data.map { store -> store[KEY_USER_ID] }
 
     override val email: Flow<String?> = authStore.data.map { store -> store[KEY_USER_EMAIL] }
 
@@ -29,13 +29,13 @@ internal class AuthLocalDataSource @Inject constructor(
 
     override suspend fun updateAuthInfo(userId: Long, email: String) {
         authStore.edit { store ->
-            store[KEY_USER_ID] = userId
+            store[KEY_USER_ID] = userId.toString()
             store[KEY_USER_EMAIL] = email
         }
     }
 
     companion object {
-        private val KEY_USER_ID = longPreferencesKey("user-id")
+        private val KEY_USER_ID = stringPreferencesKey("user-id")
         private val KEY_USER_EMAIL = stringPreferencesKey("user-email")
     }
 }

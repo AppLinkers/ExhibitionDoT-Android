@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.StateFlow
 interface AuthDataSource {
     val currentUser: StateFlow<User>
 
-    val userId: Flow<Long?>
+    val userId: Flow<String?>
 
     val email: Flow<String?>
 
