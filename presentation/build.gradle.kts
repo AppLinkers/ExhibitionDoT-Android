@@ -70,4 +70,7 @@ dependencies {
     // coil
     implementation(libs.coil.compose)
     implementation(libs.coil.network)
+
+    // paging3
+    implementation(libs.androidx.paging3)
 }
