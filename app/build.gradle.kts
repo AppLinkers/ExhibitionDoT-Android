@@ -22,7 +22,8 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField("String", "KAKAO_NATIVE_KEY", properties["KAKAO_NATIVE_KEY"].toString())
+        buildConfigField("String", "KAKAO_NATIVE_KEY", properties["KAKAO_NATIVE_KEY"] as String)
+        manifestPlaceholders["KAKAO_NATIVE_KEY"] = properties["KAKAO_NATIVE_KEY"] as String
         vectorDrawables {
             useSupportLibrary = true
         }
