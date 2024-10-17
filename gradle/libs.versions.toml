@@ -19,6 +19,9 @@ retrofit = "2.11.0"
 okHttp = "4.12.0"
 hilt = "2.52"
 ksp = "2.0.0-1.0.24"
+androidxNavigation = "2.8.1"
+androidxViewModelKtx = "2.8.5"
+androidxHiltCompose = "1.2.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -39,6 +42,9 @@ androidx-paging3 = { group = "androidx.paging", name = "paging-runtime", version
 androidx-paging3-common = { group = "androidx.paging", name = "paging-common", version.ref = "paging3" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 androidx-datastore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "dataStore" }
+androidx-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "androidxViewModelKtx" }
+androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidxNavigation" }
+androidx-hilt-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "androidxHiltCompose" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit-converter = { group = "com.squareup.retrofit2", name = "converter-kotlinx-serialization", version.ref = "kotlinxSerializationConverter" }
