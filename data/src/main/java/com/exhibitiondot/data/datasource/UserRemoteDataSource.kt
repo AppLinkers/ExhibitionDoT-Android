@@ -1,6 +1,7 @@
 package com.exhibitiondot.data.datasource
 
 import com.exhibitiondot.data.api.UserApi
+import com.exhibitiondot.data.model.dto.UserDto
 import com.exhibitiondot.data.model.request.ChangeUserInfoRequest
 import com.exhibitiondot.data.model.request.SignInRequest
 import com.exhibitiondot.data.model.request.SignUpRequest
@@ -17,6 +18,10 @@ class UserRemoteDataSource @Inject constructor(
 
     override suspend fun signUp(signUpRequest: SignUpRequest): NetworkState<Unit> {
         return userApi.signUp(signUpRequest)
+    }
+
+    override suspend fun getUser(): NetworkState<UserDto> {
+        return userApi.getUser()
     }
 
     override suspend fun changeUserInfo(changeUserInfoRequest: ChangeUserInfoRequest): NetworkState<Unit> {

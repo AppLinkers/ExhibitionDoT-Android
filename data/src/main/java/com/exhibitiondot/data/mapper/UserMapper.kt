@@ -1,8 +1,20 @@
 package com.exhibitiondot.data.mapper
 
+import com.exhibitiondot.data.model.dto.UserDto
 import com.exhibitiondot.data.model.request.ChangeUserInfoRequest
 import com.exhibitiondot.data.model.request.SignUpRequest
 import com.exhibitiondot.domain.model.User
+
+fun UserDto.toDomain() =
+    User(
+        email = email,
+        name = name,
+        phone = phone,
+        nickname = nickname,
+        region = region.toRegion(),
+        categoryList = categoryList.map(String::toCategory),
+        eventTypeList = eventTypeList.map(String::toEventType)
+    )
 
 fun User.toSignUpRequest() =
     SignUpRequest(

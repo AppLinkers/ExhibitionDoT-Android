@@ -8,4 +8,16 @@ data class User(
     val region: Region,
     val categoryList: List<Category>,
     val eventTypeList: List<EventType>
-)
+) {
+    companion object {
+        val NONE = User(
+            email = "",
+            name = "",
+            phone = "",
+            nickname = "",
+            region = Region.Seoul,
+            categoryList = listOf(),
+            eventTypeList = listOf()
+        )
+    }
+}

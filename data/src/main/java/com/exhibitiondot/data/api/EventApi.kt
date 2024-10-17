@@ -14,8 +14,8 @@ interface EventApi {
         @Query("page") page: Int? = null,
         @Query("size") size: Int? = null,
         @Query("region") region: String? = null,
-        @Query("categoryList") categoryList: List<String>? = null,
-        @Query("eventTypeList") eventTypeList: List<String>? = null,
+        @Query("category-list") categoryList: List<String>? = null,
+        @Query("event-type-list") eventTypeList: List<String>? = null,
         @Query("query") query: String? = null
     ): NetworkState<EventListResponse>
 
