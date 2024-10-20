@@ -25,7 +25,7 @@ class SignInViewModel @Inject constructor(
     fun onKakaoLogin(
         context: Context,
         moveMain: () -> Unit,
-        moveSignUp: () -> Unit
+        moveSignUp: (String) -> Unit
     ) {
         _uiState.update { SignInUiState.Loading }
         kakaoAuthClient.loginWithKakao(
@@ -35,7 +35,7 @@ class SignInViewModel @Inject constructor(
         )
     }
 
-    private fun signIn(moveMain: () -> Unit, moveSignUp: () -> Unit) {
+    private fun signIn(moveMain: () -> Unit, moveSignUp: (String) -> Unit) {
         val email = kakaoAuthClient.getUserEmail()
         if (email != null) {
             viewModelScope.launch {
@@ -43,7 +43,7 @@ class SignInViewModel @Inject constructor(
                     .onSuccess {
                         cacheUser(moveMain)
                     }.onFailure {
-                        moveSignUp()
+                        moveSignUp(email)
                     }
             }
         } else {
@@ -51,9 +51,8 @@ class SignInViewModel @Inject constructor(
         }
     }
 
-    private suspend fun cacheUser(
-        moveMain: () -> Unit
-    ) = userRepository.cacheUser()
+    private suspend fun cacheUser(moveMain: () -> Unit) =
+        userRepository.cacheUser()
             .onSuccess {
                 moveMain()
             }.onFailure {
