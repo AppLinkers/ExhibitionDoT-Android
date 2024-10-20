@@ -1,8 +1,5 @@
 package com.exhibitiondot.presentation.ui.navigation
 
-import com.exhibitiondot.presentation.ui.navigation.ScreenGraph.MainScreen
-import com.exhibitiondot.presentation.ui.navigation.ScreenGraph.SignInScreen
-
 sealed class Screen(val route: String) {
     data object SignIn : Screen("sign-in")
     data object SignUp : Screen("sign-up")

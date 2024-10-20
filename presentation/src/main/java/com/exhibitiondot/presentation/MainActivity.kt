@@ -18,7 +18,7 @@ class MainActivity : ComponentActivity() {
             DoTTheme {
                 DoTApp(
                     appState = appState,
-                    startDestination = ScreenGraph.SignInScreen
+                    startDestination = ScreenGraph.SignGraph
                 )
             }
         }
