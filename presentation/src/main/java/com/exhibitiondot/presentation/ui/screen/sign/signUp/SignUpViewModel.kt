@@ -10,6 +10,7 @@ import com.exhibitiondot.domain.usecase.user.SignInUseCase
 import com.exhibitiondot.domain.usecase.user.SignUpUseCase
 import com.exhibitiondot.presentation.base.BaseViewModel
 import com.exhibitiondot.presentation.model.GlobalUiModel
+import com.exhibitiondot.presentation.ui.navigation.KEY_SIGN_UP_EMAIL
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,7 +25,7 @@ class SignUpViewModel @Inject constructor(
     private val uiModel: GlobalUiModel,
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
-    private val email: String = checkNotNull(savedStateHandle["key-email"])
+    private val email: String = checkNotNull(savedStateHandle[KEY_SIGN_UP_EMAIL])
 
     private val _uiState = MutableStateFlow<SignUpUiState>(SignUpUiState.Nothing)
     val uiState: StateFlow<SignUpUiState> = _uiState
@@ -70,7 +71,7 @@ class SignUpViewModel @Inject constructor(
             }
         } else {
             _selectedCategory.update {
-                selectedCategory.value.toMutableList().apply { add(category) }
+                selectedCategory.value + category
             }
         }
     }
@@ -82,7 +83,7 @@ class SignUpViewModel @Inject constructor(
             }
         } else {
             _selectedEventType.update {
-                selectedEventType.value.toMutableList().apply { add(eventType) }
+                selectedEventType.value + eventType
             }
         }
     }

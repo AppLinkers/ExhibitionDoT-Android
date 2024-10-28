@@ -23,8 +23,16 @@ fun NavGraphBuilder.nestedSignGraph(appState: DoTAppState) {
         ) {
             SignInRoute(
                 moveMain = {},
-                moveSignUp = {}
+                moveSignUp = { email ->
+                    appState.navController.navigate("${Screen.SignUp.route}/$email")
+                }
             )
+        }
+        composable(
+            route = Screen.SignUp.route,
+            arguments = Screen.SignUp.arguments
+        ) {
+
         }
     }
 }
