@@ -1,5 +1,6 @@
 package com.exhibitiondot.presentation.ui.screen.sign.signIn
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -44,6 +45,7 @@ private fun SignInScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
+            .background(color = MaterialTheme.colorScheme.primary)
             .padding(all = screenPadding),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -55,7 +57,7 @@ private fun SignInScreen(
         DoTSpacer(size = 24)
         Text(
             text = stringResource(R.string.app_catch_phrase),
-            style = MaterialTheme.typography.displayLarge
+            style = MaterialTheme.typography.labelLarge
         )
         DoTSpacer(modifier = Modifier.weight(1f))
         KakaoLoginButton(

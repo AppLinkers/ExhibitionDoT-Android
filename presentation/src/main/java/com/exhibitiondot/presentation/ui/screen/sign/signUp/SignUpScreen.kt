@@ -1,6 +1,9 @@
 package com.exhibitiondot.presentation.ui.screen.sign.signUp
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -9,6 +12,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.exhibitiondot.domain.model.Category
 import com.exhibitiondot.domain.model.EventType
 import com.exhibitiondot.domain.model.Region
+import com.exhibitiondot.presentation.ui.theme.screenPadding
 
 @Composable
 fun SignUpRoute(
@@ -55,5 +59,20 @@ private fun SignUpScreen(
     selectCategory: (Category) -> Unit,
     selectEventType: (EventType) -> Unit,
 ) {
-
+    Column(
+        modifier = modifier.fillMaxSize()
+    ) {
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .padding(all = screenPadding)
+        ) {
+            when (step) {
+                SignUpStep.InfoStep -> {}
+                SignUpStep.RegionStep -> TODO()
+                SignUpStep.CategoryStep -> TODO()
+                SignUpStep.EventTypeStep -> TODO()
+            }
+        }
+    }
 }

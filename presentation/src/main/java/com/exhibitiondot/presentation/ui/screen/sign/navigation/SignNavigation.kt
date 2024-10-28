@@ -20,7 +20,7 @@ fun NavController.navigateToSignScreen(email: String) =
 fun NavGraphBuilder.nestedSignGraph(appState: DoTAppState) {
     navigation(
         startDestination = Screen.SignIn.route,
-        route = ScreenGraph.SignGraph.route
+        route = ScreenGraph.SignGraph.route,
     ) {
         composable(
             route = Screen.SignIn.route
@@ -34,7 +34,7 @@ fun NavGraphBuilder.nestedSignGraph(appState: DoTAppState) {
         }
         composable(
             route = Screen.SignUp.route,
-            arguments = Screen.SignUp.arguments
+            arguments = Screen.SignUp.arguments,
         ) {
             SignUpRoute(
                 moveMain = {},

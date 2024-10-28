@@ -10,7 +10,7 @@ sealed class Screen(
 ) {
     data object SignIn : Screen("sign-in")
     data object SignUp : Screen(
-        route = "sign-up/${KEY_SIGN_UP_EMAIL}",
+        route = "sign-up/{$KEY_SIGN_UP_EMAIL}",
         arguments = listOf(
             navArgument(KEY_SIGN_UP_EMAIL) { type = NavType.StringType },
         )

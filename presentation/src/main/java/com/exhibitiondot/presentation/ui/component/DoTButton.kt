@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -56,7 +55,8 @@ fun KakaoLoginButton(
         } else {
             DoTLoading(
                 modifier = Modifier.align(Alignment.Center),
-                size = 18
+                size = 18,
+                color = MaterialTheme.colorScheme.background
             )
         }
     }
