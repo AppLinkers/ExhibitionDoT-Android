@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import com.exhibitiondot.presentation.ui.DoTAppState
+import com.exhibitiondot.presentation.ui.screen.sign.navigation.nestedSignGraph
 
 @Composable
 fun DoTNavHost(
@@ -11,12 +12,11 @@ fun DoTNavHost(
     appState: DoTAppState,
     startDestination: ScreenGraph
 ) {
-    val navController = appState.navController
     NavHost(
         modifier = modifier,
-        navController = navController,
+        navController = appState.navController,
         startDestination = startDestination.route
     ) {
-
+        nestedSignGraph(appState)
     }
 }
