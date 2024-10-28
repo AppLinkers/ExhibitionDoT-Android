@@ -1,10 +1,16 @@
 package com.exhibitiondot.presentation.ui.screen.sign.signUp
 
-sealed class SignUpStep(val title: String, val description: String, val percentage: Float) {
+import androidx.annotation.StringRes
+import com.exhibitiondot.presentation.R
+
+sealed class SignUpStep(
+    @StringRes val description: Int,
+    val percentage: Float,
+) {
     abstract fun onPrevStep() : SignUpStep?
     abstract fun onNextStep() : SignUpStep?
 
-    data object InfoStep : SignUpStep("회원 정보 입력", "", 0.1f) {
+    data object InfoStep : SignUpStep(R.string.signup_info_step_description, 0.1f) {
         override fun onPrevStep(): SignUpStep? {
             return null
         }
@@ -13,7 +19,7 @@ sealed class SignUpStep(val title: String, val description: String, val percenta
         }
     }
 
-    data object RegionStep : SignUpStep("", "", 0.4f) {
+    data object RegionStep : SignUpStep(R.string.signup_region_step_description, 0.4f) {
         override fun onPrevStep(): SignUpStep {
             return InfoStep
         }
@@ -22,7 +28,7 @@ sealed class SignUpStep(val title: String, val description: String, val percenta
         }
     }
 
-    data object CategoryStep : SignUpStep("", "", 0.7f) {
+    data object CategoryStep : SignUpStep(R.string.signup_category_step_description, 0.7f) {
         override fun onPrevStep(): SignUpStep {
             return RegionStep
         }
@@ -31,7 +37,7 @@ sealed class SignUpStep(val title: String, val description: String, val percenta
         }
     }
 
-    data object EventTypeStep : SignUpStep("", "", 1.0f) {
+    data object EventTypeStep : SignUpStep(R.string.signup_event_type_step_description, 1.0f) {
         override fun onPrevStep(): SignUpStep {
             return CategoryStep
         }

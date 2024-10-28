@@ -54,6 +54,7 @@ class SignUpViewModel @Inject constructor(
     fun onNextStep(currentStep: SignUpStep, moveMain: () -> Unit, onBack: () -> Unit) {
         val nextStep = currentStep.onNextStep()
         if (nextStep != null) {
+
             _currentStep.update { nextStep }
         } else {
             signUp(moveMain, onBack)

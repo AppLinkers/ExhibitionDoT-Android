@@ -8,10 +8,14 @@ import com.exhibitiondot.presentation.ui.DoTAppState
 import com.exhibitiondot.presentation.ui.navigation.Screen
 import com.exhibitiondot.presentation.ui.navigation.ScreenGraph
 import com.exhibitiondot.presentation.ui.screen.sign.signIn.SignInRoute
+import com.exhibitiondot.presentation.ui.screen.sign.signUp.SignUpRoute
 
 fun NavController.navigateToSignGraph() = navigate(Screen.SignIn.route) {
     popUpTo(ScreenGraph.SignGraph.route) { inclusive = true }
 }
+
+fun NavController.navigateToSignScreen(email: String) =
+    navigate("${Screen.SignUp.route}/$email")
 
 fun NavGraphBuilder.nestedSignGraph(appState: DoTAppState) {
     navigation(
@@ -24,7 +28,7 @@ fun NavGraphBuilder.nestedSignGraph(appState: DoTAppState) {
             SignInRoute(
                 moveMain = {},
                 moveSignUp = { email ->
-                    appState.navController.navigate("${Screen.SignUp.route}/$email")
+                    appState.navController.navigateToSignScreen(email)
                 }
             )
         }
@@ -32,7 +36,10 @@ fun NavGraphBuilder.nestedSignGraph(appState: DoTAppState) {
             route = Screen.SignUp.route,
             arguments = Screen.SignUp.arguments
         ) {
-
+            SignUpRoute(
+                moveMain = {},
+                onBack = { appState.navController.popBackStack() }
+            )
         }
     }
 }
