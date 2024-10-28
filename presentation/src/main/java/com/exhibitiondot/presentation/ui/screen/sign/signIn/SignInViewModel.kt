@@ -31,24 +31,26 @@ class SignInViewModel @Inject constructor(
         kakaoAuthClient.loginWithKakao(
             context = context,
             onSuccess = { signIn(moveMain, moveSignUp) },
-            onFailure = { onFailSignIn("카카오 로그인에 실패했어요.") }
+            onFailure = { onFailSignIn("카카오 로그인에 실패했어요.") },
         )
     }
 
     private fun signIn(moveMain: () -> Unit, moveSignUp: (String) -> Unit) {
-        val email = kakaoAuthClient.getUserEmail()
-        if (email != null) {
-            viewModelScope.launch {
-                signInAndCacheUserUseCase(email)
-                    .onSuccess {
-                        moveMain()
-                    }.onFailure {
-                        moveSignUp(email)
-                    }
+        kakaoAuthClient.getUserEmail(
+            onSuccess = { email ->
+                viewModelScope.launch {
+                    signInAndCacheUserUseCase(email)
+                        .onSuccess {
+                            moveMain()
+                        }.onFailure {
+                            moveSignUp(email)
+                        }
+                }
+            },
+            onFailure = {
+                onFailSignIn("다시 시도해주세요.")
             }
-        } else {
-            onFailSignIn("다시 시도해주세요.")
-        }
+        )
     }
 
     private fun onFailSignIn(msg: String) {

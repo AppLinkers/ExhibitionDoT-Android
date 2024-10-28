@@ -14,6 +14,7 @@ val Grey800 = Color(0xFF494A4B)
 val Black = Color(0xFF000000)
 val Red = Color(0xFFD00036)
 val RedVariant = Color(0xFFB31312)
+val KakaoYellow = Color(0xFFFEE500)
 
 val LightColorScheme = lightColorScheme(
     primary = Primary,
@@ -26,5 +27,6 @@ val LightColorScheme = lightColorScheme(
     surfaceContainerLow = Grey700,
     surfaceContainerHigh = Grey800,
     error = Red,
-    onError = RedVariant
+    onError = RedVariant,
+    tertiaryContainer = KakaoYellow,
 )

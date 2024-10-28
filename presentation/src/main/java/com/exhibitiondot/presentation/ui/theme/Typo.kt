@@ -16,6 +16,12 @@ private val Pretendard = FontFamily(
 )
 
 val DoTTypography = Typography(
+    titleLarge = TextStyle(
+        fontFamily = Pretendard,
+        fontWeight = FontWeight.W700,
+        fontSize = 46.sp,
+        color = Primary
+    ),
     headlineLarge = TextStyle(
         fontFamily = Pretendard,
         fontWeight = FontWeight.W700,

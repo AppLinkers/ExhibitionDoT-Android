@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
@@ -6,16 +8,21 @@ plugins {
     alias(libs.plugins.hilt)
 }
 
+val properties = Properties().apply {
+    load(project.rootProject.file("local.properties").inputStream())
+}
+
 android {
     namespace = "com.exhibitiondot.data"
     compileSdk = 34
 
-/*    defaultConfig {
+    defaultConfig {
         minSdk = 24
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
-    }*/
+        buildConfigField("String", "BASE_URL", properties["BASE_URL"] as String)
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8

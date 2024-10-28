@@ -8,7 +8,9 @@ import com.exhibitiondot.presentation.ui.DoTApp
 import com.exhibitiondot.presentation.ui.navigation.ScreenGraph
 import com.exhibitiondot.presentation.ui.rememberDoTAppState
 import com.exhibitiondot.presentation.ui.theme.DoTTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

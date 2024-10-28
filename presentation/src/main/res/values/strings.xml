@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">전시회 DoT</string>
+    <string name="app_catch_phrase">당신의 전시, 세상의 전시를 잇다</string>
+    <string name="kakao_login">카카오 로그인</string>
+</resources>
