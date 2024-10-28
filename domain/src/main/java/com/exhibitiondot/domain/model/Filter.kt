@@ -9,6 +9,11 @@ sealed class Region(val key: String, val name: String) : Filter {
     data object Jeolla : Region("jeolla", "전라도")
     data object Gyeongsang : Region("gyeongsang", "경상도")
     data object Jeju : Region("jeju", "제주")
+
+    companion object {
+        val values: List<Region> =
+            listOf(Seoul, Gyeonggi, Chungcheoung, Jeolla, Gyeonggi, Gyeongsang, Jeju)
+    }
 }
 
 sealed class Category(val key: String) : Filter {
@@ -25,6 +30,14 @@ sealed class Category(val key: String) : Filter {
     data object Environment : Category("환경/에너지")
     data object Food : Category("농수산/식음료")
     data object ETC : Category("기타")
+
+    companion object {
+        val values: List<Category> =
+            listOf(
+                IT, Interior, Health, Fashion, Science, Design, Education,
+                Finance, Performance, Entertainment, Entertainment, Food, ETC
+            )
+    }
 }
 
 sealed class EventType(val key: String) : Filter {
@@ -35,4 +48,12 @@ sealed class EventType(val key: String) : Filter {
     data object ChildrenExperience : EventType("아동체험전")
     data object Museum : EventType("박물관")
     data object Musical : EventType("뮤지컬/콘서트")
+
+    companion object {
+        val values: List<EventType> =
+            listOf(
+                Exhibition, Festival, Fair, Convention,
+                ChildrenExperience, Museum, Musical
+            )
+    }
 }
