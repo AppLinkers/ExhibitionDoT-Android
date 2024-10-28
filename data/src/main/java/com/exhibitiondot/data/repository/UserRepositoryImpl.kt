@@ -31,13 +31,13 @@ class UserRepositoryImpl @Inject constructor(
         return authDataSource.currentUser.value
     }
 
-    override suspend fun signIn(email: String): Result<Long> {
+    override suspend fun signIn(email: String): Result<Unit> {
         val response = userDataSource.sigIn(SignInRequest(email))
         return when (response) {
             is NetworkState.Success -> {
                 val userId = response.data.userId
                 authDataSource.updateAuthInfo(userId, email)
-                Result.success(userId)
+                Result.success(Unit)
             }
             is NetworkState.Failure -> Result.failure(
                 NetworkFailException(response.code, response.error)
