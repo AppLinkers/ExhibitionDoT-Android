@@ -7,7 +7,7 @@ interface UserRepository {
 
     fun getUser(): User
 
-    suspend fun signIn(email: String): Result<Long>
+    suspend fun signIn(email: String): Result<Unit>
 
     suspend fun signUp(user: User): Result<Unit>
 

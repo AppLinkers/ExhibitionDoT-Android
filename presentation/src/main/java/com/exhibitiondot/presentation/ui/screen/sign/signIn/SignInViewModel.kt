@@ -2,7 +2,7 @@ package com.exhibitiondot.presentation.ui.screen.sign.signIn
 
 import android.content.Context
 import androidx.lifecycle.viewModelScope
-import com.exhibitiondot.domain.repository.UserRepository
+import com.exhibitiondot.domain.usecase.user.SignInAndCacheUserUseCase
 import com.exhibitiondot.presentation.base.BaseViewModel
 import com.exhibitiondot.presentation.model.GlobalUiModel
 import com.exhibitiondot.presentation.model.KakaoAuthClient
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignInViewModel @Inject constructor(
-    private val userRepository: UserRepository,
+    private val signInAndCacheUserUseCase: SignInAndCacheUserUseCase,
     private val kakaoAuthClient: KakaoAuthClient,
     private val uiModel: GlobalUiModel
 ) : BaseViewModel() {
@@ -31,7 +31,7 @@ class SignInViewModel @Inject constructor(
         kakaoAuthClient.loginWithKakao(
             context = context,
             onSuccess = { signIn(moveMain, moveSignUp) },
-            onFailure = { onFailSignIn() }
+            onFailure = { onFailSignIn("카카오 로그인에 실패했어요.") }
         )
     }
 
@@ -39,29 +39,20 @@ class SignInViewModel @Inject constructor(
         val email = kakaoAuthClient.getUserEmail()
         if (email != null) {
             viewModelScope.launch {
-                userRepository.signIn(email)
+                signInAndCacheUserUseCase(email)
                     .onSuccess {
-                        cacheUser(moveMain)
+                        moveMain()
                     }.onFailure {
                         moveSignUp(email)
                     }
             }
         } else {
-            onFailSignIn()
+            onFailSignIn("다시 시도해주세요.")
         }
     }
 
-    private suspend fun cacheUser(moveMain: () -> Unit) =
-        userRepository.cacheUser()
-            .onSuccess {
-                moveMain()
-            }.onFailure {
-                onFailSignIn()
-            }
-
-
-    private fun onFailSignIn() {
+    private fun onFailSignIn(msg: String) {
         _uiState.update { SignInUiState.Nothing }
-        uiModel.showToast("로그인에 실패했어요")
+        uiModel.showToast(msg)
     }
 }

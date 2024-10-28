@@ -6,7 +6,8 @@ import com.exhibitiondot.domain.model.Category
 import com.exhibitiondot.domain.model.EventType
 import com.exhibitiondot.domain.model.Region
 import com.exhibitiondot.domain.model.User
-import com.exhibitiondot.domain.repository.UserRepository
+import com.exhibitiondot.domain.usecase.user.SignInUseCase
+import com.exhibitiondot.domain.usecase.user.SignUpUseCase
 import com.exhibitiondot.presentation.base.BaseViewModel
 import com.exhibitiondot.presentation.model.GlobalUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +19,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
-    private val userRepository: UserRepository,
+    private val signUpUseCase: SignUpUseCase,
+    private val signInUseCase: SignInUseCase,
     private val uiModel: GlobalUiModel,
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
@@ -97,7 +99,7 @@ class SignUpViewModel @Inject constructor(
                 categoryList = selectedCategory.value,
                 eventTypeList = selectedEventType.value
             )
-            userRepository.signUp(user)
+            signUpUseCase(user)
                 .onSuccess {
                     signIn(moveMain, onBack)
                 }.onFailure {
@@ -108,7 +110,7 @@ class SignUpViewModel @Inject constructor(
     }
 
     private suspend fun signIn(moveMain: () -> Unit, onBack: () -> Unit) =
-        userRepository.signIn(email)
+        signInUseCase(email)
             .onSuccess {
                 moveMain()
             }.onFailure {
