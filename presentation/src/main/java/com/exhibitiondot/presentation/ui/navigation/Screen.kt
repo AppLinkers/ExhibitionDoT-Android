@@ -4,17 +4,9 @@ import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 
-sealed class Screen(
-    val route: String,
-    val arguments: List<NamedNavArgument> = emptyList()
-) {
+sealed class Screen(val route: String, ) {
     data object SignIn : Screen("sign-in")
-    data object SignUp : Screen(
-        route = "sign-up/{$KEY_SIGN_UP_EMAIL}",
-        arguments = listOf(
-            navArgument(KEY_SIGN_UP_EMAIL) { type = NavType.StringType },
-        )
-    )
+    data object SignUp : Screen(route = "sign-up")
     data object Home : Screen("home")
     data object Search : Screen("search")
     data object My : Screen("my")

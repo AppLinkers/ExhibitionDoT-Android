@@ -20,7 +20,7 @@ sealed class SignUpStep(
     }
 
     data object RegionStep : SignUpStep(R.string.signup_region_step_description, 0.4f) {
-        override fun onPrevStep(): SignUpStep {
+        override fun onPrevStep(): SignUpStep? {
             return InfoStep
         }
         override fun onNextStep(): SignUpStep {

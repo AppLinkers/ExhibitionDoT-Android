@@ -2,9 +2,12 @@ package com.exhibitiondot.presentation.ui.screen.sign.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.exhibitiondot.presentation.ui.DoTAppState
+import com.exhibitiondot.presentation.ui.navigation.KEY_SIGN_UP_EMAIL
 import com.exhibitiondot.presentation.ui.navigation.Screen
 import com.exhibitiondot.presentation.ui.navigation.ScreenGraph
 import com.exhibitiondot.presentation.ui.screen.sign.signIn.SignInRoute
@@ -33,8 +36,10 @@ fun NavGraphBuilder.nestedSignGraph(appState: DoTAppState) {
             )
         }
         composable(
-            route = Screen.SignUp.route,
-            arguments = Screen.SignUp.arguments,
+            route = "${Screen.SignUp.route}/{$KEY_SIGN_UP_EMAIL}",
+            arguments = listOf(
+                navArgument(KEY_SIGN_UP_EMAIL) { type = NavType.StringType },
+            ),
         ) {
             SignUpRoute(
                 moveMain = {},

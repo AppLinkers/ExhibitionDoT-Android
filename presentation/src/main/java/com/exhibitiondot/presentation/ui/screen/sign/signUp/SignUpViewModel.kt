@@ -30,7 +30,7 @@ class SignUpViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<SignUpUiState>(SignUpUiState.Nothing)
     val uiState: StateFlow<SignUpUiState> = _uiState
 
-    private val _currentStep = MutableStateFlow<SignUpStep>(SignUpStep.RegionStep)
+    private val _currentStep = MutableStateFlow<SignUpStep>(SignUpStep.InfoStep)
     val currentStep: StateFlow<SignUpStep> = _currentStep
 
     private val _selectedRegion = MutableStateFlow<Region>(Region.Seoul)

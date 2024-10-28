@@ -4,8 +4,11 @@
     <string name="app_catch_phrase">당신의 전시, 세상의 전시를 잇다</string>
     <string name="kakao_login">카카오 로그인</string>
 
+    <string name="signup">가입하기</string>
     <string name="signup_info_step_description">개인 정보를 입력해주세요</string>
     <string name="signup_region_step_description">거주지를 선택해주세요</string>
     <string name="signup_category_step_description">관심있는 카테고리를 선택해보세요</string>
     <string name="signup_event_type_step_description">관심있는 타입을 선택해보세요</string>
+
+    <string name="next">다음</string>
 </resources>

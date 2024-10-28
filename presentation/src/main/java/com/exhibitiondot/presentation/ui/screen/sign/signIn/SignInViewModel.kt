@@ -46,6 +46,7 @@ class SignInViewModel @Inject constructor(
                             moveSignUp(email)
                         }
                 }
+                _uiState.update { SignInUiState.Nothing }
             },
             onFailure = {
                 onFailSignIn("다시 시도해주세요.")
