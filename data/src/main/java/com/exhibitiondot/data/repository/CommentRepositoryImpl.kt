@@ -1,13 +1,8 @@
 package com.exhibitiondot.data.repository
 
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
-import com.exhibitiondot.data.api.CommentApi
-import com.exhibitiondot.data.constant.ApiConst
 import com.exhibitiondot.data.datasource.CommentDataSource
-import com.exhibitiondot.data.datasource.CommentPagingSource
 import com.exhibitiondot.data.mapper.toDomain
 import com.exhibitiondot.data.model.dto.CommentDto
 import com.exhibitiondot.data.model.request.AddCommentRequest
@@ -19,19 +14,12 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class CommentRepositoryImpl @Inject constructor(
-    private val commentApi: CommentApi,
     private val commentDataSource: CommentDataSource
 ) : CommentRepository {
     override fun getCommentList(eventId: Long): Flow<PagingData<Comment>> =
-        Pager(
-            config = PagingConfig(pageSize = ApiConst.DEFAULT_PAGE_SIZE),
-            pagingSourceFactory = {
-                CommentPagingSource(
-                    commentApi = commentApi,
-                    eventId = eventId
-                )
-            }
-        ).flow.map { pagingData -> pagingData.map(CommentDto::toDomain) }
+         commentDataSource
+             .getCommentList(eventId)
+             .map { pagingData -> pagingData.map(CommentDto::toDomain) }
 
     override suspend fun addComment(eventId: Long, content: String): Result<Unit> {
         val response = commentDataSource.addComment(
