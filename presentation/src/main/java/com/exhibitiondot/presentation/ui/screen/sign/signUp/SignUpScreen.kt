@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.exhibitiondot.domain.model.Category
@@ -95,7 +96,10 @@ private fun SignUpScreen(
         Column(
             modifier = Modifier
                 .weight(1f)
-                .padding(all = screenPadding)
+                .padding(
+                    horizontal = screenPadding,
+                    vertical = 40.dp
+                )
         ) {
             Text(
                 text = stringResource(step.description),

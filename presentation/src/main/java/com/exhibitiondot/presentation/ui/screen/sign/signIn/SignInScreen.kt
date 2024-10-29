@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.exhibitiondot.presentation.R
@@ -46,7 +47,10 @@ private fun SignInScreen(
         modifier = modifier
             .fillMaxSize()
             .background(color = MaterialTheme.colorScheme.primary)
-            .padding(all = screenPadding),
+            .padding(
+                vertical = 40.dp,
+                horizontal = screenPadding
+            ),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         DoTSpacer(size = 180)
