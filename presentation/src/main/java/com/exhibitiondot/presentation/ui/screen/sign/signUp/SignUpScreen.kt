@@ -2,7 +2,10 @@ package com.exhibitiondot.presentation.ui.screen.sign.signUp
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -19,9 +22,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.exhibitiondot.domain.model.Category
 import com.exhibitiondot.domain.model.EventType
+import com.exhibitiondot.domain.model.Filter
 import com.exhibitiondot.domain.model.Region
 import com.exhibitiondot.presentation.R
 import com.exhibitiondot.presentation.ui.component.DoTButton
+import com.exhibitiondot.presentation.ui.component.DoTFilterChip
 import com.exhibitiondot.presentation.ui.component.DoTSpacer
 import com.exhibitiondot.presentation.ui.component.DoTTextField
 import com.exhibitiondot.presentation.ui.component.DoTTopBar
@@ -47,18 +52,19 @@ fun SignUpRoute(
         uiState = uiState,
         step = step,
         progress = progress,
+        validate = viewModel.validate(step),
         nameState = viewModel.nameState,
         nicknameState = viewModel.nicknameState,
         phoneState = viewModel.phoneState,
+        regionList = viewModel.regionList,
         selectedRegion = selectedRegion,
+        categoryList = viewModel.categoryList,
         selectedCategory = selectedCategory,
+        eventTypeList = viewModel.eventTypeList,
         selectedEventType = selectedEventType,
         onPrevStep = { viewModel.onPrevStep(step, onBack) },
         onNextStep = { viewModel.onNextStep(step, moveMain, onBack) },
-        validate = viewModel.validate(step),
-        selectRegion = viewModel::selectRegion,
-        selectCategory = viewModel::selectCategory,
-        selectEventType = viewModel::selectEventType
+        selectFilter = viewModel::selectFilter
     )
     BackHandler {
         viewModel.onPrevStep(step, onBack)
@@ -71,18 +77,19 @@ private fun SignUpScreen(
     uiState: SignUpUiState,
     step: SignUpStep,
     progress: Float,
+    validate: Boolean,
     nameState: IEditTextState,
     nicknameState: IEditTextState,
     phoneState: IEditTextState,
-    selectedRegion: Region?,
+    regionList: List<Region>,
+    selectedRegion: Region,
+    categoryList: List<Category>,
     selectedCategory: List<Category>,
+    eventTypeList: List<EventType>,
     selectedEventType: List<EventType>,
     onPrevStep: () -> Unit,
     onNextStep: () -> Unit,
-    validate: Boolean,
-    selectRegion: (Region) -> Unit,
-    selectCategory: (Category) -> Unit,
-    selectEventType: (EventType) -> Unit,
+    selectFilter: (Filter) -> Unit,
 ) {
     Column(
         modifier = modifier.fillMaxSize()
@@ -113,9 +120,21 @@ private fun SignUpScreen(
                     nicknameState = nicknameState,
                     phoneState = phoneState
                 )
-                SignUpStep.RegionStep -> {}
-                SignUpStep.CategoryStep -> {}
-                SignUpStep.EventTypeStep -> {}
+                SignUpStep.RegionStep -> FilterSelectScreen(
+                    filterList = regionList,
+                    selectedFilter = selectedRegion,
+                    onSelectFilter = selectFilter
+                )
+                SignUpStep.CategoryStep -> FilterSelectScreen(
+                    filterList = categoryList,
+                    selectedFilterList = selectedCategory,
+                    onSelectFilter = selectFilter
+                )
+                SignUpStep.EventTypeStep -> FilterSelectScreen(
+                    filterList = eventTypeList,
+                    selectedFilterList = selectedEventType,
+                    onSelectFilter = selectFilter
+                )
             }
             DoTSpacer(modifier = Modifier.weight(1f))
             DoTButton(
@@ -124,6 +143,7 @@ private fun SignUpScreen(
                 } else {
                     stringResource(R.string.signup)
                 },
+                isLoading = uiState == SignUpUiState.Loading,
                 enabled = validate,
                 onClick = onNextStep
             )
@@ -164,5 +184,39 @@ fun InfoStepScreen(
             onResetValue = phoneState::resetText,
             imeAction = ImeAction.Done
         )
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+fun FilterSelectScreen(
+    modifier: Modifier = Modifier,
+    filterList: List<Filter>,
+    selectedFilter: Filter? = null,
+    selectedFilterList: List<Filter> = emptyList(),
+    onSelectFilter: (Filter) -> Unit
+) {
+    FlowRow(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(top = 30.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        filterList.forEach { filter ->
+            DoTFilterChip(
+                name = when (filter) {
+                    is Region -> filter.name
+                    is Category -> filter.key
+                    is EventType -> filter.key
+                    else -> ""
+                },
+                selected = when (filter) {
+                    is Filter.SingleFilter -> filter == selectedFilter
+                    is Filter.MultiFilter -> filter in selectedFilterList
+                },
+                onSelect = { onSelectFilter(filter) }
+            )
+        }
     }
 }
