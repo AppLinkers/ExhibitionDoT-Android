@@ -67,7 +67,7 @@ val DoTTypography = Typography(
     labelMedium = TextStyle(
         fontFamily = Pretendard,
         fontWeight = FontWeight.W500,
-        fontSize = 14.sp,
+        fontSize = 16.sp,
         color = Black
     ),
     labelSmall = TextStyle(

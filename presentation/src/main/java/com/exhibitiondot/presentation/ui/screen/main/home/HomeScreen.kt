@@ -1,20 +1,39 @@
 package com.exhibitiondot.presentation.ui.screen.main.home
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridState
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.exhibitiondot.domain.model.Category
 import com.exhibitiondot.domain.model.Event
 import com.exhibitiondot.domain.model.EventType
 import com.exhibitiondot.domain.model.Region
+import com.exhibitiondot.presentation.ui.component.DoTImage
+import com.exhibitiondot.presentation.ui.component.DoTLoadingScreen
+import com.exhibitiondot.presentation.ui.component.DoTSpacer
 import com.exhibitiondot.presentation.ui.component.HomeTopBar
+import com.exhibitiondot.presentation.ui.theme.screenPadding
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
@@ -23,7 +42,6 @@ fun HomeRoute(
     coroutineScope: CoroutineScope,
     moveEventDetail: (Long) -> Unit,
     moveMy: () -> Unit,
-    onBack: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val appliedRegion by viewModel.appliedRegion.collectAsStateWithLifecycle()
@@ -54,9 +72,7 @@ fun HomeRoute(
     )
 
     BackHandler {
-        if (uiState == HomeUiState.Nothing) {
-            onBack()
-        } else {
+        if (uiState != HomeUiState.Nothing) {
             viewModel.dismiss()
         }
     }
@@ -81,9 +97,80 @@ private fun HomeScreen(
     Column(
         modifier = modifier.fillMaxSize()
     ) {
+        val lazyGridState = rememberLazyGridState()
         HomeTopBar(
             showSearchDialog = showSearchDialog,
             moveMy = moveMy
+        )
+        when (eventList.loadState.refresh) {
+            LoadState.Loading -> DoTLoadingScreen(
+                modifier = Modifier.weight(1f)
+            )
+            is LoadState.Error -> {}
+            is LoadState.NotLoading -> EventList(
+                modifier = Modifier.weight(1f),
+                lazyGridState = lazyGridState,
+                eventList = eventList,
+                onEventItem = onEventItem
+            )
+        }
+    }
+}
+
+@Composable
+private fun EventList(
+    modifier: Modifier = Modifier,
+    lazyGridState: LazyGridState,
+    eventList: LazyPagingItems<Event>,
+    onEventItem: (Long) -> Unit,
+) {
+    LazyVerticalGrid(
+        modifier = modifier.fillMaxSize(),
+        columns = GridCells.Fixed(2),
+        state = lazyGridState,
+        contentPadding = PaddingValues(horizontal = screenPadding),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        items(
+            count = eventList.itemCount,
+            key = { it }
+        ) { index ->
+            eventList[index]?.let { event ->
+                EventItem(
+                    event = event,
+                    onEventItem = { onEventItem(event.id) }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun EventItem(
+    modifier: Modifier = Modifier,
+    event: Event,
+    onEventItem: () -> Unit,
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable(onClick = onEventItem)
+    ) {
+        DoTImage(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(220.dp)
+                .clip(MaterialTheme.shapes.medium),
+            url = "https://www.it-b.co.kr/news/photo/202011/45197_42822_152.png"
+        )
+        DoTSpacer(size = 10)
+        Text(
+            modifier = Modifier.height(50.dp),
+            text = "2024 Naver Corp. 컨퍼런스 (코엑스 컨벤션 홀)",
+            style = MaterialTheme.typography.labelMedium,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis
         )
     }
 }

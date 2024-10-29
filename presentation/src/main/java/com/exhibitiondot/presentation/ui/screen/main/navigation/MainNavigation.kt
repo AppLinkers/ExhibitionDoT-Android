@@ -31,7 +31,6 @@ fun NavGraphBuilder.nestedMainGraph(appState: DoTAppState) {
                 coroutineScope = appState.coroutineScope,
                 moveEventDetail = appState.navController::navigateToEventDetail,
                 moveMy = { appState.navController.navigate(Screen.My.route) },
-                onBack = appState.navController::popBackStack
             )
         }
         composable(

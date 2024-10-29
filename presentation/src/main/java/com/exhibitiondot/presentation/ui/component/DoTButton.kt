@@ -55,7 +55,7 @@ fun DoTButton(
             DoTLoading(
                 size = 18,
                 color = MaterialTheme.colorScheme.background,
-                strokeWidth = 3.dp
+                strokeWidth = 3
             )
         }
     }
@@ -99,7 +99,7 @@ fun KakaoLoginButton(
                 modifier = Modifier.align(Alignment.Center),
                 size = 18,
                 color = MaterialTheme.colorScheme.background,
-                strokeWidth = 3.dp
+                strokeWidth = 3
             )
         }
     }
