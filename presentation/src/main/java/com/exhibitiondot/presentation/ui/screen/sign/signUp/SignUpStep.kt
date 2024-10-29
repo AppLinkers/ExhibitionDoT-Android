@@ -1,42 +1,32 @@
 package com.exhibitiondot.presentation.ui.screen.sign.signUp
 
-sealed class SignUpStep(val title: String, val description: String, val percentage: Float) {
-    abstract fun onPrevStep() : SignUpStep?
-    abstract fun onNextStep() : SignUpStep?
+import androidx.annotation.StringRes
+import com.exhibitiondot.presentation.R
 
-    data object InfoStep : SignUpStep("회원 정보 입력", "", 0.1f) {
-        override fun onPrevStep(): SignUpStep? {
-            return null
-        }
-        override fun onNextStep(): SignUpStep {
-            return RegionStep
-        }
+sealed class SignUpStep(
+    @StringRes val description: Int,
+    val percentage: Float,
+) {
+    abstract fun prevStep() : SignUpStep?
+    abstract fun nextStep() : SignUpStep?
+
+    data object InfoStep : SignUpStep(R.string.signup_info_step_description, 0.1f) {
+        override fun prevStep(): SignUpStep? = null
+        override fun nextStep(): SignUpStep = RegionStep
     }
 
-    data object RegionStep : SignUpStep("", "", 0.4f) {
-        override fun onPrevStep(): SignUpStep {
-            return InfoStep
-        }
-        override fun onNextStep(): SignUpStep {
-            return CategoryStep
-        }
+    data object RegionStep : SignUpStep(R.string.signup_region_step_description, 0.4f) {
+        override fun prevStep(): SignUpStep = InfoStep
+        override fun nextStep(): SignUpStep = CategoryStep
     }
 
-    data object CategoryStep : SignUpStep("", "", 0.7f) {
-        override fun onPrevStep(): SignUpStep {
-            return RegionStep
-        }
-        override fun onNextStep(): SignUpStep {
-            return EventTypeStep
-        }
+    data object CategoryStep : SignUpStep(R.string.signup_category_step_description, 0.7f) {
+        override fun prevStep(): SignUpStep = RegionStep
+        override fun nextStep(): SignUpStep = EventTypeStep
     }
 
-    data object EventTypeStep : SignUpStep("", "", 1.0f) {
-        override fun onPrevStep(): SignUpStep {
-            return CategoryStep
-        }
-        override fun onNextStep(): SignUpStep? {
-            return null
-        }
+    data object EventTypeStep : SignUpStep(R.string.signup_event_type_step_description, 1.0f) {
+        override fun prevStep(): SignUpStep = CategoryStep
+        override fun nextStep(): SignUpStep? = null
     }
 }

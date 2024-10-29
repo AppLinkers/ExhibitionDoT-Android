@@ -51,7 +51,7 @@ object NetworkModule {
     ): Retrofit =
         Retrofit.Builder().apply {
             client(okHttpClient)
-            baseUrl("")
+            baseUrl(BuildConfig.BASE_URL)
             addConverterFactory(
                 json.asConverterFactory(ApiConst.CONTENT_TYPE.toMediaType())
             )

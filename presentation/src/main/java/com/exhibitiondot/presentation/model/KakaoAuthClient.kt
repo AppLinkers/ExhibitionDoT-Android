@@ -43,11 +43,18 @@ class KakaoAuthClient @Inject constructor() {
         }
     }
 
-    fun getUserEmail(): String? {
-        var email: String? = null
-        UserApiClient.instance.me { user, _ ->
-            email = user?.kakaoAccount?.email
+    fun getUserEmail(
+        onSuccess: (String) -> Unit,
+        onFailure: (Throwable) -> Unit,
+    ) {
+        UserApiClient.instance.me { user, error ->
+            if (error != null) {
+                onFailure(error)
+            } else if (user != null) {
+                user.kakaoAccount?.let { account ->
+                    account.email?.run(onSuccess)
+                }
+            }
         }
-        return email
     }
 }
