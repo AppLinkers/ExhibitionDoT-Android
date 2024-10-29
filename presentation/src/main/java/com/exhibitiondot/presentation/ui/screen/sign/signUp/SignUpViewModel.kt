@@ -11,6 +11,7 @@ import com.exhibitiondot.domain.usecase.user.SignUpUseCase
 import com.exhibitiondot.presentation.base.BaseViewModel
 import com.exhibitiondot.presentation.model.GlobalUiModel
 import com.exhibitiondot.presentation.ui.navigation.KEY_SIGN_UP_EMAIL
+import com.exhibitiondot.presentation.ui.state.EditTextState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -30,11 +31,15 @@ class SignUpViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<SignUpUiState>(SignUpUiState.Nothing)
     val uiState: StateFlow<SignUpUiState> = _uiState
 
+    val nameState = EditTextState(maxLength = 10)
+    val nicknameState = EditTextState(maxLength = 10)
+    val phoneState = EditTextState(maxLength = 11)
+
     private val _currentStep = MutableStateFlow<SignUpStep>(SignUpStep.InfoStep)
     val currentStep: StateFlow<SignUpStep> = _currentStep
 
-    private val _selectedRegion = MutableStateFlow<Region>(Region.Seoul)
-    val selectedRegion: StateFlow<Region> = _selectedRegion
+    private val _selectedRegion = MutableStateFlow<Region?>(null)
+    val selectedRegion: StateFlow<Region?> = _selectedRegion
 
     private val _selectedCategory = MutableStateFlow<List<Category>>(emptyList())
     val selectedCategory: StateFlow<List<Category>> = _selectedCategory
@@ -43,7 +48,7 @@ class SignUpViewModel @Inject constructor(
     val selectedEventType: StateFlow<List<EventType>> = _selectedEventType
 
     fun onPrevStep(currentStep: SignUpStep, onBack: () -> Unit) {
-        val prevStep = currentStep.onPrevStep()
+        val prevStep = currentStep.prevStep()
         if (prevStep != null) {
             _currentStep.update { prevStep }
         } else {
@@ -52,9 +57,8 @@ class SignUpViewModel @Inject constructor(
     }
 
     fun onNextStep(currentStep: SignUpStep, moveMain: () -> Unit, onBack: () -> Unit) {
-        val nextStep = currentStep.onNextStep()
+        val nextStep = currentStep.nextStep()
         if (nextStep != null) {
-
             _currentStep.update { nextStep }
         } else {
             signUp(moveMain, onBack)
@@ -89,15 +93,26 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
+    fun validate(step: SignUpStep): Boolean {
+        return when (step) {
+            SignUpStep.InfoStep -> {
+                nameState.isValidate() && nicknameState.isValidate() && phoneState.isValidate()
+            }
+            SignUpStep.RegionStep -> selectedRegion.value != null
+            SignUpStep.CategoryStep -> true
+            SignUpStep.EventTypeStep -> true
+        }
+    }
+
     private fun signUp(moveMain: () -> Unit, onBack: () -> Unit) {
         _uiState.update { SignUpUiState.Loading }
         viewModelScope.launch {
             val user = User(
                 email = email,
-                name = "",
-                phone = "",
-                nickname = "",
-                region = selectedRegion.value,
+                name = nameState.trimmedText(),
+                nickname = nicknameState.trimmedText(),
+                phone = phoneState.trimmedText(),
+                region = selectedRegion.value!!,
                 categoryList = selectedCategory.value,
                 eventTypeList = selectedEventType.value
             )

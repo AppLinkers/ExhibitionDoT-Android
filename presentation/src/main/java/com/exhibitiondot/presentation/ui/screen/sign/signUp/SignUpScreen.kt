@@ -22,6 +22,7 @@ import com.exhibitiondot.presentation.R
 import com.exhibitiondot.presentation.ui.component.DoTButton
 import com.exhibitiondot.presentation.ui.component.DoTSpacer
 import com.exhibitiondot.presentation.ui.component.DoTTopBar
+import com.exhibitiondot.presentation.ui.state.IEditTextState
 import com.exhibitiondot.presentation.ui.theme.screenPadding
 
 @Composable
@@ -43,11 +44,15 @@ fun SignUpRoute(
         uiState = uiState,
         step = step,
         progress = progress,
+        nameState = viewModel.nameState,
+        nicknameState = viewModel.nicknameState,
+        phoneState = viewModel.phoneState,
         selectedRegion = selectedRegion,
         selectedCategory = selectedCategory,
         selectedEventType = selectedEventType,
         onPrevStep = { viewModel.onPrevStep(step, onBack) },
         onNextStep = { viewModel.onNextStep(step, moveMain, onBack) },
+        validate = viewModel.validate(step),
         selectRegion = viewModel::selectRegion,
         selectCategory = viewModel::selectCategory,
         selectEventType = viewModel::selectEventType
@@ -63,11 +68,15 @@ private fun SignUpScreen(
     uiState: SignUpUiState,
     step: SignUpStep,
     progress: Float,
-    selectedRegion: Region,
+    nameState: IEditTextState,
+    nicknameState: IEditTextState,
+    phoneState: IEditTextState,
+    selectedRegion: Region?,
     selectedCategory: List<Category>,
     selectedEventType: List<EventType>,
     onPrevStep: () -> Unit,
     onNextStep: () -> Unit,
+    validate: Boolean,
     selectRegion: (Region) -> Unit,
     selectCategory: (Category) -> Unit,
     selectEventType: (EventType) -> Unit,
@@ -79,7 +88,6 @@ private fun SignUpScreen(
             title = stringResource(R.string.signup),
             onBack = onPrevStep
         )
-
         LinearProgressIndicator(
             modifier = Modifier.fillMaxWidth(),
             progress = { progress }
@@ -101,11 +109,12 @@ private fun SignUpScreen(
             }
             DoTSpacer(modifier = Modifier.weight(1f))
             DoTButton(
-                text = if (step.onNextStep() != null) {
+                text = if (step.nextStep() != null) {
                     stringResource(R.string.next)
                 } else {
                     stringResource(R.string.signup)
                 },
+                enabled = validate,
                 onClick = onNextStep
             )
         }

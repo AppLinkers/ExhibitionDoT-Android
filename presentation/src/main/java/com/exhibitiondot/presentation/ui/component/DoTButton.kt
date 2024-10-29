@@ -26,6 +26,7 @@ import com.exhibitiondot.presentation.ui.theme.buttonHeight
 fun DoTButton(
     modifier: Modifier = Modifier,
     text: String,
+    isLoading: Boolean = false,
     enabled: Boolean = true,
     onClick: () -> Unit
 ) {
@@ -33,7 +34,7 @@ fun DoTButton(
         modifier = modifier
             .fillMaxWidth()
             .height(buttonHeight),
-        enabled = enabled,
+        enabled = enabled && isLoading.not(),
         shape = MaterialTheme.shapes.medium,
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primary,
@@ -41,7 +42,7 @@ fun DoTButton(
         ),
         onClick = onClick
     ) {
-        if (enabled) {
+        if (isLoading.not()) {
             Text(
                 text = text,
                 style = MaterialTheme.typography.labelLarge,
@@ -50,7 +51,8 @@ fun DoTButton(
         } else {
             DoTLoading(
                 size = 18,
-                color = MaterialTheme.colorScheme.background
+                color = MaterialTheme.colorScheme.background,
+                strokeWidth = 3.dp
             )
         }
     }
@@ -93,7 +95,8 @@ fun KakaoLoginButton(
             DoTLoading(
                 modifier = Modifier.align(Alignment.Center),
                 size = 18,
-                color = MaterialTheme.colorScheme.background
+                color = MaterialTheme.colorScheme.background,
+                strokeWidth = 3.dp
             )
         }
     }

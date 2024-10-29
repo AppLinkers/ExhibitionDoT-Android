@@ -57,6 +57,7 @@ private fun SignInScreen(
         DoTSpacer(size = 24)
         Text(
             text = stringResource(R.string.app_catch_phrase),
+            color = MaterialTheme.colorScheme.background,
             style = MaterialTheme.typography.labelLarge
         )
         DoTSpacer(modifier = Modifier.weight(1f))
