@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import com.exhibitiondot.presentation.ui.DoTAppState
+import com.exhibitiondot.presentation.ui.screen.main.navigation.nestedMainGraph
 import com.exhibitiondot.presentation.ui.screen.sign.navigation.nestedSignGraph
 
 @Composable
@@ -18,5 +19,6 @@ fun DoTNavHost(
         startDestination = startDestination.route
     ) {
         nestedSignGraph(appState)
+        nestedMainGraph(appState)
     }
 }

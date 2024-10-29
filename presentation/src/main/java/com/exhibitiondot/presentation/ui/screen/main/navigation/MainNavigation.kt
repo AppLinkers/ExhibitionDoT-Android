@@ -10,6 +10,7 @@ import com.exhibitiondot.presentation.ui.DoTAppState
 import com.exhibitiondot.presentation.ui.navigation.KEY_EVENT_ID
 import com.exhibitiondot.presentation.ui.navigation.Screen
 import com.exhibitiondot.presentation.ui.navigation.ScreenGraph
+import com.exhibitiondot.presentation.ui.screen.main.home.HomeRoute
 
 fun NavController.navigateToMainGraph() = navigate(Screen.Home.route) {
     popUpTo(ScreenGraph.MainGraph.route) { inclusive = true }
@@ -26,7 +27,10 @@ fun NavGraphBuilder.nestedMainGraph(appState: DoTAppState) {
         composable(
             route = Screen.Home.route
         ) {
-
+            HomeRoute(
+                moveEventDetail = appState.navController::navigateToEventDetail,
+                moveMy = { appState.navController.navigate(Screen.My.route) }
+            )
         }
         composable(
             route = "${Screen.EventDetail.route}/{$KEY_EVENT_ID}",
