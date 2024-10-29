@@ -17,6 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -52,15 +53,15 @@ fun SignUpRoute(
         uiState = uiState,
         step = step,
         progress = progress,
-        validate = viewModel.validate(step),
+        validate = viewModel.validate(),
         nameState = viewModel.nameState,
         nicknameState = viewModel.nicknameState,
         phoneState = viewModel.phoneState,
         regionList = viewModel.regionList,
-        selectedRegion = selectedRegion,
         categoryList = viewModel.categoryList,
-        selectedCategory = selectedCategory,
         eventTypeList = viewModel.eventTypeList,
+        selectedRegion = selectedRegion,
+        selectedCategory = selectedCategory,
         selectedEventType = selectedEventType,
         onPrevStep = { viewModel.onPrevStep(step, onBack) },
         onNextStep = { viewModel.onNextStep(step, moveMain, onBack) },
@@ -82,10 +83,10 @@ private fun SignUpScreen(
     nicknameState: IEditTextState,
     phoneState: IEditTextState,
     regionList: List<Region>,
-    selectedRegion: Region,
     categoryList: List<Category>,
-    selectedCategory: List<Category>,
     eventTypeList: List<EventType>,
+    selectedRegion: Region,
+    selectedCategory: List<Category>,
     selectedEventType: List<EventType>,
     onPrevStep: () -> Unit,
     onNextStep: () -> Unit,
@@ -182,6 +183,7 @@ fun InfoStepScreen(
             placeHolder = stringResource(R.string.signup_phone_placeholder),
             onValueChange = phoneState::typeText,
             onResetValue = phoneState::resetText,
+            keyboardType = KeyboardType.Phone,
             imeAction = ImeAction.Done
         )
     }

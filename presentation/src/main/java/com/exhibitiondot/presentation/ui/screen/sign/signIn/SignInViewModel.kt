@@ -9,6 +9,7 @@ import com.exhibitiondot.presentation.model.KakaoAuthClient
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,7 +21,7 @@ class SignInViewModel @Inject constructor(
     private val uiModel: GlobalUiModel
 ) : BaseViewModel() {
     private val _uiState = MutableStateFlow<SignInUiState>(SignInUiState.Nothing)
-    val uiState: StateFlow<SignInUiState> = _uiState
+    val uiState: StateFlow<SignInUiState> = _uiState.asStateFlow()
 
     fun onKakaoLogin(
         context: Context,

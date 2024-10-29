@@ -108,8 +108,8 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
-    fun validate(step: SignUpStep): Boolean {
-        return when (step) {
+    fun validate(): Boolean {
+        return when (currentStep.value) {
             SignUpStep.InfoStep -> {
                 nameState.isValidate() && nicknameState.isValidate() && phoneState.isValidate()
             }
@@ -125,7 +125,7 @@ class SignUpViewModel @Inject constructor(
                 name = nameState.trimmedText(),
                 nickname = nicknameState.trimmedText(),
                 phone = phoneState.trimmedText(),
-                region = selectedRegion.value!!,
+                region = selectedRegion.value,
                 categoryList = selectedCategory.value,
                 eventTypeList = selectedEventType.value
             )
