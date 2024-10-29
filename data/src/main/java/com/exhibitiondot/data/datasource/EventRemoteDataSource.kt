@@ -18,7 +18,7 @@ class EventRemoteDataSource @Inject constructor(
     private val eventApi: EventApi
 ) : EventDataSource {
     override fun getEventList(
-        region: String,
+        region: String?,
         categoryList: List<String>,
         eventTypeList: List<String>,
         query: String

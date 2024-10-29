@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface EventDataSource {
     fun getEventList(
-        region: String,
+        region: String?,
         categoryList: List<String>,
         eventTypeList: List<String>,
         query: String

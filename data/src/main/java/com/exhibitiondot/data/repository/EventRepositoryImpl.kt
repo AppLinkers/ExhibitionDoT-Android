@@ -6,11 +6,9 @@ import com.exhibitiondot.data.datasource.EventDataSource
 import com.exhibitiondot.data.mapper.toDomain
 import com.exhibitiondot.data.model.dto.EventDto
 import com.exhibitiondot.data.network.NetworkState
-import com.exhibitiondot.domain.model.Category
 import com.exhibitiondot.domain.model.Event
 import com.exhibitiondot.domain.model.EventDetail
-import com.exhibitiondot.domain.model.EventType
-import com.exhibitiondot.domain.model.Region
+import com.exhibitiondot.domain.model.EventParams
 import com.exhibitiondot.domain.repository.EventRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -23,17 +21,12 @@ import javax.inject.Inject
 class EventRepositoryImpl @Inject constructor(
     private val eventDataSource: EventDataSource
 ) : EventRepository {
-    override fun getEventList(
-        region: Region,
-        categoryList: List<Category>,
-        eventTypeList: List<EventType>,
-        query: String
-    ): Flow<PagingData<Event>> =
+    override fun getEventList(params: EventParams): Flow<PagingData<Event>> =
         eventDataSource.getEventList(
-            region = region.key,
-            categoryList = categoryList.map { it.key },
-            eventTypeList = eventTypeList.map { it.key },
-            query = query
+            region = params.region?.key ,
+            categoryList = params.categoryList.map { it.key },
+            eventTypeList = params.eventTypeList.map { it.key },
+            query = params.query
         ).map { pagingData -> pagingData.map(EventDto::toDomain) }
 
     @OptIn(ExperimentalCoroutinesApi::class)
