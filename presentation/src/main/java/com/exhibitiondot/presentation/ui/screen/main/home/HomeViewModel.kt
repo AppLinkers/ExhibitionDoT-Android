@@ -29,18 +29,25 @@ class HomeViewModel @Inject constructor(
     getCachedUserUseCase: GetCachedUserUseCase,
     private val getEventListUseCase: GetEventListUseCase
 ) : BaseViewModel() {
-    private val appliedRegion = MutableStateFlow<Region?>(getCachedUserUseCase().region)
-    private val appliedCategory = MutableStateFlow(getCachedUserUseCase().categoryList)
-    private val appliedEventType = MutableStateFlow(getCachedUserUseCase().eventTypeList)
-    private val appliedQuery = MutableStateFlow("")
+    private val _appliedRegion = MutableStateFlow<Region?>(getCachedUserUseCase().region)
+    val appliedRegion: StateFlow<Region?> = _appliedRegion.asStateFlow()
+
+    private val _appliedCategory = MutableStateFlow(getCachedUserUseCase().categoryList)
+    val appliedCategory: StateFlow<List<Category>> = _appliedCategory.asStateFlow()
+
+    private val _appliedEventType = MutableStateFlow(getCachedUserUseCase().eventTypeList)
+    val appliedEventType: StateFlow<List<EventType>> = _appliedEventType.asStateFlow()
+
+    private val _appliedQuery = MutableStateFlow("")
+    val appliedQuery: StateFlow<String> = _appliedQuery.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val eventList: Flow<PagingData<Event>> =
         combine(
-            flow = appliedRegion,
-            flow2 = appliedCategory,
-            flow3 = appliedEventType,
-            flow4 = appliedQuery
+            flow = _appliedRegion,
+            flow2 = _appliedCategory,
+            flow3 = _appliedEventType,
+            flow4 = _appliedQuery
         ) { region, categoryList, eventTypeList, query ->
             EventParams(region, categoryList, eventTypeList, query)
         }.flatMapLatest { params ->
@@ -50,30 +57,37 @@ class HomeViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Nothing)
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
-    private val _selectedRegion = MutableStateFlow(appliedRegion.value)
+    private val _selectedRegion = MutableStateFlow(_appliedRegion.value)
     val selectedRegion: StateFlow<Region?> = _selectedRegion.asStateFlow()
 
-    private val _selectedCategory = MutableStateFlow(appliedCategory.value)
+    private val _selectedCategory = MutableStateFlow(_appliedCategory.value)
     val selectedCategory: StateFlow<List<Category>> = _selectedCategory.asStateFlow()
 
-    private val _selectedEventType = MutableStateFlow(appliedEventType.value)
+    private val _selectedEventType = MutableStateFlow(_appliedEventType.value)
     val selectedEventType: StateFlow<List<EventType>> = _selectedEventType.asStateFlow()
 
     val queryState = EditTextState(maxLength = 20)
 
     fun canResetFilters(): Boolean {
-        return appliedRegion.value != null &&
-                appliedCategory.value.isNotEmpty() &&
-                appliedEventType.value.isNotEmpty()
+        return _appliedRegion.value != null &&
+                _appliedCategory.value.isNotEmpty() &&
+                _appliedEventType.value.isNotEmpty() &&
+                _appliedQuery.value.isNotEmpty()
     }
 
     fun resetAllFilters() {
-        appliedRegion.update { null }
+        _appliedRegion.update { null }
         _selectedRegion.update { null }
-        appliedCategory.update { emptyList() }
+        _appliedCategory.update { emptyList() }
         _selectedCategory.update { emptyList() }
-        appliedEventType.update { emptyList() }
+        _appliedEventType.update { emptyList() }
         _selectedEventType.update { emptyList() }
+        resetAppliedQuery()
+    }
+
+    fun resetAppliedQuery() {
+        _appliedQuery.update { "" }
+        queryState.resetText()
     }
 
     fun showFilterSheet(filterState: HomeUiState.FilterState) {
@@ -127,9 +141,9 @@ class HomeViewModel @Inject constructor(
 
     fun applyFilters(filterState: HomeUiState.FilterState) {
         when (filterState) {
-            HomeUiState.FilterState.ShowRegionFilter -> appliedRegion.update { selectedRegion.value }
-            HomeUiState.FilterState.ShowCategoryFilter -> appliedCategory.update { selectedCategory.value }
-            HomeUiState.FilterState.ShowEventTypeFilter -> appliedEventType.update { selectedEventType.value }
+            HomeUiState.FilterState.ShowRegionFilter -> _appliedRegion.update { selectedRegion.value }
+            HomeUiState.FilterState.ShowCategoryFilter -> _appliedCategory.update { selectedCategory.value }
+            HomeUiState.FilterState.ShowEventTypeFilter -> _appliedEventType.update { selectedEventType.value }
 
         }
         dismiss()
@@ -140,7 +154,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun applyQuery() {
-        appliedQuery.update { queryState.trimmedText() }
+        _appliedQuery.update { queryState.trimmedText() }
         dismiss()
     }
 

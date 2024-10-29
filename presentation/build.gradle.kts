@@ -73,6 +73,7 @@ dependencies {
 
     // paging3
     implementation(libs.androidx.paging3)
+    implementation(libs.androidx.paging3.compose)
 
     // kakao-login
     implementation(libs.kakao.login)

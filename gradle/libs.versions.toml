@@ -45,6 +45,7 @@ androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-paging3 = { group = "androidx.paging", name = "paging-runtime", version.ref = "paging3" }
 androidx-paging3-common = { group = "androidx.paging", name = "paging-common", version.ref = "paging3" }
+androidx-paging3-compose = { group = "androidx.paging", name = "paging-compose", version.ref = "paging3" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 androidx-datastore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "dataStore" }
 androidx-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "androidxViewModelKtx" }

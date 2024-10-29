@@ -22,14 +22,16 @@ fun NavController.navigateToEventDetail(eventId: Long) =
 fun NavGraphBuilder.nestedMainGraph(appState: DoTAppState) {
     navigation(
         startDestination = Screen.Home.route,
-        route = ScreenGraph.SignGraph.route
+        route = ScreenGraph.MainGraph.route
     ) {
         composable(
             route = Screen.Home.route
         ) {
             HomeRoute(
+                coroutineScope = appState.coroutineScope,
                 moveEventDetail = appState.navController::navigateToEventDetail,
-                moveMy = { appState.navController.navigate(Screen.My.route) }
+                moveMy = { appState.navController.navigate(Screen.My.route) },
+                onBack = appState.navController::popBackStack
             )
         }
         composable(

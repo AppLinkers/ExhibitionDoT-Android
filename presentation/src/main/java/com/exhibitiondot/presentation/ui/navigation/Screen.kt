@@ -1,8 +1,8 @@
 package com.exhibitiondot.presentation.ui.navigation
 
-sealed class Screen(val route: String, ) {
+sealed class Screen(val route: String) {
     data object SignIn : Screen("sign-in")
-    data object SignUp : Screen(route = "sign-up")
+    data object SignUp : Screen("sign-up")
     data object Home : Screen("home")
     data object EventDetail : Screen("event-detail")
     data object My : Screen("my")
