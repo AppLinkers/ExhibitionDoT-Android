@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -22,6 +23,7 @@ import com.exhibitiondot.domain.model.Region
 import com.exhibitiondot.presentation.R
 import com.exhibitiondot.presentation.ui.component.DoTButton
 import com.exhibitiondot.presentation.ui.component.DoTSpacer
+import com.exhibitiondot.presentation.ui.component.DoTTextField
 import com.exhibitiondot.presentation.ui.component.DoTTopBar
 import com.exhibitiondot.presentation.ui.state.IEditTextState
 import com.exhibitiondot.presentation.ui.theme.screenPadding
@@ -106,7 +108,11 @@ private fun SignUpScreen(
                 style = MaterialTheme.typography.displayLarge
             )
             when (step) {
-                SignUpStep.InfoStep -> {}
+                SignUpStep.InfoStep -> InfoStepScreen(
+                    nameState = nameState,
+                    nicknameState = nicknameState,
+                    phoneState = phoneState
+                )
                 SignUpStep.RegionStep -> {}
                 SignUpStep.CategoryStep -> {}
                 SignUpStep.EventTypeStep -> {}
@@ -122,5 +128,41 @@ private fun SignUpScreen(
                 onClick = onNextStep
             )
         }
+    }
+}
+
+@Composable
+fun InfoStepScreen(
+    modifier: Modifier = Modifier,
+    nameState: IEditTextState,
+    nicknameState: IEditTextState,
+    phoneState: IEditTextState,
+) {
+    Column(modifier) {
+        DoTSpacer(size = 20)
+        DoTTextField(
+            value = nameState.typedText,
+            placeHolder = stringResource(R.string.signup_name_placeholder),
+            onValueChange = nameState::typeText,
+            onResetValue = nameState::resetText,
+            imeAction = ImeAction.Next
+        )
+        DoTSpacer(size = 30)
+        DoTTextField(
+            value = nicknameState.typedText,
+            placeHolder = stringResource(R.string.signup_nickname_placeholder),
+            onValueChange = nicknameState::typeText,
+            onResetValue = nicknameState::resetText,
+            imeAction = ImeAction.Next
+
+        )
+        DoTSpacer(size = 30)
+        DoTTextField(
+            value = phoneState.typedText,
+            placeHolder = stringResource(R.string.signup_phone_placeholder),
+            onValueChange = phoneState::typeText,
+            onResetValue = phoneState::resetText,
+            imeAction = ImeAction.Done
+        )
     }
 }
