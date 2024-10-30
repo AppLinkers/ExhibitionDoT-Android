@@ -4,6 +4,7 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -15,6 +16,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -43,7 +45,11 @@ fun DoTFilterChip(
                 color = color,
                 shape = CircleShape
             )
-            .clickable(onClick = onSelect),
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = onSelect
+            ),
         contentAlignment = Alignment.Center
     ) {
         Text(
@@ -104,7 +110,7 @@ fun HomeFilterChip(
                 text = text,
                 style = MaterialTheme.typography.displaySmall,
                 fontWeight = if (isApplied) {
-                    FontWeight.W500
+                    FontWeight.W600
                 } else {
                     FontWeight.W400
                 }

@@ -74,6 +74,10 @@ class HomeViewModel @Inject constructor(
 
     val queryState = EditTextState(maxLength = 20)
 
+    private val regionList = Region.values()
+    private val categoryList = Category.values()
+    private val eventTypeList = EventType.values()
+
     fun canResetFilters(): Boolean {
         return _appliedRegion.value != null ||
                 _appliedCategory.value.isNotEmpty() ||
@@ -100,6 +104,14 @@ class HomeViewModel @Inject constructor(
         _uiState.update { filterState }
     }
 
+    fun getFilterList(filterState: HomeUiState.FilterState): List<Filter> {
+        return when (filterState) {
+            HomeUiState.FilterState.ShowRegionFilter -> regionList
+            HomeUiState.FilterState.ShowCategoryFilter -> categoryList
+            HomeUiState.FilterState.ShowEventTypeFilter -> eventTypeList
+        }
+    }
+
     fun selectAll(filterState: HomeUiState.FilterState) {
         when (filterState) {
             HomeUiState.FilterState.ShowRegionFilter -> _selectedRegion.update { null }
@@ -108,12 +120,11 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun selectFilter(filter: Filter) {
-        when (filter) {
-            is Region -> selectRegion(filter)
-            is Category -> selectCategory(filter)
-            is EventType -> selectEventType(filter)
-            else -> {}
+    fun selectFilter(filterState: HomeUiState.FilterState, filter: Filter) {
+        when (filterState) {
+            HomeUiState.FilterState.ShowRegionFilter -> selectRegion(filter as Region)
+            HomeUiState.FilterState.ShowCategoryFilter -> selectCategory(filter as Category)
+            HomeUiState.FilterState.ShowEventTypeFilter -> selectEventType(filter as EventType)
         }
     }
 
@@ -127,8 +138,10 @@ class HomeViewModel @Inject constructor(
                 selectedCategory.value.filter { it != category }
             }
         } else {
-            _selectedCategory.update {
-                selectedCategory.value + category
+            if (_selectedCategory.value.size + 1 == categoryList.size) {
+                selectAll(HomeUiState.FilterState.ShowCategoryFilter)
+            } else {
+                _selectedCategory.update { selectedCategory.value + category }
             }
         }
     }
@@ -139,8 +152,10 @@ class HomeViewModel @Inject constructor(
                 selectedEventType.value.filter { it != eventType }
             }
         } else {
-            _selectedEventType.update {
-                selectedEventType.value + eventType
+            if (_selectedEventType.value.size + 1 == eventTypeList.size) {
+                selectAll(HomeUiState.FilterState.ShowEventTypeFilter)
+            } else {
+                _selectedEventType.update { selectedEventType.value + eventType }
             }
         }
     }
@@ -150,9 +165,7 @@ class HomeViewModel @Inject constructor(
             HomeUiState.FilterState.ShowRegionFilter -> _appliedRegion.update { selectedRegion.value }
             HomeUiState.FilterState.ShowCategoryFilter -> _appliedCategory.update { selectedCategory.value }
             HomeUiState.FilterState.ShowEventTypeFilter -> _appliedEventType.update { selectedEventType.value }
-
         }
-        dismiss()
     }
 
     fun showSearchDialog() {

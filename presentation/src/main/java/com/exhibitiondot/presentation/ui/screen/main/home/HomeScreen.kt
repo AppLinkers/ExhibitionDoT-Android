@@ -42,6 +42,7 @@ import com.exhibitiondot.presentation.ui.component.DoTSpacer
 import com.exhibitiondot.presentation.ui.component.DownIcon
 import com.exhibitiondot.presentation.ui.component.HeartIcon
 import com.exhibitiondot.presentation.ui.component.HomeFilterChip
+import com.exhibitiondot.presentation.ui.component.HomeFilterSheet
 import com.exhibitiondot.presentation.ui.component.HomeTopBar
 import com.exhibitiondot.presentation.ui.component.RedoIcon
 import com.exhibitiondot.presentation.ui.component.XIcon
@@ -51,7 +52,7 @@ import kotlinx.coroutines.CoroutineScope
 @Composable
 fun HomeRoute(
     modifier: Modifier = Modifier,
-    coroutineScope: CoroutineScope,
+    scope: CoroutineScope,
     moveEventDetail: (Long) -> Unit,
     moveMy: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
@@ -82,11 +83,26 @@ fun HomeRoute(
         onEventItem = moveEventDetail,
         moveMy = moveMy
     )
-
-    BackHandler {
-        if (uiState != HomeUiState.Nothing) {
-            viewModel.dismiss()
-        }
+    if (uiState is HomeUiState.FilterState) {
+        val filterState = uiState as HomeUiState.FilterState
+        HomeFilterSheet(
+            title = stringResource(filterState.title),
+            scope = scope,
+            filerList = viewModel.getFilterList(filterState),
+            selectedFilter = when (filterState) {
+                HomeUiState.FilterState.ShowRegionFilter -> selectedRegion
+                else -> null
+            },
+            selectedFilterList = when (filterState) {
+                HomeUiState.FilterState.ShowCategoryFilter -> selectedCategory
+                HomeUiState.FilterState.ShowEventTypeFilter -> selectedEventType
+                else -> emptyList()
+            },
+            onSelectFilter = { filter -> viewModel.selectFilter(filterState, filter) },
+            onSelectAll = { viewModel.selectAll(filterState) },
+            onApplyFilter = { viewModel.applyFilters(filterState) },
+            onDismissRequest = viewModel::dismiss
+        )
     }
 }
 
@@ -241,7 +257,7 @@ private fun EventList(
     ) {
         items(
             count = eventList.itemCount,
-            key = { it }
+            key = { index -> eventList[index]?.id ?: index }
         ) { index ->
             eventList[index]?.let { event ->
                 EventItem(

@@ -31,6 +31,7 @@ import com.exhibitiondot.presentation.ui.component.DoTFilterChip
 import com.exhibitiondot.presentation.ui.component.DoTSpacer
 import com.exhibitiondot.presentation.ui.component.DoTTextField
 import com.exhibitiondot.presentation.ui.component.DoTTopBar
+import com.exhibitiondot.presentation.ui.component.FilterSelectScreen
 import com.exhibitiondot.presentation.ui.state.IEditTextState
 import com.exhibitiondot.presentation.ui.theme.screenPadding
 
@@ -115,6 +116,7 @@ private fun SignUpScreen(
                 text = stringResource(step.description),
                 style = MaterialTheme.typography.displayLarge
             )
+            DoTSpacer(size = 30)
             when (step) {
                 SignUpStep.InfoStep -> InfoStepScreen(
                     nameState = nameState,
@@ -189,36 +191,3 @@ fun InfoStepScreen(
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
-@Composable
-fun FilterSelectScreen(
-    modifier: Modifier = Modifier,
-    filterList: List<Filter>,
-    selectedFilter: Filter? = null,
-    selectedFilterList: List<Filter> = emptyList(),
-    onSelectFilter: (Filter) -> Unit
-) {
-    FlowRow(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(top = 30.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        filterList.forEach { filter ->
-            DoTFilterChip(
-                name = when (filter) {
-                    is Region -> filter.name
-                    is Category -> filter.key
-                    is EventType -> filter.key
-                    else -> ""
-                },
-                selected = when (filter) {
-                    is Filter.SingleFilter -> filter == selectedFilter
-                    is Filter.MultiFilter -> filter in selectedFilterList
-                },
-                onSelect = { onSelectFilter(filter) }
-            )
-        }
-    }
-}

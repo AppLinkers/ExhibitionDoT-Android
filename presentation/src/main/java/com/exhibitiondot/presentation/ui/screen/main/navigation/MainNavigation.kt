@@ -28,7 +28,7 @@ fun NavGraphBuilder.nestedMainGraph(appState: DoTAppState) {
             route = Screen.Home.route
         ) {
             HomeRoute(
-                coroutineScope = appState.coroutineScope,
+                scope = appState.coroutineScope,
                 moveEventDetail = appState.navController::navigateToEventDetail,
                 moveMy = { appState.navController.navigate(Screen.My.route) },
             )
