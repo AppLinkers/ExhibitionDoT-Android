@@ -87,7 +87,7 @@ fun HomeTopBar(
                 tint = MaterialTheme.colorScheme.surfaceContainerHigh,
                 contentDescription = "user-icon"
             )
-            DoTSpacer(size = 18)
+            DoTSpacer(size = 16)
             Icon(
                 modifier = Modifier
                     .size(28.dp)

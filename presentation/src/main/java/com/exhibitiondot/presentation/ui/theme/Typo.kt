@@ -25,7 +25,7 @@ val DoTTypography = Typography(
     headlineLarge = TextStyle(
         fontFamily = Pretendard,
         fontWeight = FontWeight.W700,
-        fontSize = 18.sp,
+        fontSize = 20.sp,
         color = Black
     ),
     headlineMedium = TextStyle(

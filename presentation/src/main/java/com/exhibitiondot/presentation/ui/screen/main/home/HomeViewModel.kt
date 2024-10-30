@@ -3,6 +3,7 @@ package com.exhibitiondot.presentation.ui.screen.main.home
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import androidx.paging.map
 import com.exhibitiondot.domain.model.Category
 import com.exhibitiondot.domain.model.Event
 import com.exhibitiondot.domain.model.EventParams
@@ -12,6 +13,8 @@ import com.exhibitiondot.domain.model.Region
 import com.exhibitiondot.domain.usecase.event.GetEventListUseCase
 import com.exhibitiondot.domain.usecase.user.GetCachedUserUseCase
 import com.exhibitiondot.presentation.base.BaseViewModel
+import com.exhibitiondot.presentation.mapper.toUiModel
+import com.exhibitiondot.presentation.model.EventUiModel
 import com.exhibitiondot.presentation.ui.state.EditTextState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -21,6 +24,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
@@ -42,7 +46,7 @@ class HomeViewModel @Inject constructor(
     val appliedQuery: StateFlow<String> = _appliedQuery.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val eventList: Flow<PagingData<Event>> =
+    val eventList: Flow<PagingData<EventUiModel>> =
         combine(
             flow = _appliedRegion,
             flow2 = _appliedCategory,
@@ -52,6 +56,8 @@ class HomeViewModel @Inject constructor(
             EventParams(region, categoryList, eventTypeList, query)
         }.flatMapLatest { params ->
             getEventListUseCase(params)
+        }.map { pagingData ->
+            pagingData.map(Event::toUiModel)
         }.cachedIn(viewModelScope)
 
     private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Nothing)

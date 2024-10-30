@@ -28,7 +28,7 @@ fun DoTFilterChip(
         } else {
             MaterialTheme.colorScheme.surfaceContainer
         },
-        label = "color-anim"
+        label = "filter-color-anim"
     )
     Box(
         modifier = modifier

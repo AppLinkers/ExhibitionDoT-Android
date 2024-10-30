@@ -38,3 +38,21 @@ fun XCircle(
         )
     }
 }
+
+@Composable
+fun HeartIcon(
+    modifier: Modifier = Modifier,
+    size: Int,
+    isLike: Boolean
+) {
+    Icon(
+        modifier = modifier.size(size.dp),
+        painter = painterResource(R.drawable.ic_heart),
+        tint = if (isLike) {
+            MaterialTheme.colorScheme.error
+        } else {
+            MaterialTheme.colorScheme.surfaceContainer
+        },
+        contentDescription = "heart-icon"
+    )
+}

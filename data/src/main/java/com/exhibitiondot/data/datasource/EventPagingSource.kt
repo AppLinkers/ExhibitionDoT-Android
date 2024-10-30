@@ -1,6 +1,5 @@
 package com.exhibitiondot.data.datasource
 
-import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.exhibitiondot.data.api.EventApi
@@ -35,21 +34,17 @@ class EventPagingSource(
         return when (response) {
             is NetworkState.Success -> {
                 val eventList = response.data.contents
-                Log.d("pagingSource에서", eventList.size.toString())
                 val prevKey = if (pageNumber == ApiConst.DEFAULT_PAGE_NUMBER) null else pageNumber -1
                 val nextKey = if (eventList.isEmpty()) null else pageNumber + 1
                 LoadResult.Page(eventList, prevKey, nextKey)
             }
             is NetworkState.Failure -> {
-                Log.d("pagingSource에서", "failure")
                 LoadResult.Invalid()
             }
             is NetworkState.NetworkError -> {
-                Log.d("pagingSource에서", "networkError")
                 LoadResult.Error(response.error)
             }
             is NetworkState.UnknownError -> {
-                Log.d("pagingSource에서", response.t.message ?: "메세지도 없음")
                 LoadResult.Error(response.t)
             }
         }

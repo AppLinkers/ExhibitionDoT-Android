@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,6 +17,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
@@ -26,12 +28,13 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.exhibitiondot.domain.model.Category
-import com.exhibitiondot.domain.model.Event
 import com.exhibitiondot.domain.model.EventType
 import com.exhibitiondot.domain.model.Region
+import com.exhibitiondot.presentation.model.EventUiModel
 import com.exhibitiondot.presentation.ui.component.DoTImage
 import com.exhibitiondot.presentation.ui.component.DoTLoadingScreen
 import com.exhibitiondot.presentation.ui.component.DoTSpacer
+import com.exhibitiondot.presentation.ui.component.HeartIcon
 import com.exhibitiondot.presentation.ui.component.HomeTopBar
 import com.exhibitiondot.presentation.ui.theme.screenPadding
 import kotlinx.coroutines.CoroutineScope
@@ -85,7 +88,7 @@ private fun HomeScreen(
     appliedCategory: List<Category>,
     appliedEventType: List<EventType>,
     appliedQuery: String,
-    eventList: LazyPagingItems<Event>,
+    eventList: LazyPagingItems<EventUiModel>,
     canResetFilters: Boolean,
     resetAllFilters: () -> Unit,
     resetAppliedQuery: () -> Unit,
@@ -99,6 +102,7 @@ private fun HomeScreen(
     ) {
         val lazyGridState = rememberLazyGridState()
         HomeTopBar(
+            modifier = Modifier.fillMaxWidth(),
             showSearchDialog = showSearchDialog,
             moveMy = moveMy
         )
@@ -121,7 +125,7 @@ private fun HomeScreen(
 private fun EventList(
     modifier: Modifier = Modifier,
     lazyGridState: LazyGridState,
-    eventList: LazyPagingItems<Event>,
+    eventList: LazyPagingItems<EventUiModel>,
     onEventItem: (Long) -> Unit,
 ) {
     LazyVerticalGrid(
@@ -149,7 +153,7 @@ private fun EventList(
 @Composable
 private fun EventItem(
     modifier: Modifier = Modifier,
-    event: Event,
+    event: EventUiModel,
     onEventItem: () -> Unit,
 ) {
     Column(
@@ -166,11 +170,36 @@ private fun EventItem(
         )
         DoTSpacer(size = 10)
         Text(
+            text = event.date,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.primary
+        )
+        DoTSpacer(size = 6)
+        Text(
             modifier = Modifier.height(50.dp),
             text = "2024 Naver Corp. 컨퍼런스 (코엑스 컨벤션 홀)",
             style = MaterialTheme.typography.labelMedium,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis
         )
+        DoTSpacer(size = 12)
+        if (event.likeCount != 0) {
+            Row (
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.End
+            ) {
+                HeartIcon(
+                    size = 16,
+                    isLike = true
+                )
+                DoTSpacer(size = 4)
+                Text(
+                    text = "${event.likeCount}",
+                    style = MaterialTheme.typography.displaySmall,
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
+        }
     }
 }
