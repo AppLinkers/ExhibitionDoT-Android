@@ -1,6 +1,5 @@
 package com.exhibitiondot.presentation.ui.screen.main.home
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -43,6 +42,7 @@ import com.exhibitiondot.presentation.ui.component.DownIcon
 import com.exhibitiondot.presentation.ui.component.HeartIcon
 import com.exhibitiondot.presentation.ui.component.HomeFilterChip
 import com.exhibitiondot.presentation.ui.component.HomeFilterSheet
+import com.exhibitiondot.presentation.ui.component.HomeSearchDialog
 import com.exhibitiondot.presentation.ui.component.HomeTopBar
 import com.exhibitiondot.presentation.ui.component.RedoIcon
 import com.exhibitiondot.presentation.ui.component.XIcon
@@ -101,6 +101,13 @@ fun HomeRoute(
             onSelectFilter = { filter -> viewModel.selectFilter(filterState, filter) },
             onSelectAll = { viewModel.selectAll(filterState) },
             onApplyFilter = { viewModel.applyFilters(filterState) },
+            onDismissRequest = viewModel::dismiss
+        )
+    }
+    if (uiState is HomeUiState.ShowSearchDialog) {
+        HomeSearchDialog(
+            queryState = viewModel.queryState,
+            applyQuery = viewModel::applyQuery,
             onDismissRequest = viewModel::dismiss
         )
     }
@@ -186,7 +193,10 @@ private fun HomeFilterList(
                 isApplied = false,
                 onClick = resetAllFilters,
                 leadingIcon = {
-                    RedoIcon(size = 16)
+                    RedoIcon(
+                        modifier = Modifier.padding(end = 4.dp),
+                        size = 16
+                    )
                 }
             )
         }
@@ -196,7 +206,10 @@ private fun HomeFilterList(
                 isApplied = true,
                 onClick = resetAppliedQuery,
                 trailingIcon = {
-                    XIcon(size = 16)
+                    XIcon(
+                        modifier = Modifier.padding(start = 4.dp),
+                        size = 14
+                    )
                 }
             )
         }

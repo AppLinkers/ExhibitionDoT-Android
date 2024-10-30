@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -16,12 +17,16 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import com.exhibitiondot.presentation.R
 
 enum class SupportingTextType {
     NONE, INFO, ERROR
@@ -106,5 +111,61 @@ fun DoTTextField(
                 }
             )
         }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SearchTextField(
+    modifier: Modifier = Modifier,
+    value: String,
+    focusRequester: FocusRequester,
+    onValueChange: (String) -> Unit,
+    onResetValue: () -> Unit,
+    onSearch: () -> Unit
+) {
+    val interactionSource = remember { MutableInteractionSource() }
+    BasicTextField(
+        modifier = modifier
+            .fillMaxWidth()
+            .focusRequester(focusRequester),
+        value = value,
+        enabled = true,
+        maxLines = 1,
+        textStyle = MaterialTheme.typography.displayMedium,
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+        keyboardActions = KeyboardActions(onSearch = { onSearch() }),
+        interactionSource = interactionSource,
+        cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+        onValueChange = onValueChange
+    ) {
+        TextFieldDefaults.DecorationBox(
+            value = value,
+            innerTextField = it,
+            enabled = true,
+            singleLine = true,
+            visualTransformation = VisualTransformation.None,
+            interactionSource = interactionSource,
+            shape = CircleShape,
+            placeholder = {
+                Text(
+                    text = stringResource(id = R.string.home_search_placeholder),
+                    style = MaterialTheme.typography.displayMedium,
+                    color = MaterialTheme.colorScheme.surfaceContainerLow,
+                )
+            },
+            trailingIcon = {
+                if (value.isNotEmpty()) {
+                    XCircle(size = 20, onClick = onResetValue)
+                }
+            },
+            colors = TextFieldDefaults.colors(
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                focusedContainerColor = MaterialTheme.colorScheme.surface,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+            ),
+            contentPadding = PaddingValues(all = 16.dp)
+        )
     }
 }

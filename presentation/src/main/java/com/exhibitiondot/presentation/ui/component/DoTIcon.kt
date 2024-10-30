@@ -41,11 +41,12 @@ fun XCircle(
 
 @Composable
 fun XIcon(
+    modifier: Modifier = Modifier,
     size: Int,
     color: Color = MaterialTheme.colorScheme.onBackground
 ) {
     Icon(
-        modifier = Modifier.size(size.dp),
+        modifier = modifier.size(size.dp),
         painter = painterResource(id = R.drawable.ic_x),
         tint = color,
         contentDescription = "x-icon",
@@ -83,14 +84,56 @@ fun DownIcon(
 
 @Composable
 fun RedoIcon(
+    modifier: Modifier = Modifier,
     size: Int
 ) {
     Icon(
-        modifier = Modifier
-            .size(size.dp)
-            .padding(end = 4.dp),
+        modifier = modifier
+            .size(size.dp),
         painter = painterResource(R.drawable.ic_redo),
         tint = MaterialTheme.colorScheme.onBackground,
         contentDescription = "redo-icon"
+    )
+}
+
+@Composable
+fun UserIcon(
+    modifier: Modifier = Modifier,
+    size: Int
+) {
+    Icon(
+        modifier = modifier.size(size.dp),
+        painter = painterResource(R.drawable.ic_user),
+        tint = MaterialTheme.colorScheme.surfaceContainerHigh,
+        contentDescription = "user-icon"
+    )
+}
+
+@Composable
+fun SearchIcon(
+    modifier: Modifier = Modifier,
+    size: Int,
+    color: Color = MaterialTheme.colorScheme.surfaceContainerHigh
+) {
+    Icon(
+        modifier = modifier.size(size.dp),
+        painter = painterResource(R.drawable.ic_search),
+        tint = color,
+        contentDescription = "search-icon"
+    )
+}
+
+@Composable
+fun BackIcon(
+    modifier: Modifier = Modifier,
+    onBack: () -> Unit
+) {
+    Icon(
+        modifier = modifier
+            .size(30.dp)
+            .clickable(onClick = onBack),
+        painter = painterResource(R.drawable.ic_back),
+        tint = MaterialTheme.colorScheme.surfaceContainerHigh,
+        contentDescription = "back-icon"
     )
 }

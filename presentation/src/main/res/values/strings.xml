@@ -17,6 +17,8 @@
     <string name="home_select_region">지역 선택하기</string>
     <string name="home_select_category">카테고리 선택하기</string>
     <string name="home_select_event_type">이벤트 선택하기</string>
+    <string name="home_search_placeholder">검색</string>
+    <string name="home_search_announce">다양한 이벤트를 검색해보세요</string>
 
     <string name="next">다음</string>
     <string name="reset">초기화</string>

@@ -60,7 +60,7 @@ fun DoTFilterChip(
                 ),
             text = name,
             color = color,
-            style = MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.labelMedium
         )
     }
 }
