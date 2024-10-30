@@ -15,4 +15,9 @@
     <string name="signup_phone_placeholder">휴대폰 번호</string>
 
     <string name="next">다음</string>
+    <string name="reset">초기화</string>
+    <string name="region">지역</string>
+    <string name="category">카테고리</string>
+    <string name="event_type">이벤트</string>
+    <string name="entire">전체</string>
 </resources>

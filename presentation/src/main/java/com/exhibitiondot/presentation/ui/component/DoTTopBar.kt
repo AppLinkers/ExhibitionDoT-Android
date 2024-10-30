@@ -81,7 +81,7 @@ fun HomeTopBar(
         Row {
             Icon(
                 modifier = Modifier
-                    .size(28.dp)
+                    .size(24.dp)
                     .clickable(onClick = moveMy),
                 painter = painterResource(R.drawable.ic_user),
                 tint = MaterialTheme.colorScheme.surfaceContainerHigh,
@@ -90,7 +90,7 @@ fun HomeTopBar(
             DoTSpacer(size = 16)
             Icon(
                 modifier = Modifier
-                    .size(28.dp)
+                    .size(24.dp)
                     .clickable(onClick = showSearchDialog),
                 painter = painterResource(R.drawable.ic_search),
                 tint = MaterialTheme.colorScheme.surfaceContainerHigh,

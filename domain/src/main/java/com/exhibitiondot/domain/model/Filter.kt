@@ -11,7 +11,7 @@ sealed class Region(val key: String, val name: String) : Filter.SingleFilter {
     data object Chungcheoung : Region(key = "chungcheong", name = "충청도")
     data object Jeolla : Region(key = "jeolla", name = "전라도")
     data object Gyeongsang : Region(key = "gyeongsang", name = "경상도")
-    data object Jeju : Region(key = "jeju", name = "제주")
+    data object Jeju : Region(key = "jeju", name = "제주도")
 
     companion object {
         fun values(): List<Region> =

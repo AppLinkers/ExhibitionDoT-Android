@@ -75,9 +75,9 @@ class HomeViewModel @Inject constructor(
     val queryState = EditTextState(maxLength = 20)
 
     fun canResetFilters(): Boolean {
-        return _appliedRegion.value != null &&
-                _appliedCategory.value.isNotEmpty() &&
-                _appliedEventType.value.isNotEmpty() &&
+        return _appliedRegion.value != null ||
+                _appliedCategory.value.isNotEmpty() ||
+                _appliedEventType.value.isNotEmpty() ||
                 _appliedQuery.value.isNotEmpty()
     }
 

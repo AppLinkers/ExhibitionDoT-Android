@@ -4,6 +4,7 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 
 val Primary = Color(0xFF007BFF)
+val PrimaryVariant = Color(0xFFE1EDFC)
 val PrimaryDisabled = Color(0x0D007BFF)
 val White = Color(0xFFFFFFFF)
 val Grey100 = Color(0xFFEFEFEF)
@@ -18,6 +19,7 @@ val KakaoYellow = Color(0xFFFEE500)
 
 val LightColorScheme = lightColorScheme(
     primary = Primary,
+    primaryContainer = PrimaryVariant,
     inversePrimary = PrimaryDisabled,
     background = White,
     onBackground = Black,
