@@ -11,7 +11,8 @@ import coil3.request.crossfade
 @Composable
 fun DoTImage(
     modifier: Modifier = Modifier,
-    url: String
+    url: String,
+    contentScale: ContentScale = ContentScale.Crop
 ) {
     AsyncImage(
         modifier = modifier,
@@ -19,7 +20,7 @@ fun DoTImage(
             .data(url)
             .crossfade(true)
             .build(),
-        contentScale = ContentScale.Crop,
+        contentScale = contentScale,
         contentDescription = url
     )
 }

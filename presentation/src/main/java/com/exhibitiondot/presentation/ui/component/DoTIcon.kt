@@ -126,6 +126,7 @@ fun SearchIcon(
 @Composable
 fun BackIcon(
     modifier: Modifier = Modifier,
+    color: Color = MaterialTheme.colorScheme.surfaceContainerHigh,
     onBack: () -> Unit
 ) {
     Icon(
@@ -133,7 +134,7 @@ fun BackIcon(
             .size(30.dp)
             .clickable(onClick = onBack),
         painter = painterResource(R.drawable.ic_back),
-        tint = MaterialTheme.colorScheme.surfaceContainerHigh,
+        tint = color,
         contentDescription = "back-icon"
     )
 }
