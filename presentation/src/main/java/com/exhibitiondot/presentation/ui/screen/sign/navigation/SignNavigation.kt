@@ -10,11 +10,12 @@ import com.exhibitiondot.presentation.ui.DoTAppState
 import com.exhibitiondot.presentation.ui.navigation.KEY_SIGN_UP_EMAIL
 import com.exhibitiondot.presentation.ui.navigation.Screen
 import com.exhibitiondot.presentation.ui.navigation.ScreenGraph
+import com.exhibitiondot.presentation.ui.screen.main.navigation.navigateToMainGraph
 import com.exhibitiondot.presentation.ui.screen.sign.signIn.SignInRoute
 import com.exhibitiondot.presentation.ui.screen.sign.signUp.SignUpRoute
 
 fun NavController.navigateToSignGraph() = navigate(Screen.SignIn.route) {
-    popUpTo(ScreenGraph.SignGraph.route) { inclusive = true }
+    popUpTo(graph.id) { inclusive = true }
 }
 
 fun NavController.navigateToSignScreen(email: String) =
@@ -29,10 +30,8 @@ fun NavGraphBuilder.nestedSignGraph(appState: DoTAppState) {
             route = Screen.SignIn.route
         ) {
             SignInRoute(
-                moveMain = {},
-                moveSignUp = { email ->
-                    appState.navController.navigateToSignScreen(email)
-                }
+                moveMain = appState.navController::navigateToMainGraph,
+                moveSignUp = appState.navController::navigateToSignScreen
             )
         }
         composable(
@@ -42,8 +41,8 @@ fun NavGraphBuilder.nestedSignGraph(appState: DoTAppState) {
             ),
         ) {
             SignUpRoute(
-                moveMain = {},
-                onBack = { appState.navController.popBackStack() }
+                moveMain = appState.navController::navigateToMainGraph,
+                onBack = appState.navController::popBackStack
             )
         }
     }

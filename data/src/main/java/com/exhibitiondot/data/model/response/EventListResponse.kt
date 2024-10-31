@@ -9,7 +9,7 @@ data class EventListResponse(
     val page: Int,
     val size: Int,
     val totalElements: Int,
-    val totalPage: Int,
+    val totalPages: Int,
     val first: Boolean,
     val last: Boolean
 )

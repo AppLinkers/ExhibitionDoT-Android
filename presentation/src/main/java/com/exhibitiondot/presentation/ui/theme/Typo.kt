@@ -19,13 +19,13 @@ val DoTTypography = Typography(
     titleLarge = TextStyle(
         fontFamily = Pretendard,
         fontWeight = FontWeight.W600,
-        fontSize = 46.sp,
-        color = White
+        fontSize = 24.sp,
+        color = Black
     ),
     headlineLarge = TextStyle(
         fontFamily = Pretendard,
         fontWeight = FontWeight.W700,
-        fontSize = 18.sp,
+        fontSize = 20.sp,
         color = Black
     ),
     headlineMedium = TextStyle(
@@ -67,7 +67,7 @@ val DoTTypography = Typography(
     labelMedium = TextStyle(
         fontFamily = Pretendard,
         fontWeight = FontWeight.W500,
-        fontSize = 14.sp,
+        fontSize = 16.sp,
         color = Black
     ),
     labelSmall = TextStyle(

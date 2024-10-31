@@ -14,13 +14,13 @@ import androidx.compose.ui.unit.dp
 fun DoTLoading(
     modifier: Modifier = Modifier,
     size: Int,
+    strokeWidth: Int = 4,
     color: Color = MaterialTheme.colorScheme.primary,
-    strokeWidth: Dp = ProgressIndicatorDefaults.CircularStrokeWidth,
 ) {
     CircularProgressIndicator(
         modifier = modifier.size(size.dp),
         color = color,
         trackColor = Color.Transparent,
-        strokeWidth = strokeWidth
+        strokeWidth = strokeWidth.dp
     )
 }

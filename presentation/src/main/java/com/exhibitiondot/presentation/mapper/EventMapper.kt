@@ -1,0 +1,36 @@
+package com.exhibitiondot.presentation.mapper
+
+import com.exhibitiondot.domain.model.Category
+import com.exhibitiondot.domain.model.Event
+import com.exhibitiondot.domain.model.EventDetail
+import com.exhibitiondot.domain.model.EventType
+import com.exhibitiondot.presentation.model.EventDetailUiModel
+import com.exhibitiondot.presentation.model.EventUiModel
+
+fun Event.toUiModel() =
+    EventUiModel(
+        id = id,
+        name = name,
+        imgUrl = imgUrl,
+        date = date.format(DateFormatStrategy.MonthDay),
+        likeCount = likeCount
+    )
+
+fun EventDetail.toUiModel() =
+    EventDetailUiModel(
+        id = id,
+        name = name,
+        imgUrl = imgUrl,
+        region = region.name,
+        categoryTags = categoryList.joinToString(" ", transform = Category::toTag),
+        eventTypeTags = eventTypeList.joinToString(" ", transform = EventType::toTag),
+        date = date.format(DateFormatStrategy.FullDate),
+        createdAt = createdAt.format(DateFormatStrategy.RelativeTime),
+        likeCount = likeCount,
+        isLike = isLike,
+        owner = owner
+    )
+
+fun Category.toTag() = "#${key}"
+
+fun EventType.toTag() = "#${key}"

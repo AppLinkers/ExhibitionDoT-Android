@@ -9,7 +9,7 @@ import com.exhibitiondot.data.network.NetworkState
 
 class EventPagingSource(
     private val eventApi: EventApi,
-    private val region: String,
+    private val region: String?,
     private val categoryList: List<String>,
     private val eventTypeList: List<String>,
     private val query: String
@@ -26,7 +26,7 @@ class EventPagingSource(
         val response = eventApi.getEventList(
             page = pageNumber,
             size = ApiConst.DEFAULT_PAGE_SIZE,
-            region = region.ifEmpty { null },
+            region = region,
             categoryList = categoryList.ifEmpty { null },
             eventTypeList = eventTypeList.ifEmpty { null },
             query = query.ifEmpty { null }

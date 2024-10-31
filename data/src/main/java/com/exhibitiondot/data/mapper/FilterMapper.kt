@@ -6,12 +6,12 @@ import com.exhibitiondot.domain.model.Region
 
 fun String.toRegion(): Region {
     return when(this) {
-        Region.Seoul.key -> Region.Seoul
-        Region.Gyeonggi.key -> Region.Gyeonggi
-        Region.Chungcheoung.key -> Region.Chungcheoung
-        Region.Jeolla.key -> Region.Jeolla
-        Region.Gyeongsang.key -> Region.Gyeongsang
-        Region.Jeju.key -> Region.Jeju
+        Region.Seoul.name -> Region.Seoul
+        Region.Gyeonggi.name -> Region.Gyeonggi
+        Region.Chungcheoung.name -> Region.Chungcheoung
+        Region.Jeolla.name -> Region.Jeolla
+        Region.Gyeongsang.name -> Region.Gyeongsang
+        Region.Jeju.name -> Region.Jeju
         else -> throw IllegalArgumentException()
     }
 }
