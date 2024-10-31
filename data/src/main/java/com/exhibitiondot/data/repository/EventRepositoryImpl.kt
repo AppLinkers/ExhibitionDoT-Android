@@ -10,11 +10,7 @@ import com.exhibitiondot.domain.model.Event
 import com.exhibitiondot.domain.model.EventDetail
 import com.exhibitiondot.domain.model.EventParams
 import com.exhibitiondot.domain.repository.EventRepository
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -29,16 +25,13 @@ class EventRepositoryImpl @Inject constructor(
             query = params.query
         ).map { pagingData -> pagingData.map(EventDto::toDomain) }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    override fun getEventDetail(eventId: Long): Flow<EventDetail> =
-        eventDataSource.getEventDetail(eventId)
-            .flatMapLatest { eventDetailDto ->
-                if (eventDetailDto == null) {
-                    emptyFlow()
-                } else {
-                    flowOf(eventDetailDto.toDomain())
-                }
-            }
+    override suspend fun getEventDetail(eventId: Long): Result<EventDetail> {
+        val response = eventDataSource.getEventDetail(eventId)
+        return when (response) {
+            is NetworkState.Success -> Result.success(response.data.toDomain())
+            else -> Result.failure(IllegalStateException())
+        }
+    }
 
     override suspend fun toggleEventLike(eventId: Long): Result<Unit> {
         val response = eventDataSource.toggleEventLike(eventId)

@@ -14,7 +14,7 @@ interface EventDataSource {
         query: String
     ): Flow<PagingData<EventDto>>
 
-    fun getEventDetail(eventId: Long): Flow<EventDetailDto?>
+    suspend fun getEventDetail(eventId: Long): NetworkState<EventDetailDto>
 
     suspend fun toggleEventLike(eventId: Long): NetworkState<Unit>
 }

@@ -36,13 +36,9 @@ class EventRemoteDataSource @Inject constructor(
             }
         ).flow
 
-    override fun getEventDetail(eventId: Long): Flow<EventDetailDto?> = flow {
-        val response = eventApi.getEventDetail(eventId)
-        when (response) {
-            is NetworkState.Success -> emit(response.data)
-            else -> emit(null)
-        }
-    }.flowOn(Dispatchers.IO)
+    override suspend fun getEventDetail(eventId: Long): NetworkState<EventDetailDto> {
+        return eventApi.getEventDetail(eventId)
+    }
 
     override suspend fun toggleEventLike(eventId: Long): NetworkState<Unit> {
         return eventApi.toggleEventLike(eventId)

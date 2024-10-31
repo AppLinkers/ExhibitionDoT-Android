@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 interface EventRepository {
     fun getEventList(params: EventParams): Flow<PagingData<Event>>
 
-    fun getEventDetail(eventId: Long): Flow<EventDetail>
+    suspend fun getEventDetail(eventId: Long): Result<EventDetail>
 
     suspend fun toggleEventLike(eventId: Long): Result<Unit>
 }
