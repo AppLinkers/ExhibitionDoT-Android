@@ -30,16 +30,18 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    getCachedUserUseCase: GetCachedUserUseCase,
+    private val getCachedUserUseCase: GetCachedUserUseCase,
     private val getEventListUseCase: GetEventListUseCase
 ) : BaseViewModel() {
-    private val _appliedRegion = MutableStateFlow<Region?>(getCachedUserUseCase().region)
+    private val currentUser = getCachedUserUseCase().value
+
+    private val _appliedRegion = MutableStateFlow<Region?>(currentUser.region)
     val appliedRegion: StateFlow<Region?> = _appliedRegion.asStateFlow()
 
-    private val _appliedCategory = MutableStateFlow(getCachedUserUseCase().categoryList)
+    private val _appliedCategory = MutableStateFlow(currentUser.categoryList)
     val appliedCategory: StateFlow<List<Category>> = _appliedCategory.asStateFlow()
 
-    private val _appliedEventType = MutableStateFlow(getCachedUserUseCase().eventTypeList)
+    private val _appliedEventType = MutableStateFlow(currentUser.eventTypeList)
     val appliedEventType: StateFlow<List<EventType>> = _appliedEventType.asStateFlow()
 
     private val _appliedQuery = MutableStateFlow("")
@@ -63,13 +65,13 @@ class HomeViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Nothing)
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
-    private val _selectedRegion = MutableStateFlow(_appliedRegion.value)
+    private val _selectedRegion = MutableStateFlow<Region?>(currentUser.region)
     val selectedRegion: StateFlow<Region?> = _selectedRegion.asStateFlow()
 
-    private val _selectedCategory = MutableStateFlow(_appliedCategory.value)
+    private val _selectedCategory = MutableStateFlow(currentUser.categoryList)
     val selectedCategory: StateFlow<List<Category>> = _selectedCategory.asStateFlow()
 
-    private val _selectedEventType = MutableStateFlow(_appliedEventType.value)
+    private val _selectedEventType = MutableStateFlow(currentUser.eventTypeList)
     val selectedEventType: StateFlow<List<EventType>> = _selectedEventType.asStateFlow()
 
     val queryState = EditTextState(maxLength = 20)

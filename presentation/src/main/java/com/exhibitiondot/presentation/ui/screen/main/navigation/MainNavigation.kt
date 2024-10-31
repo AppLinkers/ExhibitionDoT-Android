@@ -12,6 +12,7 @@ import com.exhibitiondot.presentation.ui.navigation.Screen
 import com.exhibitiondot.presentation.ui.navigation.ScreenGraph
 import com.exhibitiondot.presentation.ui.screen.main.eventDetail.EventDetailRoute
 import com.exhibitiondot.presentation.ui.screen.main.home.HomeRoute
+import com.exhibitiondot.presentation.ui.screen.main.myPage.MyPageRoute
 
 fun NavController.navigateToMainGraph() = navigate(Screen.Home.route) {
     popUpTo(graph.id) { inclusive = true }
@@ -33,7 +34,7 @@ fun NavGraphBuilder.nestedMainGraph(appState: DoTAppState) {
             HomeRoute(
                 scope = appState.coroutineScope,
                 moveEventDetail = navController::navigateToEventDetail,
-                moveMy = { navController.navigate(Screen.My.route) },
+                moveMy = { navController.navigate(Screen.MyPage.route) },
             )
         }
         composable(
@@ -45,9 +46,9 @@ fun NavGraphBuilder.nestedMainGraph(appState: DoTAppState) {
             EventDetailRoute(onBack = navController::popBackStack)
         }
         composable(
-            route = Screen.My.route
+            route = Screen.MyPage.route
         ) {
-
+            MyPageRoute(onBack = navController::popBackStack)
         }
     }
 }

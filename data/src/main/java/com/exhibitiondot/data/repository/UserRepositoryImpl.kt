@@ -10,6 +10,7 @@ import com.exhibitiondot.data.network.NetworkState
 import com.exhibitiondot.domain.exception.NetworkFailException
 import com.exhibitiondot.domain.model.User
 import com.exhibitiondot.domain.repository.UserRepository
+import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
@@ -27,8 +28,8 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getUser(): User {
-        return authDataSource.currentUser.value
+    override fun getUser(): StateFlow<User> {
+        return authDataSource.currentUser
     }
 
     override suspend fun signIn(email: String): Result<Unit> {

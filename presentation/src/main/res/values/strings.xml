@@ -20,13 +20,25 @@
     <string name="home_search_placeholder">검색</string>
     <string name="home_search_announce">다양한 이벤트를 검색해보세요</string>
 
-    <string name="next">다음</string>
-    <string name="reset">초기화</string>
-    <string name="region">지역</string>
+    <string name="comment">댓글</string>
+
+    <string name="my_page">마이페이지</string>
+    <string name="my_page_user_info">계정 정보</string>
+    <string name="my_page_category">관심 카테고리</string>
+    <string name="my_page_event_type">관심 이벤트</string>
+
     <string name="category">카테고리</string>
     <string name="event_type">이벤트</string>
+
+    <string name="email">이메일</string>
+    <string name="name">이름</string>
+    <string name="nickname">별명</string>
+    <string name="phone">휴대폰 번호</string>
+    <string name="region">지역</string>
+
+    <string name="next">다음</string>
+    <string name="reset">초기화</string>
     <string name="entire">전체</string>
     <string name="close">닫기</string>
     <string name="apply">적용하기</string>
-    <string name="comment">댓글</string>
 </resources>
