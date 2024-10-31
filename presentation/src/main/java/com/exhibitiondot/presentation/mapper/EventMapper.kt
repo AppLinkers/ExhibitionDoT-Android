@@ -30,7 +30,3 @@ fun EventDetail.toUiModel() =
         isLike = isLike,
         owner = owner
     )
-
-fun Category.toTag() = "#${key}"
-
-fun EventType.toTag() = "#${key}"

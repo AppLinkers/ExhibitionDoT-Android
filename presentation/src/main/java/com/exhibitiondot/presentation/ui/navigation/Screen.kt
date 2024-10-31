@@ -5,7 +5,7 @@ sealed class Screen(val route: String) {
     data object SignUp : Screen("sign-up")
     data object Home : Screen("home")
     data object EventDetail : Screen("event-detail")
-    data object My : Screen("my")
+    data object MyPage : Screen("my-page")
 }
 
 const val KEY_SIGN_UP_EMAIL = "key-email"
