@@ -2,9 +2,11 @@ package com.exhibitiondot.presentation.ui.screen.main.eventDetail
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateIntAsState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -75,7 +77,7 @@ private fun EventDetailScreen(
     onBack: () -> Unit,
 ) {
     val lazyListState = rememberLazyListState()
-    val skipImage by remember { derivedStateOf { lazyListState.firstVisibleItemScrollOffset > 420 } }
+    val skipImage by remember { derivedStateOf { lazyListState.firstVisibleItemScrollOffset > 700 } }
 
     Box(
         modifier = modifier.fillMaxSize()
@@ -83,6 +85,7 @@ private fun EventDetailScreen(
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             state = lazyListState,
+            contentPadding = PaddingValues(bottom = screenPadding)
         ) {
             item {
                 EventDetailView(
@@ -102,7 +105,7 @@ private fun EventDetailScreen(
         }
         EventDetailTopBar(
             modifier = Modifier.align(Alignment.TopCenter),
-            eventName = uiState.eventDetail.name,
+            eventName = "2024 Naver Corp. 컨퍼런스 (코엑스 컨벤션 홀 208호)",
             skipImage = skipImage,
             onBack = onBack
         )
@@ -129,14 +132,15 @@ private fun EventDetailView(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(all = screenPadding)
+                .padding(horizontal = screenPadding)
         ) {
+            DoTSpacer(size = 30)
             Text(
                 text = eventDetail.date,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.primary
             )
-            DoTSpacer(size = 10)
+            DoTSpacer(size = 6)
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 text = "2024 Naver Corp. 컨퍼런스 (코엑스 컨벤션 홀 208호)",
@@ -184,7 +188,7 @@ private fun EventDetailView(
             DoTSpacer(size = 60)
             Text(
                 text = "${stringResource(R.string.comment)} $commentCount",
-                style = MaterialTheme.typography.bodyLarge,
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.surfaceContainerHigh
             )
         }
@@ -196,5 +200,26 @@ private fun CommentItem(
     modifier: Modifier = Modifier,
     comment: CommentUiModel
 ) {
-
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(all = screenPadding)
+    ) {
+        Text(
+            text = comment.nickname,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.surfaceContainerHigh
+        )
+        DoTSpacer(size = 4)
+        Text(
+            text = comment.createdAt,
+            style = MaterialTheme.typography.displaySmall,
+            color = MaterialTheme.colorScheme.surfaceContainer,
+        )
+        DoTSpacer(size = 10)
+        Text(
+            text = comment.content,
+            style = MaterialTheme.typography.displayMedium
+        )
+    }
 }

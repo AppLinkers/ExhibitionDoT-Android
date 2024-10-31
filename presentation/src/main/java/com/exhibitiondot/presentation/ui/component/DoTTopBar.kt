@@ -172,6 +172,7 @@ fun EventDetailTopBar(
             style = MaterialTheme.typography.bodyLarge,
             textAlign = TextAlign.Center,
             overflow = TextOverflow.Ellipsis,
+            maxLines = 1,
             color = if (skipImage) {
                 MaterialTheme.colorScheme.onBackground
             } else {
