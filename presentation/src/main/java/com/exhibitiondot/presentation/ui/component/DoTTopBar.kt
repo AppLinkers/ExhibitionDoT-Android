@@ -119,3 +119,12 @@ fun HomeSearchBar(
         )
     }
 }
+
+@Composable
+fun EventDetailTopBar(
+    modifier: Modifier = Modifier,
+    eventName: String,
+    skipImage: Boolean,
+) {
+
+}

@@ -10,6 +10,7 @@ import com.exhibitiondot.presentation.ui.DoTAppState
 import com.exhibitiondot.presentation.ui.navigation.KEY_EVENT_ID
 import com.exhibitiondot.presentation.ui.navigation.Screen
 import com.exhibitiondot.presentation.ui.navigation.ScreenGraph
+import com.exhibitiondot.presentation.ui.screen.main.eventDetail.EventDetailRoute
 import com.exhibitiondot.presentation.ui.screen.main.home.HomeRoute
 
 fun NavController.navigateToMainGraph() = navigate(Screen.Home.route) {
@@ -20,6 +21,8 @@ fun NavController.navigateToEventDetail(eventId: Long) =
     navigate("${Screen.EventDetail.route}/$eventId")
 
 fun NavGraphBuilder.nestedMainGraph(appState: DoTAppState) {
+    val navController = appState.navController
+
     navigation(
         startDestination = Screen.Home.route,
         route = ScreenGraph.MainGraph.route
@@ -29,8 +32,8 @@ fun NavGraphBuilder.nestedMainGraph(appState: DoTAppState) {
         ) {
             HomeRoute(
                 scope = appState.coroutineScope,
-                moveEventDetail = appState.navController::navigateToEventDetail,
-                moveMy = { appState.navController.navigate(Screen.My.route) },
+                moveEventDetail = navController::navigateToEventDetail,
+                moveMy = { navController.navigate(Screen.My.route) },
             )
         }
         composable(
@@ -39,7 +42,7 @@ fun NavGraphBuilder.nestedMainGraph(appState: DoTAppState) {
                 navArgument(KEY_EVENT_ID) { type = NavType.LongType }
             )
         ) {
-
+            EventDetailRoute(onBack = navController::popBackStack)
         }
         composable(
             route = Screen.My.route

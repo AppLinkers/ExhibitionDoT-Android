@@ -49,7 +49,7 @@ class EventDetailViewModel @Inject constructor(
             .map { pagingData -> pagingData.map(Comment::toUiModel) }
             .cachedIn(viewModelScope)
 
-    fun toggleEventLike(isLike: Boolean) {
+    fun toggleEventLike() {
         viewModelScope.launch {
             toggleEventLikeUseCase(eventId)
                 .onFailure {
