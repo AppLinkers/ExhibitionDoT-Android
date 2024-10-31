@@ -33,13 +33,15 @@ class HomeViewModel @Inject constructor(
     private val getCachedUserUseCase: GetCachedUserUseCase,
     private val getEventListUseCase: GetEventListUseCase
 ) : BaseViewModel() {
-    private val _appliedRegion = MutableStateFlow<Region?>(null)
+    private val currentUser = getCachedUserUseCase().value
+
+    private val _appliedRegion = MutableStateFlow<Region?>(currentUser.region)
     val appliedRegion: StateFlow<Region?> = _appliedRegion.asStateFlow()
 
-    private val _appliedCategory = MutableStateFlow<List<Category>>(emptyList())
+    private val _appliedCategory = MutableStateFlow(currentUser.categoryList)
     val appliedCategory: StateFlow<List<Category>> = _appliedCategory.asStateFlow()
 
-    private val _appliedEventType = MutableStateFlow<List<EventType>>(emptyList())
+    private val _appliedEventType = MutableStateFlow(currentUser.eventTypeList)
     val appliedEventType: StateFlow<List<EventType>> = _appliedEventType.asStateFlow()
 
     private val _appliedQuery = MutableStateFlow("")
@@ -63,13 +65,13 @@ class HomeViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Nothing)
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
-    private val _selectedRegion = MutableStateFlow<Region?>(null)
+    private val _selectedRegion = MutableStateFlow<Region?>(currentUser.region)
     val selectedRegion: StateFlow<Region?> = _selectedRegion.asStateFlow()
 
-    private val _selectedCategory = MutableStateFlow<List<Category>>(emptyList())
+    private val _selectedCategory = MutableStateFlow(currentUser.categoryList)
     val selectedCategory: StateFlow<List<Category>> = _selectedCategory.asStateFlow()
 
-    private val _selectedEventType = MutableStateFlow<List<EventType>>(emptyList())
+    private val _selectedEventType = MutableStateFlow(currentUser.eventTypeList)
     val selectedEventType: StateFlow<List<EventType>> = _selectedEventType.asStateFlow()
 
     val queryState = EditTextState(maxLength = 20)
@@ -77,17 +79,6 @@ class HomeViewModel @Inject constructor(
     private val regionList = Region.values()
     private val categoryList = Category.values()
     private val eventTypeList = EventType.values()
-
-    fun initializeFilterStates() {
-        getCachedUserUseCase().value.run {
-            _appliedRegion.update { region }
-            _selectedRegion.update { region }
-            _appliedCategory.update { categoryList }
-            _selectedCategory.update { categoryList }
-            _appliedEventType.update { eventTypeList }
-            _selectedEventType.update { eventTypeList }
-        }
-    }
 
     fun canResetFilters(): Boolean {
         return _appliedRegion.value != null ||
