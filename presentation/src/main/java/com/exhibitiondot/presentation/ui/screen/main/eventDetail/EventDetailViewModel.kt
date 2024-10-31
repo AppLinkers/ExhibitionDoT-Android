@@ -66,11 +66,18 @@ class EventDetailViewModel @Inject constructor(
         viewModelScope.launch {
             toggleEventLikeUseCase(eventId)
                 .onSuccess {
-                    _uiState.update {
-                        EventDetailUiState.Success(
-                            eventDetail.copy(isLike = eventDetail.isLike.not())
+                    val newEventDetail = if (eventDetail.isLike) {
+                        eventDetail.copy(
+                            isLike = false,
+                            likeCount = eventDetail.likeCount - 1
+                        )
+                    } else {
+                        eventDetail.copy(
+                            isLike = true,
+                            likeCount = eventDetail.likeCount + 1
                         )
                     }
+                    _uiState.update { EventDetailUiState.Success(newEventDetail) }
                 }
                 .onFailure {
                     uiModel.showToast("좋아요 변경에 실패했어요")

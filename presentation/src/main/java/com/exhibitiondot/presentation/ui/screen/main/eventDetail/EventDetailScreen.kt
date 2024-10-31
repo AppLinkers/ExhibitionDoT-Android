@@ -1,11 +1,13 @@
 package com.exhibitiondot.presentation.ui.screen.main.eventDetail
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -22,15 +24,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.exhibitiondot.presentation.R
 import com.exhibitiondot.presentation.model.CommentUiModel
 import com.exhibitiondot.presentation.model.EventDetailUiModel
 import com.exhibitiondot.presentation.ui.component.DoTImage
 import com.exhibitiondot.presentation.ui.component.DoTLoadingScreen
+import com.exhibitiondot.presentation.ui.component.DoTSpacer
 import com.exhibitiondot.presentation.ui.component.EventDetailTopBar
 import com.exhibitiondot.presentation.ui.component.HeartIcon
 import com.exhibitiondot.presentation.ui.theme.screenPadding
@@ -81,6 +87,7 @@ private fun EventDetailScreen(
             item {
                 EventDetailView(
                     eventDetail = uiState.eventDetail,
+                    commentCount = commentList.itemCount,
                     toggleEventLike = toggleEventLike
                 )
             }
@@ -106,6 +113,7 @@ private fun EventDetailScreen(
 private fun EventDetailView(
     modifier: Modifier = Modifier,
     eventDetail: EventDetailUiModel,
+    commentCount: Int,
     toggleEventLike: (EventDetailUiModel) -> Unit
 ) {
     Column(
@@ -123,14 +131,43 @@ private fun EventDetailView(
                 .fillMaxSize()
                 .padding(all = screenPadding)
         ) {
-            Row(
-                modifier = Modifier.fillMaxSize()
+            Text(
+                text = eventDetail.date,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.primary
+            )
+            DoTSpacer(size = 10)
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = "2024 Naver Corp. 컨퍼런스 (코엑스 컨벤션 홀 208호)",
+                style = MaterialTheme.typography.titleLarge,
+                lineHeight = 28.sp
+            )
+            DoTSpacer(size = 8)
+            Text(
+                text = "${eventDetail.region} · ${eventDetail.createdAt}",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.surfaceContainer,
+                fontSize = 14.sp
+            )
+            DoTSpacer(size = 70)
+            Text(
+                text = eventDetail.eventTypeTags,
+                style = MaterialTheme.typography.displaySmall,
+                color = MaterialTheme.colorScheme.surfaceContainerLow,
+                fontSize = 14.sp
+            )
+            DoTSpacer(size = 6)
+            Text(
+                text = eventDetail.categoryTags,
+                style = MaterialTheme.typography.displaySmall,
+                color = MaterialTheme.colorScheme.surfaceContainerLow,
+                fontSize = 14.sp
+            )
+            DoTSpacer(size = 20)
+            Row (
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    modifier = Modifier.weight(1f),
-                    text = "2024 Naver Corp. 컨퍼런스 (코엑스 컨벤션 홀)",
-                    style = MaterialTheme.typography.titleLarge
-                )
                 HeartIcon(
                     modifier = Modifier.clickable(
                         onClick = { toggleEventLike(eventDetail) }
@@ -138,7 +175,18 @@ private fun EventDetailView(
                     size = 28,
                     isLike = eventDetail.isLike
                 )
+                DoTSpacer(size = 4)
+                Text(
+                    text = "${eventDetail.likeCount}",
+                    style = MaterialTheme.typography.displayMedium,
+                )
             }
+            DoTSpacer(size = 60)
+            Text(
+                text = "${stringResource(R.string.comment)} $commentCount",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.surfaceContainerHigh
+            )
         }
     }
 }

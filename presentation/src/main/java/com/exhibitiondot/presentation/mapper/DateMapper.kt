@@ -10,7 +10,7 @@ sealed interface DateFormatStrategy {
     data object FullDate : DateFormatStrategy {
         override fun format(date: String): String {
             val (yyyy, mm, dd) = date.split(SPLIT_DELIMITER)
-            return "${yyyy}.${mm}.${dd}일"
+            return "${yyyy}.${mm}.$dd"
         }
     }
 

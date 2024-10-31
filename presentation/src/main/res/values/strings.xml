@@ -28,4 +28,5 @@
     <string name="entire">전체</string>
     <string name="close">닫기</string>
     <string name="apply">적용하기</string>
+    <string name="comment">댓글</string>
 </resources>

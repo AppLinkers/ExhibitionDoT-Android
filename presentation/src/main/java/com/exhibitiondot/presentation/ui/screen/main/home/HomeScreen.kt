@@ -22,6 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -298,7 +299,8 @@ private fun EventItem(
                 .fillMaxWidth()
                 .height(220.dp)
                 .clip(MaterialTheme.shapes.medium),
-            url = "https://www.it-b.co.kr/news/photo/202011/45197_42822_152.png"
+            url = "https://www.it-b.co.kr/news/photo/202011/45197_42822_152.png",
+            contentScale = ContentScale.FillBounds
         )
         DoTSpacer(size = 10)
         Text(

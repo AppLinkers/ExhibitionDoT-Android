@@ -55,11 +55,12 @@ fun XIcon(
 
 @Composable
 fun HeartIcon(
+    modifier: Modifier = Modifier,
     size: Int,
     isLike: Boolean
 ) {
     Icon(
-        modifier = Modifier.size(size.dp),
+        modifier = modifier.size(size.dp),
         painter = painterResource(R.drawable.ic_heart),
         tint = if (isLike) {
             MaterialTheme.colorScheme.error
