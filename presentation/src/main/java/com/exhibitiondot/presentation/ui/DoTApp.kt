@@ -1,5 +1,6 @@
 package com.exhibitiondot.presentation.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
@@ -25,6 +26,7 @@ fun DoTApp(
             modifier = Modifier
                 .fillMaxSize()
                 .consumeWindowInsets(padding)
+                .background(color = MaterialTheme.colorScheme.background)
         ) {
             DoTNavHost(
                 appState = appState,

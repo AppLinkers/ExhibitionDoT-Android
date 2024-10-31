@@ -13,7 +13,7 @@ import com.exhibitiondot.presentation.ui.navigation.ScreenGraph
 import com.exhibitiondot.presentation.ui.screen.main.home.HomeRoute
 
 fun NavController.navigateToMainGraph() = navigate(Screen.Home.route) {
-    popUpTo(ScreenGraph.MainGraph.route) { inclusive = true }
+    popUpTo(graph.id) { inclusive = true }
 }
 
 fun NavController.navigateToEventDetail(eventId: Long) =

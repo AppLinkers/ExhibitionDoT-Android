@@ -15,7 +15,7 @@ import com.exhibitiondot.presentation.ui.screen.sign.signIn.SignInRoute
 import com.exhibitiondot.presentation.ui.screen.sign.signUp.SignUpRoute
 
 fun NavController.navigateToSignGraph() = navigate(Screen.SignIn.route) {
-    popUpTo(ScreenGraph.SignGraph.route) { inclusive = true }
+    popUpTo(graph.id) { inclusive = true }
 }
 
 fun NavController.navigateToSignScreen(email: String) =

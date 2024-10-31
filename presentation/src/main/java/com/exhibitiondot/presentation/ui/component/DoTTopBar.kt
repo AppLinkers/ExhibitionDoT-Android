@@ -1,5 +1,6 @@
 package com.exhibitiondot.presentation.ui.component
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -62,18 +63,18 @@ fun HomeTopBar(
         modifier = modifier
             .fillMaxWidth()
             .padding(
-                top = 50.dp,
-                bottom = screenPadding,
+                top = 30.dp,
+                bottom = 6.dp,
                 start = screenPadding,
                 end = screenPadding
             ),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(
-            text = stringResource(R.string.app_name),
-            style = MaterialTheme.typography.headlineLarge,
-            color = MaterialTheme.colorScheme.primary
+        Image(
+            modifier = Modifier.size(60.dp),
+            painter = painterResource(R.drawable.app_logo_white),
+            contentDescription = "app-logo-white"
         )
         Row {
             UserIcon(
