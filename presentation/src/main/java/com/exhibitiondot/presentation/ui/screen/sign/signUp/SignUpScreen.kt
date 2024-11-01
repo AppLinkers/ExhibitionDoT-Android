@@ -2,10 +2,7 @@ package com.exhibitiondot.presentation.ui.screen.sign.signUp
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,7 +10,9 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -27,7 +26,6 @@ import com.exhibitiondot.domain.model.Filter
 import com.exhibitiondot.domain.model.Region
 import com.exhibitiondot.presentation.R
 import com.exhibitiondot.presentation.ui.component.DoTButton
-import com.exhibitiondot.presentation.ui.component.DoTFilterChip
 import com.exhibitiondot.presentation.ui.component.DoTSpacer
 import com.exhibitiondot.presentation.ui.component.DoTTextField
 import com.exhibitiondot.presentation.ui.component.DoTTopBar
@@ -48,13 +46,14 @@ fun SignUpRoute(
     val selectedCategory by viewModel.selectedCategory.collectAsStateWithLifecycle()
     val selectedEventType by viewModel.selectedEventType.collectAsStateWithLifecycle()
     val progress by animateFloatAsState(step.percentage, label = "progress-anim")
+    val buttonEnabled by remember { derivedStateOf { viewModel.validate() } }
 
     SignUpScreen(
         modifier = modifier,
         uiState = uiState,
         step = step,
         progress = progress,
-        validate = viewModel.validate(),
+        buttonEnabled = buttonEnabled,
         nameState = viewModel.nameState,
         nicknameState = viewModel.nicknameState,
         phoneState = viewModel.phoneState,
@@ -79,7 +78,7 @@ private fun SignUpScreen(
     uiState: SignUpUiState,
     step: SignUpStep,
     progress: Float,
-    validate: Boolean,
+    buttonEnabled: Boolean,
     nameState: IEditTextState,
     nicknameState: IEditTextState,
     phoneState: IEditTextState,
@@ -147,7 +146,7 @@ private fun SignUpScreen(
                     stringResource(R.string.signup)
                 },
                 isLoading = uiState == SignUpUiState.Loading,
-                enabled = validate,
+                enabled = buttonEnabled,
                 onClick = onNextStep
             )
         }
