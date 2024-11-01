@@ -13,6 +13,7 @@ import com.exhibitiondot.presentation.base.BaseViewModel
 import com.exhibitiondot.presentation.model.GlobalUiModel
 import com.exhibitiondot.presentation.ui.navigation.KEY_SIGN_UP_EMAIL
 import com.exhibitiondot.presentation.ui.state.EditTextState
+import com.exhibitiondot.presentation.ui.state.PhoneEditTextState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -35,7 +36,7 @@ class SignUpViewModel @Inject constructor(
 
     val nameState = EditTextState(maxLength = 10)
     val nicknameState = EditTextState(maxLength = 10)
-    val phoneState = EditTextState(maxLength = 11)
+    val phoneState = PhoneEditTextState()
 
     private val _currentStep = MutableStateFlow<SignUpStep>(SignUpStep.InfoStep)
     val currentStep: StateFlow<SignUpStep> = _currentStep.asStateFlow()

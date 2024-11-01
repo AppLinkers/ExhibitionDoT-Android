@@ -12,7 +12,7 @@ interface IEditTextState {
     fun isValidate(): Boolean
 }
 
-class EditTextState(
+open class EditTextState(
     initText: String = "",
     private val maxLength: Int
 ): IEditTextState {
@@ -31,4 +31,14 @@ class EditTextState(
     override fun trimmedText() = typedText.trim()
 
     override fun isValidate() = trimmedText().isNotEmpty()
+}
+
+class PhoneEditTextState : EditTextState("", 11) {
+    override fun isValidate(): Boolean {
+        return regex.matches(trimmedText())
+    }
+
+    companion object {
+        private val regex = Regex("^\\d{3}\\d{3,4}\\d{4}$")
+    }
 }
