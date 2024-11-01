@@ -18,10 +18,13 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -134,21 +137,30 @@ private fun HomeScreen(
         modifier = modifier.fillMaxSize()
     ) {
         val lazyGridState = rememberLazyGridState()
-        HomeTopBar(
-            modifier = Modifier.fillMaxWidth(),
-            showSearchDialog = showSearchDialog,
-            moveMy = moveMy
-        )
-        HomeFilterList(
-            appliedRegion = appliedRegion,
-            appliedCategory = appliedCategory,
-            appliedEventType = appliedEventType,
-            appliedQuery = appliedQuery,
-            canResetFilters = canResetFilters,
-            resetAllFilters = resetAllFilters,
-            resetAppliedQuery = resetAppliedQuery,
-            showFilterSheet = showFilterSheet
-        )
+        val shadowVisible by remember { derivedStateOf { lazyGridState.firstVisibleItemScrollOffset > 0 } }
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .shadow(
+                    elevation = if (shadowVisible) 0.5.dp else 0.dp
+                )
+        ) {
+            HomeTopBar(
+                modifier = Modifier.fillMaxWidth(),
+                showSearchDialog = showSearchDialog,
+                moveMy = moveMy
+            )
+            HomeFilterList(
+                appliedRegion = appliedRegion,
+                appliedCategory = appliedCategory,
+                appliedEventType = appliedEventType,
+                appliedQuery = appliedQuery,
+                canResetFilters = canResetFilters,
+                resetAllFilters = resetAllFilters,
+                resetAppliedQuery = resetAppliedQuery,
+                showFilterSheet = showFilterSheet
+            )
+        }
         when (eventList.loadState.refresh) {
             LoadState.Loading -> DoTLoadingScreen(
                 modifier = Modifier.weight(1f)
@@ -279,6 +291,9 @@ private fun EventList(
                     onEventItem = { onEventItem(event.id) }
                 )
             }
+        }
+        item {
+            DoTSpacer(size = 800)
         }
     }
 }
