@@ -36,4 +36,13 @@ data class EventParams(
             "${eventTypeList.first().key} 외 ${eventTypeList.size - 1}"
         }
     }
+
+    companion object {
+        val NONE = EventParams(
+            region = null,
+            categoryList = emptyList(),
+            eventTypeList = emptyList(),
+            query = ""
+        )
+    }
 }

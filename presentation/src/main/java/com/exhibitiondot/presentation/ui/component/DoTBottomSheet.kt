@@ -12,7 +12,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.ModalBottomSheetDefaults
-import androidx.compose.material3.ModalBottomSheetDefaults.properties
 import androidx.compose.material3.ModalBottomSheetProperties
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
@@ -26,7 +25,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.exhibitiondot.domain.model.Filter
 import com.exhibitiondot.presentation.R
-import com.exhibitiondot.presentation.ui.screen.main.home.HomeUiState
+import com.exhibitiondot.presentation.ui.state.IMultiFilerState
+import com.exhibitiondot.presentation.ui.state.ISingleFilterState
 import com.exhibitiondot.presentation.ui.theme.screenPadding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -57,16 +57,12 @@ private fun DoTBottomSheet(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeFilterSheet(
+private fun HomeFilterSheet(
     title: String,
     scope: CoroutineScope,
-    filerList: List<Filter>,
-    selectedFilter: Filter? = null,
-    selectedFilterList: List<Filter> = emptyList(),
-    onSelectFilter: (Filter) -> Unit,
-    onSelectAll: () -> Unit,
     onApplyFilter: () -> Unit,
     onDismissRequest: () -> Unit,
+    filterSelectScreen: @Composable () -> Unit
 ) {
     val showSheet = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     DoTBottomSheet(
@@ -89,13 +85,7 @@ fun HomeFilterSheet(
         Column(
             modifier = Modifier.padding(all = screenPadding)
         ) {
-            FilterSelectScreen(
-                filterList = filerList,
-                selectedFilter = selectedFilter,
-                selectedFilterList = selectedFilterList,
-                onSelectFilter = onSelectFilter,
-                onSelectAll = onSelectAll
-            )
+            filterSelectScreen()
             DoTSpacer(size = 50)
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -126,5 +116,47 @@ fun HomeFilterSheet(
                 )
             }
         }
+    }
+}
+
+@Composable
+fun <T : Filter.SingleFilter> HomeSingleFilterSheet(
+    title: String,
+    scope: CoroutineScope,
+    filterState: ISingleFilterState<T>,
+    onApplyFilter: () -> Unit,
+    onDismissRequest: () -> Unit,
+) {
+    HomeFilterSheet(
+        title = title,
+        scope = scope,
+        onApplyFilter = onApplyFilter,
+        onDismissRequest = onDismissRequest
+    ) {
+        SingleFilterSelectScreen(
+            filterState = filterState,
+            needEntire = true,
+        )
+    }
+}
+
+@Composable
+fun <T : Filter.MultiFilter> HomeMultiFilterSheet(
+    title: String,
+    scope: CoroutineScope,
+    filterState: IMultiFilerState<T>,
+    onApplyFilter: () -> Unit,
+    onDismissRequest: () -> Unit,
+) {
+    HomeFilterSheet(
+        title = title,
+        scope = scope,
+        onApplyFilter = onApplyFilter,
+        onDismissRequest = onDismissRequest
+    ) {
+        MultiFilterSelectScreen(
+            filterState = filterState,
+            needEntire = true,
+        )
     }
 }

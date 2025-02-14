@@ -44,8 +44,9 @@ import com.exhibitiondot.presentation.ui.component.DoTSpacer
 import com.exhibitiondot.presentation.ui.component.DownIcon
 import com.exhibitiondot.presentation.ui.component.HeartIcon
 import com.exhibitiondot.presentation.ui.component.HomeFilterChip
-import com.exhibitiondot.presentation.ui.component.HomeFilterSheet
+import com.exhibitiondot.presentation.ui.component.HomeMultiFilterSheet
 import com.exhibitiondot.presentation.ui.component.HomeSearchDialog
+import com.exhibitiondot.presentation.ui.component.HomeSingleFilterSheet
 import com.exhibitiondot.presentation.ui.component.HomeTopBar
 import com.exhibitiondot.presentation.ui.component.RedoIcon
 import com.exhibitiondot.presentation.ui.component.XIcon
@@ -64,9 +65,6 @@ fun HomeRoute(
     val eventList = viewModel.eventList.collectAsLazyPagingItems()
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val selectedRegion by viewModel.selectedRegion.collectAsStateWithLifecycle()
-    val selectedCategory by viewModel.selectedCategory.collectAsStateWithLifecycle()
-    val selectedEventType by viewModel.selectedEventType.collectAsStateWithLifecycle()
 
     HomeScreen(
         modifier = modifier,
@@ -74,29 +72,34 @@ fun HomeRoute(
         eventList = eventList,
         resetAllFilters = viewModel::resetAllFilters,
         resetAppliedQuery = viewModel::resetAppliedQuery,
-        showFilterSheet = viewModel::showFilterSheet,
-        showSearchDialog = viewModel::showSearchDialog,
+        updateUiState = viewModel::updateUiState,
         onEventItem = moveEventDetail,
         moveMy = moveMy
     )
-    if (uiState is HomeUiState.FilterState) {
-        val filterState = uiState as HomeUiState.FilterState
-        HomeFilterSheet(
-            title = stringResource(filterState.title),
+    if (uiState is HomeUiState.ShowRegionFilter) {
+        HomeSingleFilterSheet(
+            title = stringResource(R.string.home_select_region),
             scope = scope,
-            filerList = viewModel.getFilterList(filterState),
-            selectedFilter = when (filterState) {
-                HomeUiState.FilterState.ShowRegionFilter -> selectedRegion
-                else -> null
-            },
-            selectedFilterList = when (filterState) {
-                HomeUiState.FilterState.ShowCategoryFilter -> selectedCategory
-                HomeUiState.FilterState.ShowEventTypeFilter -> selectedEventType
-                else -> emptyList()
-            },
-            onSelectFilter = { filter -> viewModel.selectFilter(filterState, filter) },
-            onSelectAll = { viewModel.selectAll(filterState) },
-            onApplyFilter = { viewModel.applyFilters(filterState) },
+            filterState = viewModel.regionState,
+            onApplyFilter = viewModel::applyRegionFilter,
+            onDismissRequest = viewModel::dismiss
+        )
+    }
+    if (uiState is HomeUiState.ShowCategoryFilter) {
+        HomeMultiFilterSheet(
+            title = stringResource(R.string.home_select_category),
+            scope = scope,
+            filterState = viewModel.categoryState,
+            onApplyFilter = viewModel::applyCategoryFilter,
+            onDismissRequest = viewModel::dismiss
+        )
+    }
+    if (uiState is HomeUiState.ShowEventTypeFilter) {
+        HomeMultiFilterSheet(
+            title = stringResource(R.string.home_select_event_type),
+            scope = scope,
+            filterState = viewModel.eventTypeState,
+            onApplyFilter = viewModel::applyEventTypeFilter,
             onDismissRequest = viewModel::dismiss
         )
     }
@@ -116,8 +119,7 @@ private fun HomeScreen(
     eventList: LazyPagingItems<EventUiModel>,
     resetAllFilters: () -> Unit,
     resetAppliedQuery: () -> Unit,
-    showFilterSheet: (HomeUiState.FilterState) -> Unit,
-    showSearchDialog: () -> Unit,
+    updateUiState: (HomeUiState) -> Unit,
     onEventItem: (Long) -> Unit,
     moveMy: () -> Unit,
 ) {
@@ -135,14 +137,14 @@ private fun HomeScreen(
         ) {
             HomeTopBar(
                 modifier = Modifier.fillMaxWidth(),
-                showSearchDialog = showSearchDialog,
+                showSearchDialog = { updateUiState(HomeUiState.ShowSearchDialog) },
                 moveMy = moveMy
             )
             HomeFilterList(
                 eventParams = eventParams,
                 resetAllFilters = resetAllFilters,
                 resetAppliedQuery = resetAppliedQuery,
-                showFilterSheet = showFilterSheet
+                updateUiState = updateUiState
             )
         }
         when (eventList.loadState.refresh) {
@@ -166,7 +168,7 @@ private fun HomeFilterList(
     eventParams: EventParams,
     resetAllFilters: () -> Unit,
     resetAppliedQuery: () -> Unit,
-    showFilterSheet: (HomeUiState.FilterState) -> Unit,
+    updateUiState: (HomeUiState) -> Unit,
 ) {
     val scrollState = rememberScrollState()
     Row(
@@ -209,7 +211,7 @@ private fun HomeFilterList(
         HomeFilterChip(
             text = eventParams.reginText(default = stringResource(R.string.region)),
             isApplied = eventParams.region != null,
-            onClick = { showFilterSheet(HomeUiState.FilterState.ShowRegionFilter) },
+            onClick = { updateUiState(HomeUiState.ShowRegionFilter) },
             trailingIcon = {
                 DownIcon(size = 20)
             }
@@ -217,7 +219,7 @@ private fun HomeFilterList(
         HomeFilterChip(
             text = eventParams.categoryText(default = stringResource(R.string.category)),
             isApplied = eventParams.categoryList.isNotEmpty(),
-            onClick = { showFilterSheet(HomeUiState.FilterState.ShowCategoryFilter) },
+            onClick = { updateUiState(HomeUiState.ShowCategoryFilter) },
             trailingIcon = {
                 DownIcon(size = 20)
             }
@@ -225,7 +227,7 @@ private fun HomeFilterList(
         HomeFilterChip(
             text = eventParams.eventTypeText(default = stringResource(R.string.event_type)),
             isApplied = eventParams.eventTypeList.isNotEmpty(),
-            onClick = { showFilterSheet(HomeUiState.FilterState.ShowEventTypeFilter) },
+            onClick = { updateUiState(HomeUiState.ShowEventTypeFilter) },
             trailingIcon = {
                 DownIcon(size = 20)
             }

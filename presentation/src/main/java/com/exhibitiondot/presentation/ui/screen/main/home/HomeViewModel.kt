@@ -8,7 +8,6 @@ import com.exhibitiondot.domain.model.Category
 import com.exhibitiondot.domain.model.Event
 import com.exhibitiondot.domain.model.EventParams
 import com.exhibitiondot.domain.model.EventType
-import com.exhibitiondot.domain.model.Filter
 import com.exhibitiondot.domain.model.Region
 import com.exhibitiondot.domain.usecase.event.GetEventListUseCase
 import com.exhibitiondot.domain.usecase.user.GetCachedUserUseCase
@@ -16,6 +15,8 @@ import com.exhibitiondot.presentation.base.BaseViewModel
 import com.exhibitiondot.presentation.mapper.toUiModel
 import com.exhibitiondot.presentation.model.EventUiModel
 import com.exhibitiondot.presentation.ui.state.EditTextState
+import com.exhibitiondot.presentation.ui.state.MultiFilterState
+import com.exhibitiondot.presentation.ui.state.SingleFilterState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -58,119 +59,54 @@ class HomeViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Nothing)
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
-    private val _selectedRegion = MutableStateFlow<Region?>(currentUser.region)
-    val selectedRegion: StateFlow<Region?> = _selectedRegion.asStateFlow()
-
-    private val _selectedCategory = MutableStateFlow(currentUser.categoryList)
-    val selectedCategory: StateFlow<List<Category>> = _selectedCategory.asStateFlow()
-
-    private val _selectedEventType = MutableStateFlow(currentUser.eventTypeList)
-    val selectedEventType: StateFlow<List<EventType>> = _selectedEventType.asStateFlow()
-
+    val regionState = SingleFilterState(
+        initFilter = currentUser.region,
+        filterList = Region.values()
+    )
+    val categoryState = MultiFilterState(
+        initFilterList = currentUser.categoryList,
+        filterList = Category.values()
+    )
+    val eventTypeState = MultiFilterState(
+        initFilterList = currentUser.eventTypeList,
+        filterList = EventType.values()
+    )
     val queryState = EditTextState(maxLength = 20)
 
-    private val regionList = Region.values()
-    private val categoryList = Category.values()
-    private val eventTypeList = EventType.values()
-
     fun resetAllFilters() {
-        _eventParams.update {
-            EventParams(
-                region = null,
-                categoryList = emptyList(),
-                eventTypeList = emptyList(),
-                query = ""
-            )
-        }
-        _selectedRegion.update { null }
-        _selectedCategory.update { emptyList() }
-        _selectedEventType.update { emptyList() }
+        _eventParams.update { EventParams.NONE }
+        regionState.resetAll()
+        categoryState.resetAll()
+        eventTypeState.resetAll()
     }
 
     fun resetAppliedQuery() {
         queryState.resetText()
-        _eventParams.update {
-            eventParams.value.copy(query = "")
-        }
-    }
-
-    fun showSearchDialog() {
-        _uiState.update { HomeUiState.ShowSearchDialog }
+        _eventParams.update { eventParams.value.copy(query = "") }
     }
 
     fun applyQuery() {
-        _eventParams.update {
-            eventParams.value.copy(query = queryState.trimmedText())
-
-        }
+        _eventParams.update { eventParams.value.copy(query = queryState.trimmedText()) }
         dismiss()
     }
 
-    fun showFilterSheet(filterState: HomeUiState.FilterState) {
-        _uiState.update { filterState }
-    }
-
-    fun getFilterList(filterState: HomeUiState.FilterState): List<Filter> {
-        return when (filterState) {
-            HomeUiState.FilterState.ShowRegionFilter -> regionList
-            HomeUiState.FilterState.ShowCategoryFilter -> categoryList
-            HomeUiState.FilterState.ShowEventTypeFilter -> eventTypeList
-        }
-    }
-
-    fun selectAll(filterState: HomeUiState.FilterState) {
-        when (filterState) {
-            HomeUiState.FilterState.ShowRegionFilter -> _selectedRegion.update { null }
-            HomeUiState.FilterState.ShowCategoryFilter -> _selectedCategory.update { emptyList() }
-            HomeUiState.FilterState.ShowEventTypeFilter -> _selectedEventType.update { emptyList() }
-        }
-    }
-
-    fun selectFilter(filterState: HomeUiState.FilterState, filter: Filter) {
-        when (filterState) {
-            HomeUiState.FilterState.ShowRegionFilter -> selectRegion(filter as Region)
-            HomeUiState.FilterState.ShowCategoryFilter -> selectCategory(filter as Category)
-            HomeUiState.FilterState.ShowEventTypeFilter -> selectEventType(filter as EventType)
-        }
-    }
-
-    private fun selectRegion(region: Region) {
-        _selectedRegion.update { region }
-    }
-
-    private fun selectCategory(category: Category) {
-        val originCategory = selectedCategory.value
-        val newCategory = if (category in originCategory) {
-            originCategory - category
-        } else if (originCategory.size + 1 < categoryList.size) {
-            originCategory + category
-        } else {
-            emptyList()
-        }
-        _selectedCategory.update { newCategory }
-    }
-
-    private fun selectEventType(eventType: EventType) {
-        val originEventType = selectedEventType.value
-        val newEventType = if (eventType in originEventType) {
-            originEventType - eventType
-        } else if (originEventType.size + 1 < eventTypeList.size) {
-            originEventType + eventType
-        } else {
-            emptyList()
-        }
-        _selectedEventType.update { newEventType }
-    }
-
-    fun applyFilters(filterState: HomeUiState.FilterState) {
-        when (filterState) {
-            HomeUiState.FilterState.ShowRegionFilter -> _eventParams.update { eventParams.value.copy(region = selectedRegion.value) }
-            HomeUiState.FilterState.ShowCategoryFilter -> _eventParams.update { eventParams.value.copy(categoryList = selectedCategory.value) }
-            HomeUiState.FilterState.ShowEventTypeFilter -> _eventParams.update { eventParams.value.copy(eventTypeList = selectedEventType.value) }
-        }
+    fun updateUiState(uiState: HomeUiState) {
+        _uiState.update { uiState }
     }
 
     fun dismiss() {
-        _uiState.update { HomeUiState.Nothing }
+        updateUiState(HomeUiState.Nothing)
+    }
+
+    fun applyRegionFilter() {
+        _eventParams.update { eventParams.value.copy(region = regionState.selectedFilter) }
+    }
+
+    fun applyCategoryFilter() {
+        _eventParams.update { eventParams.value.copy(categoryList = categoryState.selectedFilterList) }
+    }
+
+    fun applyEventTypeFilter() {
+        _eventParams.update { eventParams.value.copy(eventTypeList = eventTypeState.selectedFilterList) }
     }
 }

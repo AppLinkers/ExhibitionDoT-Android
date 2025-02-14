@@ -1,8 +1,8 @@
 package com.exhibitiondot.domain.model
 
 sealed interface Filter {
-    interface SingleFilter : Filter
-    interface MultiFilter : Filter
+    sealed interface SingleFilter : Filter
+    sealed interface MultiFilter : Filter
 }
 
 sealed class Region(val key: String, val name: String) : Filter.SingleFilter {

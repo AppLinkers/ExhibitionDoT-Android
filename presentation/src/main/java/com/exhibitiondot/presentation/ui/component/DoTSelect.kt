@@ -3,6 +3,7 @@ package com.exhibitiondot.presentation.ui.component
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.FlowRowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -14,46 +15,81 @@ import com.exhibitiondot.domain.model.EventType
 import com.exhibitiondot.domain.model.Filter
 import com.exhibitiondot.domain.model.Region
 import com.exhibitiondot.presentation.R
+import com.exhibitiondot.presentation.ui.state.IMultiFilerState
+import com.exhibitiondot.presentation.ui.state.ISingleFilterState
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun FilterSelectScreen(
+private fun FilterSelectScreen(
     modifier: Modifier = Modifier,
-    filterList: List<Filter>,
-    selectedFilter: Filter? = null,
-    selectedFilterList: List<Filter> = emptyList(),
-    onSelectFilter: (Filter) -> Unit,
-    onSelectAll: (() -> Unit)? = null
+    content: @Composable FlowRowScope.() -> Unit
 ) {
     FlowRow(
         modifier = modifier
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        content = content
+    )
+}
+
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+fun <T : Filter.SingleFilter> SingleFilterSelectScreen(
+    modifier: Modifier = Modifier,
+    filterState: ISingleFilterState<T>,
+    needEntire: Boolean = false,
+) {
+    FilterSelectScreen(
+        modifier = modifier
     ) {
-        onSelectAll?.let { selectAll ->
+        if (needEntire) {
             DoTFilterChip(
                 name = stringResource(R.string.entire),
-                selected = when (filterList.first()) {
-                    is Filter.SingleFilter -> selectedFilter == null
-                    is Filter.MultiFilter -> selectedFilterList.isEmpty()
-                },
-                onSelect = selectAll
+                selected = filterState.selectedFilter == null,
+                onSelect = filterState::resetAll
             )
         }
-        filterList.forEach { filter ->
+        filterState.filterList.forEach { filter ->
             DoTFilterChip(
                 name = when (filter) {
                     is Region -> filter.name
+                    else -> ""
+                },
+                selected = filter == filterState.selectedFilter,
+                onSelect = { filterState.selectFilter(filter) }
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+fun <T : Filter.MultiFilter> MultiFilterSelectScreen(
+    modifier: Modifier = Modifier,
+    filterState: IMultiFilerState<T>,
+    needEntire: Boolean = false,
+) {
+    FilterSelectScreen(
+        modifier = modifier
+    ) {
+        if (needEntire) {
+            DoTFilterChip(
+                name = stringResource(R.string.entire),
+                selected = filterState.selectedFilterList.isEmpty(),
+                onSelect = filterState::resetAll
+            )
+        }
+        filterState.filterList.forEach { filter ->
+            DoTFilterChip(
+                name = when (filter) {
                     is Category -> filter.key
                     is EventType -> filter.key
                     else -> ""
                 },
-                selected = when (filter) {
-                    is Filter.SingleFilter -> filter == selectedFilter
-                    is Filter.MultiFilter -> filter in selectedFilterList
-                },
-                onSelect = { onSelectFilter(filter) }
+                selected = filter in filterState.selectedFilterList,
+                onSelect = { filterState.selectFilter(filter) }
             )
         }
     }
