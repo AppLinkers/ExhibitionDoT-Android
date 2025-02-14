@@ -2,6 +2,7 @@ package com.exhibitiondot.presentation.ui.screen.sign.signUp
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import com.exhibitiondot.domain.model.Category
 import com.exhibitiondot.domain.model.EventType
 import com.exhibitiondot.domain.model.Filter
@@ -11,7 +12,7 @@ import com.exhibitiondot.domain.usecase.user.SignInUseCase
 import com.exhibitiondot.domain.usecase.user.SignUpUseCase
 import com.exhibitiondot.presentation.base.BaseViewModel
 import com.exhibitiondot.presentation.model.GlobalUiModel
-import com.exhibitiondot.presentation.ui.navigation.KEY_SIGN_UP_EMAIL
+import com.exhibitiondot.presentation.ui.navigation.SignScreen
 import com.exhibitiondot.presentation.ui.state.EditTextState
 import com.exhibitiondot.presentation.ui.state.PhoneEditTextState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,7 +30,7 @@ class SignUpViewModel @Inject constructor(
     private val uiModel: GlobalUiModel,
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
-    private val email: String = checkNotNull(savedStateHandle[KEY_SIGN_UP_EMAIL])
+    private val email = savedStateHandle.toRoute<SignScreen.SignUp>().email
 
     private val _uiState = MutableStateFlow<SignUpUiState>(SignUpUiState.Nothing)
     val uiState: StateFlow<SignUpUiState> = _uiState.asStateFlow()

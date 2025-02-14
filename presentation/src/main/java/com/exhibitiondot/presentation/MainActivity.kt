@@ -8,7 +8,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import com.exhibitiondot.presentation.ui.DoTApp
-import com.exhibitiondot.presentation.ui.navigation.ScreenGraph
 import com.exhibitiondot.presentation.ui.rememberDoTAppState
 import com.exhibitiondot.presentation.ui.theme.DoTTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,10 +25,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val appState = rememberDoTAppState()
             DoTTheme {
-                DoTApp(
-                    appState = appState,
-                    startDestination = ScreenGraph.SignGraph
-                )
+                DoTApp(appState = appState,)
             }
         }
     }

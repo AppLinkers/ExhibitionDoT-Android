@@ -11,12 +11,11 @@ import com.exhibitiondot.presentation.ui.screen.sign.navigation.nestedSignGraph
 fun DoTNavHost(
     modifier: Modifier = Modifier,
     appState: DoTAppState,
-    startDestination: ScreenGraph
 ) {
     NavHost(
         modifier = modifier,
         navController = appState.navController,
-        startDestination = startDestination.route
+        startDestination = ScreenGraph.SignGraph
     ) {
         nestedSignGraph(appState)
         nestedMainGraph(appState)

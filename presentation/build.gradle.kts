@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -77,4 +78,7 @@ dependencies {
 
     // kakao-login
     implementation(libs.kakao.login)
+
+    // kotlinx-serialization
+    implementation(libs.kotlinx.serialization)
 }
