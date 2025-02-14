@@ -17,13 +17,12 @@ class CommentRemoteDataSource @Inject constructor(
     override fun getCommentList(eventId: Long): Flow<PagingData<CommentDto>> =
         Pager(
             config = PagingConfig(pageSize = ApiConst.DEFAULT_PAGE_SIZE),
-            pagingSourceFactory = {
-                CommentPagingSource(
-                    commentApi = commentApi,
-                    eventId = eventId
-                )
-            }
-        ).flow
+        ) {
+            CommentPagingSource(
+                commentApi = commentApi,
+                eventId = eventId
+            )
+        }.flow
 
     override suspend fun addComment(
         eventId: Long,

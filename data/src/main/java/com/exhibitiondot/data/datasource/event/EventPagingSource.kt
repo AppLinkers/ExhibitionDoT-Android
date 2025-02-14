@@ -6,13 +6,11 @@ import com.exhibitiondot.data.network.api.EventApi
 import com.exhibitiondot.data.network.api.ApiConst
 import com.exhibitiondot.data.model.dto.EventDto
 import com.exhibitiondot.data.network.NetworkState
+import com.exhibitiondot.domain.model.EventParams
 
 class EventPagingSource(
     private val eventApi: EventApi,
-    private val region: String?,
-    private val categoryList: List<String>,
-    private val eventTypeList: List<String>,
-    private val query: String
+    private val eventParams: EventParams,
 ) : PagingSource<Int, EventDto>() {
     override fun getRefreshKey(state: PagingState<Int, EventDto>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
@@ -26,16 +24,17 @@ class EventPagingSource(
         val response = eventApi.getEventList(
             page = pageNumber,
             size = ApiConst.DEFAULT_PAGE_SIZE,
-            region = region,
-            categoryList = categoryList.ifEmpty { null },
-            eventTypeList = eventTypeList.ifEmpty { null },
-            query = query.ifEmpty { null }
+            region = eventParams.region?.key,
+            categoryList = eventParams.categoryList.map { it.key },
+            eventTypeList = eventParams.eventTypeList.map { it.key },
+            query = eventParams.query
         )
         return when (response) {
             is NetworkState.Success -> {
-                val eventList = response.data.contents
-                val prevKey = if (pageNumber == ApiConst.DEFAULT_PAGE_NUMBER) null else pageNumber -1
-                val nextKey = if (eventList.isEmpty()) null else pageNumber + 1
+                val data = response.data
+                val eventList = data.contents
+                val prevKey = if (data.first) null else data.page -1
+                val nextKey = if (data.last) null else data.page + 1
                 LoadResult.Page(eventList, prevKey, nextKey)
             }
             is NetworkState.Failure -> {
