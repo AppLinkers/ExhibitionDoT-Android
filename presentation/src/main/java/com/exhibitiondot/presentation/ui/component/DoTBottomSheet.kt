@@ -12,6 +12,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.ModalBottomSheetDefaults
+import androidx.compose.material3.ModalBottomSheetDefaults.properties
 import androidx.compose.material3.ModalBottomSheetProperties
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
@@ -37,7 +38,7 @@ private fun DoTBottomSheet(
     containerColor: Color = MaterialTheme.colorScheme.background,
     sheetState: SheetState,
     windowInsets: WindowInsets = WindowInsets(top = 0.dp),
-    properties: ModalBottomSheetProperties = ModalBottomSheetDefaults.properties(),
+    properties: ModalBottomSheetProperties = ModalBottomSheetDefaults.properties,
     onDismissRequest: () -> Unit,
     content: @Composable (ColumnScope.() -> Unit)
 ) {
@@ -46,7 +47,7 @@ private fun DoTBottomSheet(
             onDismissRequest = onDismissRequest,
             containerColor = containerColor,
             sheetState = sheetState,
-            windowInsets = windowInsets,
+            contentWindowInsets = { windowInsets },
             dragHandle = null,
             properties = properties,
             content = content
