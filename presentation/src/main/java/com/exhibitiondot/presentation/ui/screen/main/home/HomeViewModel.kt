@@ -22,7 +22,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
@@ -30,37 +29,31 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val getCachedUserUseCase: GetCachedUserUseCase,
+    getCachedUserUseCase: GetCachedUserUseCase,
     private val getEventListUseCase: GetEventListUseCase
 ) : BaseViewModel() {
     private val currentUser = getCachedUserUseCase().value
 
-    private val _appliedRegion = MutableStateFlow<Region?>(currentUser.region)
-    val appliedRegion: StateFlow<Region?> = _appliedRegion.asStateFlow()
-
-    private val _appliedCategory = MutableStateFlow(currentUser.categoryList)
-    val appliedCategory: StateFlow<List<Category>> = _appliedCategory.asStateFlow()
-
-    private val _appliedEventType = MutableStateFlow(currentUser.eventTypeList)
-    val appliedEventType: StateFlow<List<EventType>> = _appliedEventType.asStateFlow()
-
-    private val _appliedQuery = MutableStateFlow("")
-    val appliedQuery: StateFlow<String> = _appliedQuery.asStateFlow()
+    private val _eventParams = MutableStateFlow(
+        EventParams(
+            region = currentUser.region,
+            categoryList = currentUser.categoryList,
+            eventTypeList = currentUser.eventTypeList,
+            query = ""
+        )
+    )
+    val eventParams: StateFlow<EventParams> = _eventParams.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val eventList: Flow<PagingData<EventUiModel>> =
-        combine(
-            flow = _appliedRegion,
-            flow2 = _appliedCategory,
-            flow3 = _appliedEventType,
-            flow4 = _appliedQuery
-        ) { region, categoryList, eventTypeList, query ->
-            EventParams(region, categoryList, eventTypeList, query)
-        }.flatMapLatest { params ->
-            getEventListUseCase(params)
-        }.map { pagingData ->
-            pagingData.map(Event::toUiModel)
-        }.cachedIn(viewModelScope)
+        eventParams
+            .flatMapLatest { params ->
+                getEventListUseCase(params)
+            }
+            .map { pagingData ->
+                pagingData.map(Event::toUiModel)
+            }
+            .cachedIn(viewModelScope)
 
     private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Nothing)
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
@@ -80,25 +73,22 @@ class HomeViewModel @Inject constructor(
     private val categoryList = Category.values()
     private val eventTypeList = EventType.values()
 
-    fun canResetFilters(): Boolean {
-        return _appliedRegion.value != null ||
-                _appliedCategory.value.isNotEmpty() ||
-                _appliedEventType.value.isNotEmpty() ||
-                _appliedQuery.value.isNotEmpty()
-    }
-
     fun resetAllFilters() {
-        _appliedRegion.update { null }
+        _eventParams.update {
+            EventParams(
+                region = null,
+                categoryList = emptyList(),
+                eventTypeList = emptyList(),
+                query = ""
+            )
+        }
         _selectedRegion.update { null }
-        _appliedCategory.update { emptyList() }
         _selectedCategory.update { emptyList() }
-        _appliedEventType.update { emptyList() }
         _selectedEventType.update { emptyList() }
         resetAppliedQuery()
     }
 
     fun resetAppliedQuery() {
-        _appliedQuery.update { "" }
         queryState.resetText()
     }
 
@@ -164,9 +154,9 @@ class HomeViewModel @Inject constructor(
 
     fun applyFilters(filterState: HomeUiState.FilterState) {
         when (filterState) {
-            HomeUiState.FilterState.ShowRegionFilter -> _appliedRegion.update { selectedRegion.value }
-            HomeUiState.FilterState.ShowCategoryFilter -> _appliedCategory.update { selectedCategory.value }
-            HomeUiState.FilterState.ShowEventTypeFilter -> _appliedEventType.update { selectedEventType.value }
+            HomeUiState.FilterState.ShowRegionFilter -> _eventParams.update { eventParams.value.copy(region = selectedRegion.value) }
+            HomeUiState.FilterState.ShowCategoryFilter -> _eventParams.update { eventParams.value.copy(categoryList = selectedCategory.value) }
+            HomeUiState.FilterState.ShowEventTypeFilter -> _eventParams.update { eventParams.value.copy(eventTypeList = selectedEventType.value) }
         }
     }
 
@@ -175,7 +165,10 @@ class HomeViewModel @Inject constructor(
     }
 
     fun applyQuery() {
-        _appliedQuery.update { queryState.trimmedText() }
+        _eventParams.update {
+            eventParams.value.copy(query = queryState.trimmedText())
+
+        }
         dismiss()
     }
 

@@ -38,7 +38,7 @@ sealed class Category(val key: String) : Filter.MultiFilter {
         fun values(): List<Category> =
             listOf(
                 IT, Interior, Health, Fashion, Science, Design, Education,
-                Finance, Performance, Entertainment, Food, ETC
+                Finance, Performance, Entertainment, Environment, Food, ETC
             )
     }
 }

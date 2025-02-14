@@ -34,9 +34,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.exhibitiondot.domain.model.Category
-import com.exhibitiondot.domain.model.EventType
-import com.exhibitiondot.domain.model.Region
+import androidx.paging.compose.itemKey
+import com.exhibitiondot.domain.model.EventParams
 import com.exhibitiondot.presentation.R
 import com.exhibitiondot.presentation.model.EventUiModel
 import com.exhibitiondot.presentation.ui.component.DoTImage
@@ -61,10 +60,7 @@ fun HomeRoute(
     moveMy: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
-    val appliedRegion by viewModel.appliedRegion.collectAsStateWithLifecycle()
-    val appliedCategory by viewModel.appliedCategory.collectAsStateWithLifecycle()
-    val appliedEventType by viewModel.appliedEventType.collectAsStateWithLifecycle()
-    val appliedQuery by viewModel.appliedQuery.collectAsStateWithLifecycle()
+    val eventParams by viewModel.eventParams.collectAsStateWithLifecycle()
     val eventList = viewModel.eventList.collectAsLazyPagingItems()
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -74,12 +70,8 @@ fun HomeRoute(
 
     HomeScreen(
         modifier = modifier,
-        appliedRegion = appliedRegion,
-        appliedCategory = appliedCategory,
-        appliedEventType = appliedEventType,
-        appliedQuery = appliedQuery,
+        eventParams = eventParams,
         eventList = eventList,
-        canResetFilters = viewModel.canResetFilters(),
         resetAllFilters = viewModel::resetAllFilters,
         resetAppliedQuery = viewModel::resetAppliedQuery,
         showFilterSheet = viewModel::showFilterSheet,
@@ -120,12 +112,8 @@ fun HomeRoute(
 @Composable
 private fun HomeScreen(
     modifier: Modifier,
-    appliedRegion: Region?,
-    appliedCategory: List<Category>,
-    appliedEventType: List<EventType>,
-    appliedQuery: String,
+    eventParams: EventParams,
     eventList: LazyPagingItems<EventUiModel>,
-    canResetFilters: Boolean,
     resetAllFilters: () -> Unit,
     resetAppliedQuery: () -> Unit,
     showFilterSheet: (HomeUiState.FilterState) -> Unit,
@@ -151,11 +139,7 @@ private fun HomeScreen(
                 moveMy = moveMy
             )
             HomeFilterList(
-                appliedRegion = appliedRegion,
-                appliedCategory = appliedCategory,
-                appliedEventType = appliedEventType,
-                appliedQuery = appliedQuery,
-                canResetFilters = canResetFilters,
+                eventParams = eventParams,
                 resetAllFilters = resetAllFilters,
                 resetAppliedQuery = resetAppliedQuery,
                 showFilterSheet = showFilterSheet
@@ -179,11 +163,7 @@ private fun HomeScreen(
 @Composable
 private fun HomeFilterList(
     modifier: Modifier = Modifier,
-    appliedRegion: Region?,
-    appliedCategory: List<Category>,
-    appliedEventType: List<EventType>,
-    appliedQuery: String,
-    canResetFilters: Boolean,
+    eventParams: EventParams,
     resetAllFilters: () -> Unit,
     resetAppliedQuery: () -> Unit,
     showFilterSheet: (HomeUiState.FilterState) -> Unit,
@@ -200,7 +180,7 @@ private fun HomeFilterList(
         horizontalArrangement = Arrangement.spacedBy(6.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if (canResetFilters) {
+        if (eventParams.canReset()) {
             HomeFilterChip(
                 text = stringResource(R.string.reset),
                 isApplied = false,
@@ -213,9 +193,9 @@ private fun HomeFilterList(
                 }
             )
         }
-        if (appliedQuery.isNotEmpty()) {
+        if (eventParams.query.isNotEmpty()) {
             HomeFilterChip(
-                text = appliedQuery,
+                text = eventParams.query,
                 isApplied = true,
                 onClick = resetAppliedQuery,
                 trailingIcon = {
@@ -227,36 +207,24 @@ private fun HomeFilterList(
             )
         }
         HomeFilterChip(
-            text = appliedRegion?.name ?: stringResource(R.string.region),
-            isApplied = appliedRegion != null,
+            text = eventParams.reginText(default = stringResource(R.string.region)),
+            isApplied = eventParams.region != null,
             onClick = { showFilterSheet(HomeUiState.FilterState.ShowRegionFilter) },
             trailingIcon = {
                 DownIcon(size = 20)
             }
         )
         HomeFilterChip(
-            text = if (appliedCategory.isEmpty()) {
-                stringResource(R.string.category)
-            } else if (appliedCategory.size == 1) {
-                appliedCategory.first().key
-            } else {
-                "${appliedCategory.first().key} 외 ${appliedCategory.size - 1}"
-            },
-            isApplied = appliedCategory.isNotEmpty(),
+            text = eventParams.categoryText(default = stringResource(R.string.category)),
+            isApplied = eventParams.categoryList.isNotEmpty(),
             onClick = { showFilterSheet(HomeUiState.FilterState.ShowCategoryFilter) },
             trailingIcon = {
                 DownIcon(size = 20)
             }
         )
         HomeFilterChip(
-            text = if (appliedEventType.isEmpty()) {
-                stringResource(R.string.event_type)
-            } else if (appliedEventType.size == 1) {
-                appliedEventType.first().key
-            } else {
-                "${appliedEventType.first().key} 외 ${appliedEventType.size - 1}"
-            },
-            isApplied = appliedEventType.isNotEmpty(),
+            text = eventParams.eventTypeText(default = stringResource(R.string.event_type)),
+            isApplied = eventParams.eventTypeList.isNotEmpty(),
             onClick = { showFilterSheet(HomeUiState.FilterState.ShowEventTypeFilter) },
             trailingIcon = {
                 DownIcon(size = 20)
@@ -283,7 +251,7 @@ private fun EventList(
     ) {
         items(
             count = eventList.itemCount,
-            key = { index -> eventList[index]?.id ?: index }
+            key = eventList.itemKey { it.id }
         ) { index ->
             eventList[index]?.let { event ->
                 EventItem(
