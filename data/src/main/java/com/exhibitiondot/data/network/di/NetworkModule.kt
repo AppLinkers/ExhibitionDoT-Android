@@ -1,7 +1,7 @@
-package com.exhibitiondot.data.di
+package com.exhibitiondot.data.network.di
 
 import com.exhibitiondot.data.BuildConfig
-import com.exhibitiondot.data.constant.ApiConst
+import com.exhibitiondot.data.network.api.ApiConst
 import com.exhibitiondot.data.network.retrofit.AuthInterceptor
 import com.exhibitiondot.data.network.retrofit.CustomCallAdapter
 import dagger.Module

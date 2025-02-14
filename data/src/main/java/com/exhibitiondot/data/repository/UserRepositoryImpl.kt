@@ -1,7 +1,7 @@
 package com.exhibitiondot.data.repository
 
 import com.exhibitiondot.data.datasource.AuthDataSource
-import com.exhibitiondot.data.datasource.UserDataSource
+import com.exhibitiondot.data.datasource.user.UserDataSource
 import com.exhibitiondot.data.mapper.toChangeUserInfoRequest
 import com.exhibitiondot.data.mapper.toDomain
 import com.exhibitiondot.data.mapper.toSignUpRequest

@@ -1,4 +1,4 @@
-package com.exhibitiondot.data.di
+package com.exhibitiondot.data.datastore.di
 
 import android.content.Context
 import androidx.datastore.core.DataStore

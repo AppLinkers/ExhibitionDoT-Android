@@ -1,6 +1,6 @@
-package com.exhibitiondot.data.datasource
+package com.exhibitiondot.data.datasource.user
 
-import com.exhibitiondot.data.api.UserApi
+import com.exhibitiondot.data.network.api.UserApi
 import com.exhibitiondot.data.model.dto.UserDto
 import com.exhibitiondot.data.model.request.ChangeUserInfoRequest
 import com.exhibitiondot.data.model.request.SignInRequest

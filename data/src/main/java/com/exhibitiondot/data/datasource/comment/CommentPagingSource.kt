@@ -1,9 +1,9 @@
-package com.exhibitiondot.data.datasource
+package com.exhibitiondot.data.datasource.comment
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.exhibitiondot.data.api.CommentApi
-import com.exhibitiondot.data.constant.ApiConst
+import com.exhibitiondot.data.network.api.CommentApi
+import com.exhibitiondot.data.network.api.ApiConst
 import com.exhibitiondot.data.model.dto.CommentDto
 import com.exhibitiondot.data.network.NetworkState
 

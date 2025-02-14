@@ -1,9 +1,9 @@
-package com.exhibitiondot.data.datasource
+package com.exhibitiondot.data.datasource.event
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.exhibitiondot.data.api.EventApi
-import com.exhibitiondot.data.constant.ApiConst
+import com.exhibitiondot.data.network.api.EventApi
+import com.exhibitiondot.data.network.api.ApiConst
 import com.exhibitiondot.data.model.dto.EventDto
 import com.exhibitiondot.data.network.NetworkState
 

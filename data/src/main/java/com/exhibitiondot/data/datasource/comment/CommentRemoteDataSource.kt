@@ -1,17 +1,14 @@
-package com.exhibitiondot.data.datasource
+package com.exhibitiondot.data.datasource.comment
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.exhibitiondot.data.api.CommentApi
-import com.exhibitiondot.data.constant.ApiConst
+import com.exhibitiondot.data.network.api.CommentApi
+import com.exhibitiondot.data.network.api.ApiConst
 import com.exhibitiondot.data.model.dto.CommentDto
 import com.exhibitiondot.data.model.request.AddCommentRequest
 import com.exhibitiondot.data.network.NetworkState
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
 class CommentRemoteDataSource @Inject constructor(

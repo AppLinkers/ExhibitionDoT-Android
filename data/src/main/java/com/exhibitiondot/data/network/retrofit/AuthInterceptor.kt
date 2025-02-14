@@ -1,6 +1,6 @@
 package com.exhibitiondot.data.network.retrofit
 
-import com.exhibitiondot.data.constant.ApiConst
+import com.exhibitiondot.data.network.api.ApiConst
 import com.exhibitiondot.data.datasource.AuthDataSource
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking

@@ -1,4 +1,4 @@
-package com.exhibitiondot.data.datasource
+package com.exhibitiondot.data.datasource.comment
 
 import androidx.paging.PagingData
 import com.exhibitiondot.data.model.dto.CommentDto

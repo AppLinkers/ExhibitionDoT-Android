@@ -2,7 +2,7 @@ package com.exhibitiondot.data.repository
 
 import androidx.paging.PagingData
 import androidx.paging.map
-import com.exhibitiondot.data.datasource.EventDataSource
+import com.exhibitiondot.data.datasource.event.EventDataSource
 import com.exhibitiondot.data.mapper.toDomain
 import com.exhibitiondot.data.model.dto.EventDto
 import com.exhibitiondot.data.network.NetworkState

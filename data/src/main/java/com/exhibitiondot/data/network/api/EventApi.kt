@@ -1,4 +1,4 @@
-package com.exhibitiondot.data.api
+package com.exhibitiondot.data.network.api
 
 import com.exhibitiondot.data.model.dto.EventDetailDto
 import com.exhibitiondot.data.model.response.EventListResponse

@@ -1,4 +1,4 @@
-package com.exhibitiondot.data.constant
+package com.exhibitiondot.data.network.api
 
 object ApiConst {
     const val AUTH_HEADER = "USER_ID"

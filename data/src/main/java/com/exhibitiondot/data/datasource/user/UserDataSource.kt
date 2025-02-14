@@ -1,4 +1,4 @@
-package com.exhibitiondot.data.datasource
+package com.exhibitiondot.data.datasource.user
 
 import com.exhibitiondot.data.model.dto.UserDto
 import com.exhibitiondot.data.model.request.ChangeUserInfoRequest
