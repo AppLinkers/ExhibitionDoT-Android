@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -137,5 +139,16 @@ fun BackIcon(
         painter = painterResource(R.drawable.ic_back),
         tint = color,
         contentDescription = "back-icon"
+    )
+}
+
+@Composable
+fun AddIcon(
+    modifier: Modifier = Modifier,
+) {
+    Icon(
+        modifier = modifier,
+        imageVector = Icons.Rounded.Add,
+        contentDescription = "add-icon"
     )
 }

@@ -19,11 +19,15 @@ fun NavGraphBuilder.nestedMainGraph(appState: DoTAppState) {
             HomeRoute(
                 scope = appState.coroutineScope,
                 moveEventDetail = navController::navigateToEventDetail,
+                movePostDetail = navController::navigateToPostEvent,
                 moveMy = navController::navigateToMyPage,
             )
         }
         composable<MainScreen.EventDetail> {
             EventDetailRoute(onBack = navController::popBackStack)
+        }
+        composable<MainScreen.PostEvent> {
+
         }
         composable<MainScreen.MyPage> {
             MyPageRoute(onBack = navController::popBackStack)
@@ -36,5 +40,7 @@ fun NavController.navigateToMainGraph() = navigate(ScreenGraph.MainGraph) {
 }
 
 private fun NavController.navigateToEventDetail(eventId: Long) = navigate(MainScreen.EventDetail(eventId))
+
+private fun NavController.navigateToPostEvent(eventId: Long?) = navigate(MainScreen.PostEvent(eventId))
 
 private fun NavController.navigateToMyPage() = navigate(MainScreen.MyPage)

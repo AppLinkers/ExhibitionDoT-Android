@@ -3,6 +3,7 @@ package com.exhibitiondot.presentation.ui.screen.main.home
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -43,6 +44,7 @@ import com.exhibitiondot.presentation.ui.component.DoTLoadingScreen
 import com.exhibitiondot.presentation.ui.component.DoTSpacer
 import com.exhibitiondot.presentation.ui.component.DownIcon
 import com.exhibitiondot.presentation.ui.component.HeartIcon
+import com.exhibitiondot.presentation.ui.component.HomeAddButton
 import com.exhibitiondot.presentation.ui.component.HomeFilterChip
 import com.exhibitiondot.presentation.ui.component.HomeMultiFilterSheet
 import com.exhibitiondot.presentation.ui.component.HomeSearchDialog
@@ -58,6 +60,7 @@ fun HomeRoute(
     modifier: Modifier = Modifier,
     scope: CoroutineScope,
     moveEventDetail: (Long) -> Unit,
+    movePostDetail: (Long?) -> Unit,
     moveMy: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
@@ -74,6 +77,7 @@ fun HomeRoute(
         resetAppliedQuery = viewModel::resetAppliedQuery,
         updateUiState = viewModel::updateUiState,
         onEventItem = moveEventDetail,
+        movePostDetail = { movePostDetail(null) },
         moveMy = moveMy
     )
     if (uiState is HomeUiState.ShowRegionFilter) {
@@ -121,44 +125,55 @@ private fun HomeScreen(
     resetAppliedQuery: () -> Unit,
     updateUiState: (HomeUiState) -> Unit,
     onEventItem: (Long) -> Unit,
+    movePostDetail: () -> Unit,
     moveMy: () -> Unit,
 ) {
-    Column(
+    Box(
         modifier = modifier.fillMaxSize()
     ) {
-        val lazyGridState = rememberLazyGridState()
-        val shadowVisible by remember { derivedStateOf { lazyGridState.firstVisibleItemScrollOffset > 0 } }
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .shadow(
-                    elevation = if (shadowVisible) 0.5.dp else 0.dp
-                )
+            modifier = modifier.fillMaxSize()
         ) {
-            HomeTopBar(
-                modifier = Modifier.fillMaxWidth(),
-                showSearchDialog = { updateUiState(HomeUiState.ShowSearchDialog) },
-                moveMy = moveMy
-            )
-            HomeFilterList(
-                eventParams = eventParams,
-                resetAllFilters = resetAllFilters,
-                resetAppliedQuery = resetAppliedQuery,
-                updateUiState = updateUiState
-            )
+            val lazyGridState = rememberLazyGridState()
+            val shadowVisible by remember { derivedStateOf { lazyGridState.firstVisibleItemScrollOffset > 0 } }
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(
+                        elevation = if (shadowVisible) 0.5.dp else 0.dp
+                    )
+            ) {
+                HomeTopBar(
+                    modifier = Modifier.fillMaxWidth(),
+                    showSearchDialog = { updateUiState(HomeUiState.ShowSearchDialog) },
+                    moveMy = moveMy
+                )
+                HomeFilterList(
+                    eventParams = eventParams,
+                    resetAllFilters = resetAllFilters,
+                    resetAppliedQuery = resetAppliedQuery,
+                    updateUiState = updateUiState
+                )
+            }
+            when (eventList.loadState.refresh) {
+                LoadState.Loading -> DoTLoadingScreen(
+                    modifier = Modifier.weight(1f)
+                )
+                is LoadState.Error -> {}
+                is LoadState.NotLoading -> EventList(
+                    modifier = Modifier.weight(1f),
+                    lazyGridState = lazyGridState,
+                    eventList = eventList,
+                    onEventItem = onEventItem
+                )
+            }
         }
-        when (eventList.loadState.refresh) {
-            LoadState.Loading -> DoTLoadingScreen(
-                modifier = Modifier.weight(1f)
-            )
-            is LoadState.Error -> {}
-            is LoadState.NotLoading -> EventList(
-                modifier = Modifier.weight(1f),
-                lazyGridState = lazyGridState,
-                eventList = eventList,
-                onEventItem = onEventItem
-            )
-        }
+        HomeAddButton(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(all = screenPadding),
+            onClick = movePostDetail
+        )
     }
 }
 
@@ -261,9 +276,6 @@ private fun EventList(
                     onEventItem = { onEventItem(event.id) }
                 )
             }
-        }
-        item {
-            DoTSpacer(size = 800)
         }
     }
 }
