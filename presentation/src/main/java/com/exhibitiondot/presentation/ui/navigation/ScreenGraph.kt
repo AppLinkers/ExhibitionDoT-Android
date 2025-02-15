@@ -1,6 +1,11 @@
 package com.exhibitiondot.presentation.ui.navigation
 
-sealed class ScreenGraph(val route: String) {
-    data object SignGraph : ScreenGraph("sign-graph")
-    data object MainGraph : ScreenGraph("main-graph")
+import kotlinx.serialization.Serializable
+
+sealed interface ScreenGraph {
+    @Serializable
+    data object SignGraph : ScreenGraph
+
+    @Serializable
+    data object MainGraph : ScreenGraph
 }

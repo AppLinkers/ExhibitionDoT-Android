@@ -1,17 +1,15 @@
-package com.exhibitiondot.data.datasource
+package com.exhibitiondot.domain.repository
 
 import com.exhibitiondot.domain.model.User
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
-interface AuthDataSource {
+interface PreferenceRepository {
     val currentUser: StateFlow<User>
 
     val userId: Flow<String?>
 
-    val email: Flow<String?>
-
     fun updateCurrentUser(user: User)
 
-    suspend fun updateAuthInfo(userId: Long, email: String)
+    suspend fun updateUserId(userId: Long)
 }

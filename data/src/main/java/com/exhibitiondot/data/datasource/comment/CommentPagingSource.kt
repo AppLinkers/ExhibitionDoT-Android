@@ -1,9 +1,9 @@
-package com.exhibitiondot.data.datasource
+package com.exhibitiondot.data.datasource.comment
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.exhibitiondot.data.api.CommentApi
-import com.exhibitiondot.data.constant.ApiConst
+import com.exhibitiondot.data.network.api.CommentApi
+import com.exhibitiondot.data.network.api.ApiConst
 import com.exhibitiondot.data.model.dto.CommentDto
 import com.exhibitiondot.data.network.NetworkState
 
@@ -27,9 +27,10 @@ class CommentPagingSource(
         )
         return when (response) {
             is NetworkState.Success -> {
-                val commentList = response.data.contents
-                val prevKey = if (pageNumber == ApiConst.DEFAULT_PAGE_NUMBER) null else pageNumber -1
-                val nextKey = if (commentList.isEmpty()) null else pageNumber + 1
+                val data = response.data
+                val commentList = data.contents
+                val prevKey = if (data.first) null else data.page -1
+                val nextKey = if (data.last) null else data.page + 1
                 LoadResult.Page(commentList, prevKey, nextKey)
             }
             is NetworkState.Failure -> {

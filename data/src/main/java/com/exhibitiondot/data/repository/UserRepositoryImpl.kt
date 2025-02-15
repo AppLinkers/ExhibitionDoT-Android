@@ -1,7 +1,6 @@
 package com.exhibitiondot.data.repository
 
-import com.exhibitiondot.data.datasource.AuthDataSource
-import com.exhibitiondot.data.datasource.UserDataSource
+import com.exhibitiondot.data.datasource.user.UserDataSource
 import com.exhibitiondot.data.mapper.toChangeUserInfoRequest
 import com.exhibitiondot.data.mapper.toDomain
 import com.exhibitiondot.data.mapper.toSignUpRequest
@@ -10,36 +9,26 @@ import com.exhibitiondot.data.network.NetworkState
 import com.exhibitiondot.domain.exception.NetworkFailException
 import com.exhibitiondot.domain.model.User
 import com.exhibitiondot.domain.repository.UserRepository
-import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
-    private val userDataSource: UserDataSource,
-    private val authDataSource: AuthDataSource
+    private val userDataSource: UserDataSource
 ) : UserRepository {
-    override suspend fun cacheUser(): Result<Unit> {
+    override suspend fun getUser(): Result<User> {
         val response = userDataSource.getUser()
         return when (response) {
-            is NetworkState.Success -> {
-                authDataSource.updateCurrentUser(response.data.toDomain())
-                Result.success(Unit)
-            }
+            is NetworkState.Success -> Result.success(response.data.toDomain())
+            is NetworkState.Failure -> Result.failure(
+                NetworkFailException(response.code, response.error)
+            )
             else -> Result.failure(IllegalStateException())
         }
     }
 
-    override fun getUser(): StateFlow<User> {
-        return authDataSource.currentUser
-    }
-
-    override suspend fun signIn(email: String): Result<Unit> {
+    override suspend fun signIn(email: String): Result<Long> {
         val response = userDataSource.sigIn(SignInRequest(email))
         return when (response) {
-            is NetworkState.Success -> {
-                val userId = response.data.userId
-                authDataSource.updateAuthInfo(userId, email)
-                Result.success(Unit)
-            }
+            is NetworkState.Success -> Result.success(response.data.userId)
             is NetworkState.Failure -> Result.failure(
                 NetworkFailException(response.code, response.error)
             )
@@ -50,10 +39,7 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun signUp(user: User): Result<Unit> {
         val response = userDataSource.signUp(user.toSignUpRequest())
         return when (response) {
-            is NetworkState.Success -> {
-                authDataSource.updateCurrentUser(user)
-                Result.success(response.data)
-            }
+            is NetworkState.Success -> Result.success(response.data)
             is NetworkState.Failure -> Result.failure(
                 NetworkFailException(response.code, response.error)
             )
@@ -64,10 +50,7 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun changeUserInfo(user: User): Result<Unit> {
         val response = userDataSource.changeUserInfo(user.toChangeUserInfoRequest())
         return when (response) {
-            is NetworkState.Success -> {
-                authDataSource.updateCurrentUser(user)
-                Result.success(response.data)
-            }
+            is NetworkState.Success -> Result.success(response.data)
             is NetworkState.Failure -> Result.failure(
                 NetworkFailException(response.code, response.error)
             )

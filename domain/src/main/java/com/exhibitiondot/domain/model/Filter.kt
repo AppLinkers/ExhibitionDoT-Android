@@ -1,8 +1,8 @@
 package com.exhibitiondot.domain.model
 
 sealed interface Filter {
-    interface SingleFilter : Filter
-    interface MultiFilter : Filter
+    sealed interface SingleFilter : Filter
+    sealed interface MultiFilter : Filter
 }
 
 sealed class Region(val key: String, val name: String) : Filter.SingleFilter {
@@ -38,7 +38,7 @@ sealed class Category(val key: String) : Filter.MultiFilter {
         fun values(): List<Category> =
             listOf(
                 IT, Interior, Health, Fashion, Science, Design, Education,
-                Finance, Performance, Entertainment, Food, ETC
+                Finance, Performance, Entertainment, Environment, Food, ETC
             )
     }
 }

@@ -11,12 +11,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.exhibitiondot.presentation.ui.navigation.DoTNavHost
-import com.exhibitiondot.presentation.ui.navigation.ScreenGraph
 
 @Composable
 fun DoTApp(
     appState: DoTAppState,
-    startDestination: ScreenGraph
 ) {
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surface,
@@ -28,10 +26,7 @@ fun DoTApp(
                 .consumeWindowInsets(padding)
                 .background(color = MaterialTheme.colorScheme.background)
         ) {
-            DoTNavHost(
-                appState = appState,
-                startDestination = startDestination
-            )
+            DoTNavHost(appState = appState)
         }
     }
 }

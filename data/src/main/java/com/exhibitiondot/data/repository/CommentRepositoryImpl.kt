@@ -2,7 +2,7 @@ package com.exhibitiondot.data.repository
 
 import androidx.paging.PagingData
 import androidx.paging.map
-import com.exhibitiondot.data.datasource.CommentDataSource
+import com.exhibitiondot.data.datasource.comment.CommentDataSource
 import com.exhibitiondot.data.mapper.toDomain
 import com.exhibitiondot.data.model.dto.CommentDto
 import com.exhibitiondot.data.model.request.AddCommentRequest

@@ -1,14 +1,11 @@
 package com.exhibitiondot.domain.repository
 
 import com.exhibitiondot.domain.model.User
-import kotlinx.coroutines.flow.StateFlow
 
 interface UserRepository {
-    suspend fun cacheUser(): Result<Unit>
+    suspend fun getUser(): Result<User>
 
-    fun getUser(): StateFlow<User>
-
-    suspend fun signIn(email: String): Result<Unit>
+    suspend fun signIn(email: String): Result<Long>
 
     suspend fun signUp(user: User): Result<Unit>
 

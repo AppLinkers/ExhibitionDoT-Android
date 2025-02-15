@@ -2,7 +2,7 @@ package com.exhibitiondot.data.repository
 
 import androidx.paging.PagingData
 import androidx.paging.map
-import com.exhibitiondot.data.datasource.EventDataSource
+import com.exhibitiondot.data.datasource.event.EventDataSource
 import com.exhibitiondot.data.mapper.toDomain
 import com.exhibitiondot.data.model.dto.EventDto
 import com.exhibitiondot.data.network.NetworkState
@@ -18,12 +18,9 @@ class EventRepositoryImpl @Inject constructor(
     private val eventDataSource: EventDataSource
 ) : EventRepository {
     override fun getEventList(params: EventParams): Flow<PagingData<Event>> =
-        eventDataSource.getEventList(
-            region = params.region?.key ,
-            categoryList = params.categoryList.map { it.key },
-            eventTypeList = params.eventTypeList.map { it.key },
-            query = params.query
-        ).map { pagingData -> pagingData.map(EventDto::toDomain) }
+        eventDataSource
+            .getEventList(params)
+            .map { pagingData -> pagingData.map(EventDto::toDomain) }
 
     override suspend fun getEventDetail(eventId: Long): Result<EventDetail> {
         val response = eventDataSource.getEventDetail(eventId)

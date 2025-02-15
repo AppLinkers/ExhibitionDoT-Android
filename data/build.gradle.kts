@@ -14,7 +14,7 @@ val properties = Properties().apply {
 
 android {
     namespace = "com.exhibitiondot.data"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 24

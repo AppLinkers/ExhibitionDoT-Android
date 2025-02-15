@@ -1,8 +1,8 @@
-package com.exhibitiondot.data.di
+package com.exhibitiondot.data.network.di
 
-import com.exhibitiondot.data.api.CommentApi
-import com.exhibitiondot.data.api.EventApi
-import com.exhibitiondot.data.api.UserApi
+import com.exhibitiondot.data.network.api.CommentApi
+import com.exhibitiondot.data.network.api.EventApi
+import com.exhibitiondot.data.network.api.UserApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -20,6 +20,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.exhibitiondot.presentation.R
 import com.exhibitiondot.presentation.model.UserUiModel
+import com.exhibitiondot.presentation.ui.component.DoTLoadingScreen
 import com.exhibitiondot.presentation.ui.component.DoTSpacer
 import com.exhibitiondot.presentation.ui.component.DoTTopBar
 import com.exhibitiondot.presentation.ui.theme.screenPadding
@@ -30,10 +31,10 @@ fun MyPageRoute(
     onBack: () -> Unit,
     viewModel: MyPageViewModel = hiltViewModel()
 ) {
-    val user by viewModel.user.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     MyPageScreen(
         modifier = modifier,
-        user = user,
+        uiState = uiState,
         onBack = onBack
     )
     BackHandler(onBack = onBack)
@@ -42,7 +43,7 @@ fun MyPageRoute(
 @Composable
 private fun MyPageScreen(
     modifier: Modifier,
-    user: UserUiModel,
+    uiState: MyPageUiState,
     onBack: () -> Unit,
 ) {
     Column(
@@ -52,23 +53,39 @@ private fun MyPageScreen(
             title = stringResource(R.string.my_page),
             onBack = onBack
         )
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .verticalScroll(rememberScrollState())
-                .padding(all = screenPadding)
-        ) {
-            MyPageTitle(title = stringResource(R.string.my_page_user_info))
-            MyPageAccount(user = user)
-            DoTSpacer(size = 40)
-            MyPageTitle(title = stringResource(R.string.my_page_category))
-            DoTSpacer(size = 20)
-            MyPageTags(tags = user.categoryTags)
-            DoTSpacer(size = 40)
-            MyPageTitle(title = stringResource(R.string.my_page_event_type))
-            DoTSpacer(size = 20)
-            MyPageTags(tags = user.eventTypeTags)
+        when (uiState) {
+            MyPageUiState.Loading -> DoTLoadingScreen(
+                modifier = Modifier.weight(1f)
+            )
+            is MyPageUiState.Success -> MyPageBody(
+                modifier = Modifier.weight(1f),
+                user = uiState.user
+            )
         }
+
+    }
+}
+
+@Composable
+private fun MyPageBody(
+    modifier: Modifier = Modifier,
+    user: UserUiModel,
+) {
+    Column(
+        modifier = modifier
+            .verticalScroll(rememberScrollState())
+            .padding(all = screenPadding)
+    ) {
+        MyPageTitle(title = stringResource(R.string.my_page_user_info))
+        MyPageAccount(user = user)
+        DoTSpacer(size = 40)
+        MyPageTitle(title = stringResource(R.string.my_page_category))
+        DoTSpacer(size = 20)
+        MyPageTags(tags = user.categoryTags)
+        DoTSpacer(size = 40)
+        MyPageTitle(title = stringResource(R.string.my_page_event_type))
+        DoTSpacer(size = 20)
+        MyPageTags(tags = user.eventTypeTags)
     }
 }
 

@@ -1,4 +1,4 @@
-package com.exhibitiondot.data.api
+package com.exhibitiondot.data.network.api
 
 import com.exhibitiondot.data.model.request.AddCommentRequest
 import com.exhibitiondot.data.model.response.CommentListResponse

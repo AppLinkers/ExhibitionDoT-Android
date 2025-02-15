@@ -22,15 +22,17 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.exhibitiondot.domain.model.Category
 import com.exhibitiondot.domain.model.EventType
-import com.exhibitiondot.domain.model.Filter
 import com.exhibitiondot.domain.model.Region
 import com.exhibitiondot.presentation.R
 import com.exhibitiondot.presentation.ui.component.DoTButton
 import com.exhibitiondot.presentation.ui.component.DoTSpacer
 import com.exhibitiondot.presentation.ui.component.DoTTextField
 import com.exhibitiondot.presentation.ui.component.DoTTopBar
-import com.exhibitiondot.presentation.ui.component.FilterSelectScreen
+import com.exhibitiondot.presentation.ui.component.MultiFilterSelectScreen
+import com.exhibitiondot.presentation.ui.component.SingleFilterSelectScreen
 import com.exhibitiondot.presentation.ui.state.IEditTextState
+import com.exhibitiondot.presentation.ui.state.IMultiFilerState
+import com.exhibitiondot.presentation.ui.state.ISingleFilterState
 import com.exhibitiondot.presentation.ui.theme.screenPadding
 
 @Composable
@@ -42,9 +44,6 @@ fun SignUpRoute(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val step by viewModel.currentStep.collectAsStateWithLifecycle()
-    val selectedRegion by viewModel.selectedRegion.collectAsStateWithLifecycle()
-    val selectedCategory by viewModel.selectedCategory.collectAsStateWithLifecycle()
-    val selectedEventType by viewModel.selectedEventType.collectAsStateWithLifecycle()
     val progress by animateFloatAsState(step.percentage, label = "progress-anim")
     val buttonEnabled by remember { derivedStateOf { viewModel.validate() } }
 
@@ -57,15 +56,11 @@ fun SignUpRoute(
         nameState = viewModel.nameState,
         nicknameState = viewModel.nicknameState,
         phoneState = viewModel.phoneState,
-        regionList = viewModel.regionList,
-        categoryList = viewModel.categoryList,
-        eventTypeList = viewModel.eventTypeList,
-        selectedRegion = selectedRegion,
-        selectedCategory = selectedCategory,
-        selectedEventType = selectedEventType,
+        regionState = viewModel.regionState,
+        categoryState = viewModel.categoryState,
+        eventTypeState = viewModel.eventTypeState,
         onPrevStep = { viewModel.onPrevStep(step, onBack) },
         onNextStep = { viewModel.onNextStep(step, moveMain, onBack) },
-        selectFilter = viewModel::selectFilter
     )
     BackHandler {
         viewModel.onPrevStep(step, onBack)
@@ -82,15 +77,11 @@ private fun SignUpScreen(
     nameState: IEditTextState,
     nicknameState: IEditTextState,
     phoneState: IEditTextState,
-    regionList: List<Region>,
-    categoryList: List<Category>,
-    eventTypeList: List<EventType>,
-    selectedRegion: Region,
-    selectedCategory: List<Category>,
-    selectedEventType: List<EventType>,
+    regionState: ISingleFilterState<Region>,
+    categoryState: IMultiFilerState<Category>,
+    eventTypeState: IMultiFilerState<EventType>,
     onPrevStep: () -> Unit,
     onNextStep: () -> Unit,
-    selectFilter: (Filter) -> Unit,
 ) {
     Column(
         modifier = modifier.fillMaxSize()
@@ -122,21 +113,9 @@ private fun SignUpScreen(
                     nicknameState = nicknameState,
                     phoneState = phoneState
                 )
-                SignUpStep.RegionStep -> FilterSelectScreen(
-                    filterList = regionList,
-                    selectedFilter = selectedRegion,
-                    onSelectFilter = selectFilter
-                )
-                SignUpStep.CategoryStep -> FilterSelectScreen(
-                    filterList = categoryList,
-                    selectedFilterList = selectedCategory,
-                    onSelectFilter = selectFilter
-                )
-                SignUpStep.EventTypeStep -> FilterSelectScreen(
-                    filterList = eventTypeList,
-                    selectedFilterList = selectedEventType,
-                    onSelectFilter = selectFilter
-                )
+                SignUpStep.RegionStep -> SingleFilterSelectScreen(filterState = regionState)
+                SignUpStep.CategoryStep -> MultiFilterSelectScreen(filterState = categoryState)
+                SignUpStep.EventTypeStep -> MultiFilterSelectScreen(filterState = eventTypeState)
             }
             DoTSpacer(modifier = Modifier.weight(1f))
             DoTButton(
