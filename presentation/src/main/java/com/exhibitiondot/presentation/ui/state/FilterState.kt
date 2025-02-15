@@ -13,10 +13,12 @@ interface IFilterState<T : Filter> {
 
 interface ISingleFilterState<T : Filter.SingleFilter> : IFilterState<T> {
     var selectedFilter: T?
+    fun setFilter(filter: T)
 }
 
 interface IMultiFilerState<T : Filter.MultiFilter> : IFilterState<T> {
     var selectedFilterList: List<T>
+    fun setFilter(filterList: List<T>)
 }
 
 class SingleFilterState<T : Filter.SingleFilter>(
@@ -26,6 +28,10 @@ class SingleFilterState<T : Filter.SingleFilter>(
     override var selectedFilter by mutableStateOf(initFilter)
 
     override fun selectFilter(filter: T) {
+        selectedFilter = filter
+    }
+
+    override fun setFilter(filter: T) {
         selectedFilter = filter
     }
 
@@ -48,6 +54,10 @@ class MultiFilterState<T : Filter.MultiFilter>(
         } else {
             emptyList()
         }
+    }
+
+    override fun setFilter(filterList: List<T>) {
+        selectedFilterList = filterList
     }
 
     override fun resetAll() {

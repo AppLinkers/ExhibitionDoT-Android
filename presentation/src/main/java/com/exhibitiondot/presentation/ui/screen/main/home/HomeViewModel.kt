@@ -10,7 +10,7 @@ import com.exhibitiondot.domain.model.EventParams
 import com.exhibitiondot.domain.model.EventType
 import com.exhibitiondot.domain.model.Region
 import com.exhibitiondot.domain.usecase.event.GetEventListUseCase
-import com.exhibitiondot.domain.usecase.user.GetCachedUserUseCase
+import com.exhibitiondot.domain.usecase.user.GetCacheFirstUserFlowUseCase
 import com.exhibitiondot.presentation.base.BaseViewModel
 import com.exhibitiondot.presentation.mapper.toUiModel
 import com.exhibitiondot.presentation.model.EventUiModel
@@ -26,23 +26,15 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    getCachedUserUseCase: GetCachedUserUseCase,
+    getCacheFirstUserFlowUseCase: GetCacheFirstUserFlowUseCase,
     private val getEventListUseCase: GetEventListUseCase
 ) : BaseViewModel() {
-    private val currentUser = getCachedUserUseCase().value
-
-    private val _eventParams = MutableStateFlow(
-        EventParams(
-            region = currentUser.region,
-            categoryList = currentUser.categoryList,
-            eventTypeList = currentUser.eventTypeList,
-            query = ""
-        )
-    )
+    private val _eventParams = MutableStateFlow(EventParams.NONE)
     val eventParams: StateFlow<EventParams> = _eventParams.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -60,18 +52,32 @@ class HomeViewModel @Inject constructor(
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
     val regionState = SingleFilterState(
-        initFilter = currentUser.region,
         filterList = Region.values()
     )
     val categoryState = MultiFilterState(
-        initFilterList = currentUser.categoryList,
         filterList = Category.values()
     )
     val eventTypeState = MultiFilterState(
-        initFilterList = currentUser.eventTypeList,
         filterList = EventType.values()
     )
     val queryState = EditTextState(maxLength = 20)
+
+    init {
+        viewModelScope.launch {
+            getCacheFirstUserFlowUseCase().collect { user ->
+                _eventParams.update {
+                    eventParams.value.copy(
+                        region = user.region,
+                        categoryList = user.categoryList,
+                        eventTypeList = user.eventTypeList,
+                    )
+                }
+                regionState.setFilter(user.region)
+                categoryState.setFilter(user.categoryList)
+                eventTypeState.setFilter(user.eventTypeList)
+            }
+        }
+    }
 
     fun resetAllFilters() {
         _eventParams.update { EventParams.NONE }
