@@ -3,13 +3,13 @@ package com.exhibitiondot.presentation.ui.screen.sign.signUp
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.exhibitiondot.domain.exception.SignInFailException
+import com.exhibitiondot.domain.exception.SignUpFailException
 import com.exhibitiondot.domain.model.Category
 import com.exhibitiondot.domain.model.EventType
-import com.exhibitiondot.domain.model.Filter
 import com.exhibitiondot.domain.model.Region
 import com.exhibitiondot.domain.model.User
-import com.exhibitiondot.domain.usecase.user.SignInUseCase
-import com.exhibitiondot.domain.usecase.user.SignUpUseCase
+import com.exhibitiondot.domain.usecase.user.SignUpAndSignInUseCase
 import com.exhibitiondot.presentation.base.BaseViewModel
 import com.exhibitiondot.presentation.model.GlobalUiModel
 import com.exhibitiondot.presentation.ui.navigation.SignScreen
@@ -27,8 +27,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
-    private val signUpUseCase: SignUpUseCase,
-    private val signInUseCase: SignInUseCase,
+    private val signUpAndSignInUseCase: SignUpAndSignInUseCase,
     private val uiModel: GlobalUiModel,
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
@@ -94,21 +93,26 @@ class SignUpViewModel @Inject constructor(
                 categoryList = categoryState.selectedFilterList,
                 eventTypeList = eventTypeState.selectedFilterList
             )
-            signUpUseCase(user)
+            signUpAndSignInUseCase(user)
                 .onSuccess {
-                    signIn(moveMain, onBack)
-                }.onFailure {
-                    _uiState.update { SignUpUiState.Nothing }
-                    uiModel.showToast("회원가입에 실패했어요")
+                    moveMain()
+                }
+                .onFailure { t ->
+                    when (t) {
+                        is SignUpFailException -> {
+                            onFailure("회원가입에 실패했어요")
+                        }
+                        is SignInFailException -> {
+                            onFailure("다시 로그인 해주세요")
+                            onBack()
+                        }
+                    }
                 }
         }
     }
 
-    private suspend fun signIn(moveMain: () -> Unit, onBack: () -> Unit) =
-        signInUseCase(email)
-            .onSuccess {
-                moveMain()
-            }.onFailure {
-                onBack()
-            }
+    private fun onFailure(msg: String) {
+        _uiState.update { SignUpUiState.Nothing }
+        uiModel.showToast(msg)
+    }
 }
