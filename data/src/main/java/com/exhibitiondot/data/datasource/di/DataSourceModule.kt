@@ -1,7 +1,5 @@
 package com.exhibitiondot.data.datasource.di
 
-import com.exhibitiondot.data.datasource.AuthDataSource
-import com.exhibitiondot.data.datasource.AuthLocalDataSource
 import com.exhibitiondot.data.datasource.comment.CommentDataSource
 import com.exhibitiondot.data.datasource.comment.CommentRemoteDataSource
 import com.exhibitiondot.data.datasource.event.EventDataSource
@@ -34,10 +32,4 @@ internal interface DataSourceModule {
     fun bindsCommentDataSource(
         commentDataSource: CommentRemoteDataSource
     ) : CommentDataSource
-
-    @Binds
-    @Singleton
-    fun bindsAuthDataSource(
-        authDataSource: AuthLocalDataSource
-    ) : AuthDataSource
 }

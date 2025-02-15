@@ -1,4 +1,4 @@
-package com.exhibitiondot.data.datastore.di
+package com.exhibitiondot.data.datastore
 
 import android.content.Context
 import androidx.datastore.core.DataStore
@@ -16,7 +16,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object DataStoreModule {
+internal object DataStoreModule {
     private const val KEY_PREFERENCES = "key-preferences"
 
     @Provides

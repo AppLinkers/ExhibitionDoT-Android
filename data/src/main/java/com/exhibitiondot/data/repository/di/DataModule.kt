@@ -2,9 +2,11 @@ package com.exhibitiondot.data.repository.di
 
 import com.exhibitiondot.data.repository.CommentRepositoryImpl
 import com.exhibitiondot.data.repository.EventRepositoryImpl
+import com.exhibitiondot.data.repository.PreferenceRepositoryImpl
 import com.exhibitiondot.data.repository.UserRepositoryImpl
 import com.exhibitiondot.domain.repository.CommentRepository
 import com.exhibitiondot.domain.repository.EventRepository
+import com.exhibitiondot.domain.repository.PreferenceRepository
 import com.exhibitiondot.domain.repository.UserRepository
 import dagger.Binds
 import dagger.Module
@@ -32,4 +34,10 @@ internal interface DataModule {
     fun bindsCommentRepository(
         commentRepository: CommentRepositoryImpl
     ) : CommentRepository
+
+    @Binds
+    @Singleton
+    fun bindsPreferenceRepository(
+        preferenceRepository: PreferenceRepositoryImpl
+    ) : PreferenceRepository
 }
