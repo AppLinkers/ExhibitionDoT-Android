@@ -97,6 +97,10 @@ class PostEventViewModel @Inject constructor(
         }
     }
 
+    fun lastStep(): Boolean {
+        return currentStep == totalSteps.last()
+    }
+
     private fun postingEvent(onBack: () -> Unit) {
         uiState = PostEventUiState.Loading
         viewModelScope.launch {

@@ -10,6 +10,7 @@ import com.exhibitiondot.presentation.ui.navigation.ScreenGraph
 import com.exhibitiondot.presentation.ui.screen.main.eventDetail.EventDetailRoute
 import com.exhibitiondot.presentation.ui.screen.main.home.HomeRoute
 import com.exhibitiondot.presentation.ui.screen.main.myPage.MyPageRoute
+import com.exhibitiondot.presentation.ui.screen.main.postEvent.PostEventRoute
 
 fun NavGraphBuilder.nestedMainGraph(appState: DoTAppState) {
     val navController = appState.navController
@@ -27,7 +28,7 @@ fun NavGraphBuilder.nestedMainGraph(appState: DoTAppState) {
             EventDetailRoute(onBack = navController::popBackStack)
         }
         composable<MainScreen.PostEvent> {
-
+            PostEventRoute(onBack = navController::popBackStack)
         }
         composable<MainScreen.MyPage> {
             MyPageRoute(onBack = navController::popBackStack)
