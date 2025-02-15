@@ -4,7 +4,7 @@ import com.exhibitiondot.data.datasource.user.UserDataSource
 import com.exhibitiondot.data.mapper.toChangeUserInfoRequest
 import com.exhibitiondot.data.mapper.toDomain
 import com.exhibitiondot.data.mapper.toSignUpRequest
-import com.exhibitiondot.data.model.request.SignInRequest
+import com.exhibitiondot.data.network.model.request.SignInRequest
 import com.exhibitiondot.data.network.NetworkState
 import com.exhibitiondot.domain.exception.NetworkFailException
 import com.exhibitiondot.domain.model.User

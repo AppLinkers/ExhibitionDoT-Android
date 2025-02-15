@@ -4,7 +4,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.exhibitiondot.data.network.api.EventApi
 import com.exhibitiondot.data.network.api.ApiConst
-import com.exhibitiondot.data.model.dto.EventDto
+import com.exhibitiondot.data.network.model.dto.EventDto
 import com.exhibitiondot.data.network.NetworkState
 import com.exhibitiondot.domain.model.EventParams
 

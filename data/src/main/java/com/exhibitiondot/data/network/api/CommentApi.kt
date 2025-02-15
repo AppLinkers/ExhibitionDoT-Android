@@ -1,7 +1,7 @@
 package com.exhibitiondot.data.network.api
 
-import com.exhibitiondot.data.model.request.AddCommentRequest
-import com.exhibitiondot.data.model.response.CommentListResponse
+import com.exhibitiondot.data.network.model.request.AddCommentRequest
+import com.exhibitiondot.data.network.model.response.CommentListResponse
 import com.exhibitiondot.data.network.NetworkState
 import retrofit2.http.Body
 import retrofit2.http.GET

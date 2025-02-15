@@ -5,8 +5,8 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.exhibitiondot.data.network.api.CommentApi
 import com.exhibitiondot.data.network.api.ApiConst
-import com.exhibitiondot.data.model.dto.CommentDto
-import com.exhibitiondot.data.model.request.AddCommentRequest
+import com.exhibitiondot.data.network.model.dto.CommentDto
+import com.exhibitiondot.data.network.model.request.AddCommentRequest
 import com.exhibitiondot.data.network.NetworkState
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject

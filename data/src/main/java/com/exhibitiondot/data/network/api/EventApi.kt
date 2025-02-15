@@ -1,7 +1,7 @@
 package com.exhibitiondot.data.network.api
 
-import com.exhibitiondot.data.model.dto.EventDetailDto
-import com.exhibitiondot.data.model.response.EventListResponse
+import com.exhibitiondot.data.network.model.dto.EventDetailDto
+import com.exhibitiondot.data.network.model.response.EventListResponse
 import com.exhibitiondot.data.network.NetworkState
 import retrofit2.http.GET
 import retrofit2.http.POST

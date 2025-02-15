@@ -1,8 +1,8 @@
 package com.exhibitiondot.data.mapper
 
-import com.exhibitiondot.data.model.dto.UserDto
-import com.exhibitiondot.data.model.request.ChangeUserInfoRequest
-import com.exhibitiondot.data.model.request.SignUpRequest
+import com.exhibitiondot.data.network.model.dto.UserDto
+import com.exhibitiondot.data.network.model.request.ChangeUserInfoRequest
+import com.exhibitiondot.data.network.model.request.SignUpRequest
 import com.exhibitiondot.domain.model.User
 
 fun UserDto.toDomain() =

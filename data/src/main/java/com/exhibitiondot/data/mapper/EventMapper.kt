@@ -1,7 +1,7 @@
 package com.exhibitiondot.data.mapper
 
-import com.exhibitiondot.data.model.dto.EventDetailDto
-import com.exhibitiondot.data.model.dto.EventDto
+import com.exhibitiondot.data.network.model.dto.EventDetailDto
+import com.exhibitiondot.data.network.model.dto.EventDto
 import com.exhibitiondot.domain.model.Event
 import com.exhibitiondot.domain.model.EventDetail
 

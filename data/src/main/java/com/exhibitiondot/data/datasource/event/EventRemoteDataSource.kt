@@ -5,8 +5,8 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.exhibitiondot.data.network.api.EventApi
 import com.exhibitiondot.data.network.api.ApiConst
-import com.exhibitiondot.data.model.dto.EventDetailDto
-import com.exhibitiondot.data.model.dto.EventDto
+import com.exhibitiondot.data.network.model.dto.EventDetailDto
+import com.exhibitiondot.data.network.model.dto.EventDto
 import com.exhibitiondot.data.network.NetworkState
 import com.exhibitiondot.domain.model.EventParams
 import kotlinx.coroutines.flow.Flow

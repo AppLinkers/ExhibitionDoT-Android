@@ -1,6 +1,6 @@
-package com.exhibitiondot.data.model.response
+package com.exhibitiondot.data.network.model.response
 
-import com.exhibitiondot.data.model.dto.EventDto
+import com.exhibitiondot.data.network.model.dto.EventDto
 import kotlinx.serialization.Serializable
 
 @Serializable

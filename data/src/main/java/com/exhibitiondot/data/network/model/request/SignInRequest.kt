@@ -1,4 +1,4 @@
-package com.exhibitiondot.data.model.request
+package com.exhibitiondot.data.network.model.request
 
 import kotlinx.serialization.Serializable
 
