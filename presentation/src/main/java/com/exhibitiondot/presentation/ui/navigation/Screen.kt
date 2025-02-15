@@ -18,5 +18,8 @@ sealed interface MainScreen {
     data class EventDetail(val eventId: Long) : MainScreen
 
     @Serializable
+    data class PostEvent(val eventId: Long?) : MainScreen
+
+    @Serializable
     data object MyPage : MainScreen
 }
