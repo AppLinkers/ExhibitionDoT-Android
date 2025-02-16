@@ -19,7 +19,7 @@ interface EventRepository {
 
     suspend fun updateEvent(
         file: File?,
-        eventInfo: EventInfo?,
+        eventInfo: EventInfo,
         eventId: Long
     ): Result<Unit>
 

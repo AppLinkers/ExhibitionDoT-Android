@@ -51,12 +51,12 @@ class EventRemoteDataSource @Inject constructor(
 
     override suspend fun updateEvent(
         file: File?,
-        eventInfo: EventInfoDto?,
+        eventInfo: EventInfoDto,
         eventId: Long
     ): NetworkState<Unit> {
         return eventApi.updateEvent(
             file = file?.toMultipartFile("file"),
-            event = eventInfo?.toJsonRequestBody(),
+            event = eventInfo.toJsonRequestBody(),
             eventId = eventId
         )
     }

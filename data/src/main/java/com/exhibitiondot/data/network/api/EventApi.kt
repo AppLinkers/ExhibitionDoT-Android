@@ -42,7 +42,7 @@ interface EventApi {
     @PATCH("event/{event-id}")
     suspend fun updateEvent(
         @Part file: MultipartBody.Part? = null,
-        @Part("event") event: RequestBody? = null,
+        @Part("event") event: RequestBody,
         @Path("event-id") eventId: Long
     ) : NetworkState<Unit>
 

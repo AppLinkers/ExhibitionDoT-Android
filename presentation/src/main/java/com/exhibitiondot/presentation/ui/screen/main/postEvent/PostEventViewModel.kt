@@ -40,7 +40,6 @@ class PostEventViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
 ) : BaseViewModel() {
     private val eventId = savedStateHandle.toRoute<MainScreen.PostEvent>().eventId
-    private lateinit var originEventInfo: EventInfo
     val editMode = eventId != null
 
     var uiState by mutableStateOf<PostEventUiState>(PostEventUiState.Idle)
@@ -69,7 +68,6 @@ class PostEventViewModel @Inject constructor(
             getEventInfoUseCase(eventId)
                 .onSuccess { (eventInfo, imageSource) ->
                     with(eventInfo) {
-                        originEventInfo = this
                         nameState.typeText(name)
                         selectedDate = date
                         regionState.setFilter(region)
@@ -127,7 +125,7 @@ class PostEventViewModel @Inject constructor(
     fun onPrevStep(onBack: () -> Unit) {
         val prevIdx = totalSteps.indexOf(currentStep) - 1
         if (prevIdx < 0) {
-            deleteImage()
+            image?.let { deleteFile(it) }
             onBack()
         } else {
             currentStep = totalSteps[prevIdx]
@@ -189,13 +187,9 @@ class PostEventViewModel @Inject constructor(
             }
     }
 
-    private suspend fun updateEvent(
-        eventId: Long,
-        eventInfo: EventInfo,
-        onBack: () -> Unit
-    ) {
+    private suspend fun updateEvent(eventId: Long, eventInfo: EventInfo, onBack: () -> Unit) {
         val selectedImage = image!!
-        updateEventUseCase(selectedImage, originEventInfo, eventInfo, eventId)
+        updateEventUseCase(selectedImage, eventInfo, eventId)
             .onSuccess {
                 showMessage("이벤트를 수정했어요")
                 deleteFile(selectedImage)

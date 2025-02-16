@@ -51,10 +51,10 @@ class EventRepositoryImpl @Inject constructor(
 
     override suspend fun updateEvent(
         file: File?,
-        eventInfo: EventInfo?,
+        eventInfo: EventInfo,
         eventId: Long
     ): Result<Unit> {
-        val response = eventDataSource.updateEvent(file, eventInfo?.toDto(), eventId)
+        val response = eventDataSource.updateEvent(file, eventInfo.toDto(), eventId)
         return when (response) {
             is NetworkState.Success -> Result.success(response.data)
             else -> Result.failure(IllegalStateException())

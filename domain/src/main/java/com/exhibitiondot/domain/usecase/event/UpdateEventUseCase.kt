@@ -10,13 +10,12 @@ class UpdateEventUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(
         image: ImageSource,
-        originEventInfo: EventInfo,
-        updatedEventInfo: EventInfo,
+        eventInfo: EventInfo,
         eventId: Long,
     ): Result<Unit> =
         eventRepository.updateEvent(
             file = if (image is ImageSource.Local) image.file else null,
-            eventInfo = if (updatedEventInfo != originEventInfo) updatedEventInfo else null,
+            eventInfo = eventInfo,
             eventId = eventId
         )
 }

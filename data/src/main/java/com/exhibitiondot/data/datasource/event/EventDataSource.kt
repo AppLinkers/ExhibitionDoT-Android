@@ -20,7 +20,7 @@ interface EventDataSource {
 
     suspend fun updateEvent(
         file: File?,
-        eventInfo: EventInfoDto?,
+        eventInfo: EventInfoDto,
         eventId: Long
     ) : NetworkState<Unit>
 
