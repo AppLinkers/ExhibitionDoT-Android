@@ -23,8 +23,11 @@ import com.exhibitiondot.presentation.ui.navigation.MainScreen
 import com.exhibitiondot.presentation.ui.state.EditTextState
 import com.exhibitiondot.presentation.ui.state.MultiFilterState
 import com.exhibitiondot.presentation.ui.state.SingleFilterState
+import com.exhibitiondot.presentation.util.ImageProcessor
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -32,6 +35,7 @@ class PostEventViewModel @Inject constructor(
     private val addEventUseCase: AddEventUseCase,
     private val updateEventUseCase: UpdateEventUseCase,
     private val getEventInfoUseCase: GetEventInfoUseCase,
+    private val imageProcessor: ImageProcessor,
     private val uiModel: GlobalUiModel,
     savedStateHandle: SavedStateHandle,
 ) : BaseViewModel() {
@@ -78,11 +82,34 @@ class PostEventViewModel @Inject constructor(
     }
 
     fun onPhotoPickerResult(uri: Uri?) {
-
+        if (uri != null) {
+            viewModelScope.launch(Dispatchers.IO) {
+                val file = imageProcessor.uriToCompressedFile(uri, 420, 420)
+                withContext(Dispatchers.Main) {
+                    if (file == null) {
+                        uiModel.showToast("이미지 변환에 실패했어요")
+                    } else {
+                        image = ImageSource.Local(file)
+                    }
+                }
+            }
+        }
     }
 
     fun deleteImage() {
-        image = null
+        val selectedImage = image
+        if (selectedImage != null) {
+            image = null
+            deleteFile(selectedImage)
+        }
+    }
+
+    private fun deleteFile(imageSource: ImageSource) {
+        if (imageSource is ImageSource.Local) {
+            viewModelScope.launch(Dispatchers.IO) {
+                imageSource.file.delete()
+            }
+        }
     }
 
     fun showDatePicker() {
@@ -149,9 +176,11 @@ class PostEventViewModel @Inject constructor(
     }
 
     private suspend fun addEvent(eventInfo: EventInfo, onBack: () -> Unit) {
-        addEventUseCase(image as ImageSource.Local, eventInfo)
+        val selectedImage = image as ImageSource.Local
+        addEventUseCase(selectedImage, eventInfo)
             .onSuccess {
                 showMessage("이벤트를 추가했어요")
+                deleteFile(selectedImage)
                 onBack()
             }
             .onFailure {
@@ -164,9 +193,11 @@ class PostEventViewModel @Inject constructor(
         eventInfo: EventInfo,
         onBack: () -> Unit
     ) {
-        updateEventUseCase(image!!, originEventInfo, eventInfo, eventId)
+        val selectedImage = image!!
+        updateEventUseCase(selectedImage, originEventInfo, eventInfo, eventId)
             .onSuccess {
                 showMessage("이벤트를 수정했어요")
+                deleteFile(selectedImage)
                 onBack()
             }
             .onFailure {

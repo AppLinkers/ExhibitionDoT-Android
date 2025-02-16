@@ -55,6 +55,7 @@ dependencies {
     implementation(libs.androidx.viewmodel.ktx)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.material)
+    implementation(libs.androidx.exifinterface)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
