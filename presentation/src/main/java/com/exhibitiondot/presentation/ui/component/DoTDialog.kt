@@ -12,6 +12,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
@@ -19,7 +22,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -37,6 +39,7 @@ import com.exhibitiondot.presentation.R
 import com.exhibitiondot.presentation.mapper.DateFormatStrategy
 import com.exhibitiondot.presentation.mapper.format
 import com.exhibitiondot.presentation.ui.state.IEditTextState
+import com.exhibitiondot.presentation.ui.theme.screenPadding
 import java.util.Calendar
 
 @Composable
@@ -152,13 +155,9 @@ fun DoTDatePickerDialog(
     if (show) {
         DatePickerDialog (
             confirmButton = {
-                TextButton(
-                    onClick = {
-                        onDateSelect(selectedDate)
-                        onDismiss()
-                    }
-                ) {
-                    Text(text = stringResource(R.string.confirm))
+                ConfirmButton {
+                    onDateSelect(selectedDate)
+                    onDismiss()
                 }
             },
             colors = DatePickerDefaults.colors(
@@ -175,6 +174,75 @@ fun DoTDatePickerDialog(
                     containerColor = MaterialTheme.colorScheme.background,
                 )
             )
+        }
+    }
+}
+
+@Composable
+fun DoTReportDialog(
+    show: Boolean,
+    onReport: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    if (show) {
+        AlertDialog(
+            title = {
+                Text(text = stringResource(R.string.report))
+            },
+            text = {
+                Text(text = stringResource(R.string.report_description))
+            },
+            confirmButton = {
+                ConfirmButton {
+                    onReport()
+                    onDismiss()
+                }
+            },
+            dismissButton = {
+                CancelButton(onClick = onDismiss)
+            },
+            containerColor = MaterialTheme.colorScheme.background,
+            shape = MaterialTheme.shapes.medium,
+            onDismissRequest = onDismiss
+        )
+    }
+}
+
+@Composable
+fun DoTUpdateDeleteDialog(
+    show: Boolean,
+    onUpdate: () -> Unit,
+    onDelete: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    if (show) {
+        Dialog(onDismissRequest = onDismiss) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        color = MaterialTheme.colorScheme.background,
+                        shape = MaterialTheme.shapes.medium
+                    )
+                    .padding(all = screenPadding)
+            ) {
+                DialogButton(
+                    text = stringResource(R.string.update),
+                    onClick = {
+                        onDismiss()
+                        onUpdate()
+                    }
+                )
+                DoTSpacer(size = 10)
+                DialogButton(
+                    text = stringResource(R.string.delete),
+                    contentColor = MaterialTheme.colorScheme.error,
+                    onClick = {
+                        onDismiss()
+                        onDelete()
+                    }
+                )
+            }
         }
     }
 }

@@ -162,6 +162,20 @@ fun CalendarIcon(
         modifier = modifier,
         painter = painterResource(R.drawable.ic_calender),
         tint = MaterialTheme.colorScheme.surfaceContainerLow,
-        contentDescription = "calender_icon"
+        contentDescription = "calender-icon"
+    )
+}
+
+@Composable
+fun MenuIcon(
+    modifier: Modifier = Modifier,
+    color: Color,
+    onClick: () -> Unit,
+) {
+    Icon(
+        modifier = modifier.clickable(onClick = onClick),
+        painter = painterResource(R.drawable.ic_menu),
+        tint = color,
+        contentDescription = "menu-icon"
     )
 }

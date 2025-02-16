@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
@@ -31,33 +32,48 @@ import com.exhibitiondot.presentation.model.CommentUiModel
 import com.exhibitiondot.presentation.model.EventDetailUiModel
 import com.exhibitiondot.presentation.ui.component.DoTImage
 import com.exhibitiondot.presentation.ui.component.DoTLoadingScreen
+import com.exhibitiondot.presentation.ui.component.DoTReportDialog
 import com.exhibitiondot.presentation.ui.component.DoTSpacer
+import com.exhibitiondot.presentation.ui.component.DoTUpdateDeleteDialog
 import com.exhibitiondot.presentation.ui.component.EventDetailTopBar
 import com.exhibitiondot.presentation.ui.component.HeartIcon
+import com.exhibitiondot.presentation.ui.component.MenuIcon
 import com.exhibitiondot.presentation.ui.theme.screenPadding
 
 @Composable
 fun EventDetailRoute(
     modifier: Modifier = Modifier,
+    movePostEvent: (Long?) -> Unit,
     onBack: () -> Unit,
     viewModel: EventDetailViewModel = hiltViewModel()
 ) {
     val uiState = viewModel.uiState
+    val dialogState = viewModel.dialogState
     val commentList = viewModel.commentList.collectAsLazyPagingItems()
 
     when (uiState) {
-        EventDetailUiState.Loading -> DoTLoadingScreen(
-            modifier = modifier
-        )
-        EventDetailUiState.Failure -> {}
+        EventDetailUiState.Loading -> DoTLoadingScreen(modifier = modifier)
         is EventDetailUiState.Success -> EventDetailScreen(
             modifier = modifier,
             eventDetail = uiState.eventDetail,
             commentList = commentList,
             toggleEventLike = viewModel::toggleEventLike,
+            showDialog = viewModel::showDialog,
             onBack = onBack
         )
+        EventDetailUiState.Failure -> {}
     }
+    DoTReportDialog(
+        show = dialogState == EventDetailDialogState.ShowReportDialog,
+        onReport = viewModel::onReport,
+        onDismiss = viewModel::dismiss
+    )
+    DoTUpdateDeleteDialog(
+        show = dialogState == EventDetailDialogState.ShowUpdateDeleteDialog,
+        onUpdate = { viewModel.onUpdate(movePostEvent) },
+        onDelete = { viewModel.onDelete(onBack) },
+        onDismiss = viewModel::dismiss
+    )
 }
 
 @Composable
@@ -66,6 +82,7 @@ private fun EventDetailScreen(
     eventDetail: EventDetailUiModel,
     commentList: LazyPagingItems<CommentUiModel>,
     toggleEventLike: (EventDetailUiModel) -> Unit,
+    showDialog: (EventDetailDialogState) -> Unit,
     onBack: () -> Unit,
 ) {
     val lazyListState = rememberLazyListState()
@@ -83,7 +100,7 @@ private fun EventDetailScreen(
                 EventDetailView(
                     eventDetail = eventDetail,
                     commentCount = commentList.itemCount,
-                    toggleEventLike = toggleEventLike
+                    toggleEventLike = toggleEventLike,
                 )
             }
             items(
@@ -91,7 +108,10 @@ private fun EventDetailScreen(
                 key = { index -> commentList[index]?.id ?: index }
             ) { index ->
                 commentList[index]?.let { comment ->
-                    CommentItem(comment = comment)
+                    CommentItem(
+                        comment = comment,
+                        showDialog = { showDialog(EventDetailDialogState.ShowReportDialog) }
+                    )
                 }
             }
         }
@@ -99,6 +119,13 @@ private fun EventDetailScreen(
             modifier = Modifier.align(Alignment.TopCenter),
             eventName = eventDetail.name,
             skipImage = skipImage,
+            showDialog = {
+                if (eventDetail.owner) {
+                    showDialog(EventDetailDialogState.ShowUpdateDeleteDialog)
+                } else {
+                    showDialog(EventDetailDialogState.ShowReportDialog)
+                }
+            },
             onBack = onBack
         )
     }
@@ -109,7 +136,7 @@ private fun EventDetailView(
     modifier: Modifier = Modifier,
     eventDetail: EventDetailUiModel,
     commentCount: Int,
-    toggleEventLike: (EventDetailUiModel) -> Unit
+    toggleEventLike: (EventDetailUiModel) -> Unit,
 ) {
     Column(
         modifier = modifier.fillMaxSize()
@@ -117,7 +144,7 @@ private fun EventDetailView(
         DoTImage(
             modifier = Modifier
                 .fillMaxSize()
-                .height(420.dp),
+                .height(500.dp),
             url = eventDetail.imgUrl,
             contentScale = ContentScale.FillBounds
         )
@@ -190,28 +217,38 @@ private fun EventDetailView(
 @Composable
 private fun CommentItem(
     modifier: Modifier = Modifier,
-    comment: CommentUiModel
+    comment: CommentUiModel,
+    showDialog: () -> Unit,
 ) {
-    Column(
+    Row(
         modifier = modifier
             .fillMaxWidth()
             .padding(all = screenPadding)
     ) {
-        Text(
-            text = comment.nickname,
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.surfaceContainerHigh
-        )
-        DoTSpacer(size = 4)
-        Text(
-            text = comment.createdAt,
-            style = MaterialTheme.typography.displaySmall,
-            color = MaterialTheme.colorScheme.surfaceContainer,
-        )
-        DoTSpacer(size = 10)
-        Text(
-            text = comment.content,
-            style = MaterialTheme.typography.displayMedium
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
+            Text(
+                text = comment.nickname,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.surfaceContainerHigh
+            )
+            DoTSpacer(size = 4)
+            Text(
+                text = comment.createdAt,
+                style = MaterialTheme.typography.displaySmall,
+                color = MaterialTheme.colorScheme.surfaceContainer,
+            )
+            DoTSpacer(size = 10)
+            Text(
+                text = comment.content,
+                style = MaterialTheme.typography.displayMedium
+            )
+        }
+        MenuIcon(
+            modifier = Modifier.size(16.dp),
+            color = MaterialTheme.colorScheme.surfaceContainerHigh,
+            onClick = showDialog
         )
     }
 }

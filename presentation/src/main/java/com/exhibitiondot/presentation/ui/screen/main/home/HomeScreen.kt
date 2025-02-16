@@ -59,7 +59,7 @@ fun HomeRoute(
     modifier: Modifier = Modifier,
     scope: CoroutineScope,
     moveEventDetail: (Long) -> Unit,
-    movePostDetail: (Long?) -> Unit,
+    movePostEvent: (Long?) -> Unit,
     moveMy: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
@@ -76,7 +76,7 @@ fun HomeRoute(
         resetAppliedQuery = viewModel::resetAppliedQuery,
         updateUiState = viewModel::updateUiState,
         onEventItem = moveEventDetail,
-        movePostDetail = { movePostDetail(null) },
+        movePostEvent = { movePostEvent(null) },
         moveMy = moveMy
     )
     if (uiState is HomeUiState.ShowRegionFilter) {
@@ -124,7 +124,7 @@ private fun HomeScreen(
     resetAppliedQuery: () -> Unit,
     updateUiState: (HomeUiState) -> Unit,
     onEventItem: (Long) -> Unit,
-    movePostDetail: () -> Unit,
+    movePostEvent: () -> Unit,
     moveMy: () -> Unit,
 ) {
     Box(
@@ -171,7 +171,7 @@ private fun HomeScreen(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(all = screenPadding),
-            onClick = movePostDetail
+            onClick = movePostEvent
         )
     }
 }

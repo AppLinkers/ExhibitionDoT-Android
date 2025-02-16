@@ -4,7 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -46,11 +48,14 @@ fun PostEventImage(
     deleteImage: () -> Unit,
 ) {
     Box(
-        modifier = modifier.size(312.dp)
+        modifier = modifier
+            .width(312.dp)
+            .height(372.dp)
     ) {
         Box(
             modifier = Modifier
-                .size(300.dp)
+                .width(300.dp)
+                .height(360.dp)
                 .align(Alignment.BottomStart)
         ) {
             image?.let {

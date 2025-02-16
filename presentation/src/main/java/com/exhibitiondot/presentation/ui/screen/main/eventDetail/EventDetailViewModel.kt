@@ -11,6 +11,7 @@ import androidx.paging.cachedIn
 import androidx.paging.map
 import com.exhibitiondot.domain.model.Comment
 import com.exhibitiondot.domain.usecase.comment.GetCommentListUseCase
+import com.exhibitiondot.domain.usecase.event.DeleteEventUseCase
 import com.exhibitiondot.domain.usecase.event.GetEventDetailUseCase
 import com.exhibitiondot.domain.usecase.event.ToggleEventLikeUseCase
 import com.exhibitiondot.presentation.base.BaseViewModel
@@ -29,6 +30,7 @@ import javax.inject.Inject
 class EventDetailViewModel @Inject constructor(
     private val toggleEventLikeUseCase: ToggleEventLikeUseCase,
     private val getEventDetailUseCase: GetEventDetailUseCase,
+    private val deleteEventUseCase: DeleteEventUseCase,
     getCommentListUseCase: GetCommentListUseCase,
     private val uiModel: GlobalUiModel,
     savedStateHandle: SavedStateHandle,
@@ -36,6 +38,9 @@ class EventDetailViewModel @Inject constructor(
     private val eventId = savedStateHandle.toRoute<MainScreen.EventDetail>().eventId
 
     var uiState by mutableStateOf<EventDetailUiState>(EventDetailUiState.Loading)
+        private set
+
+    var dialogState by mutableStateOf<EventDetailDialogState>(EventDetailDialogState.Nothing)
         private set
 
     val commentList: Flow<PagingData<CommentUiModel>> =
@@ -80,5 +85,34 @@ class EventDetailViewModel @Inject constructor(
                     uiModel.showToast("좋아요 변경에 실패했어요")
                 }
         }
+    }
+
+    fun showDialog(eventDetailDialogState: EventDetailDialogState) {
+        dialogState = eventDetailDialogState
+    }
+
+    fun dismiss() {
+        dialogState = EventDetailDialogState.Nothing
+    }
+
+    fun onUpdate(movePostEvent: (Long?) -> Unit) {
+        movePostEvent(eventId)
+    }
+
+    fun onDelete(onBack: () -> Unit) {
+        viewModelScope.launch {
+            deleteEventUseCase(eventId)
+                .onSuccess {
+                    uiModel.showToast("이벤트를 삭제했어요")
+                    onBack()
+                }
+                .onFailure {
+                    uiModel.showToast("이벤트 삭제에 실패했어요")
+                }
+        }
+    }
+
+    fun onReport() {
+        uiModel.showToast("게시글을 신고했어요")
     }
 }

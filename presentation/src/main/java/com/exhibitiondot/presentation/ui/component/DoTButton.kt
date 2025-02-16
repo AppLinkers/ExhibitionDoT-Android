@@ -16,6 +16,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -153,5 +154,45 @@ fun HomeAddButton(
         onClick = onClick
     ) {
         AddIcon()
+    }
+}
+
+@Composable
+fun ConfirmButton(
+    onClick: () -> Unit,
+) {
+    TextButton(onClick = onClick) {
+        Text(text = stringResource(R.string.confirm))
+    }
+}
+
+@Composable
+fun CancelButton(
+    onClick: () -> Unit,
+) {
+    TextButton(onClick = onClick) {
+        Text(text = stringResource(R.string.cancel))
+    }
+}
+
+@Composable
+fun DialogButton(
+    text: String,
+    contentColor: Color = MaterialTheme.colorScheme.onBackground,
+    onClick: () -> Unit,
+) {
+    TextButton(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(buttonHeight),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.background
+        ),
+        onClick = onClick
+    ) {
+        Text(
+            text = text,
+            color = contentColor
+        )
     }
 }
