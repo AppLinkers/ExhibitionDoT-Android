@@ -295,7 +295,7 @@ private fun EventItem(
                 .fillMaxWidth()
                 .height(220.dp)
                 .clip(MaterialTheme.shapes.medium),
-            url = "https://www.it-b.co.kr/news/photo/202011/45197_42822_152.png",
+            url = event.imgUrl,
         )
         DoTSpacer(size = 10)
         Text(
@@ -306,7 +306,7 @@ private fun EventItem(
         DoTSpacer(size = 6)
         Text(
             modifier = Modifier.height(50.dp),
-            text = "2024 Naver Corp. 컨퍼런스 (코엑스 컨벤션 홀)",
+            text = event.name,
             style = MaterialTheme.typography.labelMedium,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis
