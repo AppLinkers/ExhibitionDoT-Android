@@ -11,6 +11,7 @@ fun String.toRegion(): Region {
         Region.Chungcheoung.name -> Region.Chungcheoung
         Region.Jeolla.name -> Region.Jeolla
         Region.Gyeongsang.name -> Region.Gyeongsang
+        Region.Gangwon.name -> Region.Gangwon
         Region.Jeju.name -> Region.Jeju
         else -> throw IllegalArgumentException()
     }

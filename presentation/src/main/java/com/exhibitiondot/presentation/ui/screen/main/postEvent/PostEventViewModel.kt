@@ -51,7 +51,7 @@ class PostEventViewModel @Inject constructor(
 
     var image by mutableStateOf<ImageSource?>(null)
         private set
-    val nameState = EditTextState(maxLength = 30)
+    val nameState = EditTextState(maxLength = 20)
     var selectedDate by mutableStateOf(format(DateFormatStrategy.Today))
         private set
     val regionState = SingleFilterState(filterList = Region.values())
@@ -127,6 +127,7 @@ class PostEventViewModel @Inject constructor(
     fun onPrevStep(onBack: () -> Unit) {
         val prevIdx = totalSteps.indexOf(currentStep) - 1
         if (prevIdx < 0) {
+            deleteImage()
             onBack()
         } else {
             currentStep = totalSteps[prevIdx]
@@ -144,7 +145,7 @@ class PostEventViewModel @Inject constructor(
 
     fun validate(): Boolean {
         return when (currentStep) {
-            PostEventStep.UploadImage -> true
+            PostEventStep.UploadImage -> image != null
             PostEventStep.EventInfo -> nameState.isValidate() &&
                     selectedDate.isNotEmpty() &&
                     regionState.selectedFilter != null &&

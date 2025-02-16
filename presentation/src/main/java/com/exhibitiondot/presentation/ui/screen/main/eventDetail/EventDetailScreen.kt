@@ -1,6 +1,5 @@
 package com.exhibitiondot.presentation.ui.screen.main.eventDetail
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,7 +24,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.exhibitiondot.presentation.R
@@ -44,7 +42,7 @@ fun EventDetailRoute(
     onBack: () -> Unit,
     viewModel: EventDetailViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState = viewModel.uiState
     val commentList = viewModel.commentList.collectAsLazyPagingItems()
 
     when (uiState) {
@@ -54,19 +52,18 @@ fun EventDetailRoute(
         EventDetailUiState.Failure -> {}
         is EventDetailUiState.Success -> EventDetailScreen(
             modifier = modifier,
-            uiState = uiState as EventDetailUiState.Success,
+            eventDetail = uiState.eventDetail,
             commentList = commentList,
             toggleEventLike = viewModel::toggleEventLike,
             onBack = onBack
         )
     }
-    BackHandler(onBack = onBack)
 }
 
 @Composable
 private fun EventDetailScreen(
     modifier: Modifier,
-    uiState: EventDetailUiState.Success,
+    eventDetail: EventDetailUiModel,
     commentList: LazyPagingItems<CommentUiModel>,
     toggleEventLike: (EventDetailUiModel) -> Unit,
     onBack: () -> Unit,
@@ -84,7 +81,7 @@ private fun EventDetailScreen(
         ) {
             item {
                 EventDetailView(
-                    eventDetail = uiState.eventDetail,
+                    eventDetail = eventDetail,
                     commentCount = commentList.itemCount,
                     toggleEventLike = toggleEventLike
                 )
@@ -100,7 +97,7 @@ private fun EventDetailScreen(
         }
         EventDetailTopBar(
             modifier = Modifier.align(Alignment.TopCenter),
-            eventName = "2024 Naver Corp. 컨퍼런스 (코엑스 컨벤션 홀 208호)",
+            eventName = eventDetail.name,
             skipImage = skipImage,
             onBack = onBack
         )
