@@ -12,7 +12,7 @@ fun Event.toUiModel() =
         id = id,
         name = name,
         imgUrl = imgUrl,
-        date = date.format(DateFormatStrategy.MonthDay),
+        date = format(DateFormatStrategy.MonthDay(date)),
         likeCount = likeCount
     )
 
@@ -24,8 +24,8 @@ fun EventDetail.toUiModel() =
         region = region.name,
         categoryTags = categoryList.joinToString(" ", transform = Category::toTag),
         eventTypeTags = eventTypeList.joinToString(" ", transform = EventType::toTag),
-        date = date.format(DateFormatStrategy.FullDate),
-        createdAt = createdAt.format(DateFormatStrategy.RelativeTime),
+        date = format(DateFormatStrategy.FullDate(date)),
+        createdAt = format(DateFormatStrategy.RelativeTime(createdAt)),
         likeCount = likeCount,
         isLike = isLike,
         owner = owner

@@ -16,6 +16,8 @@ import com.exhibitiondot.domain.usecase.event.AddEventUseCase
 import com.exhibitiondot.domain.usecase.event.GetEventInfoUseCase
 import com.exhibitiondot.domain.usecase.event.UpdateEventUseCase
 import com.exhibitiondot.presentation.base.BaseViewModel
+import com.exhibitiondot.presentation.mapper.DateFormatStrategy
+import com.exhibitiondot.presentation.mapper.format
 import com.exhibitiondot.presentation.model.GlobalUiModel
 import com.exhibitiondot.presentation.ui.navigation.MainScreen
 import com.exhibitiondot.presentation.ui.state.EditTextState
@@ -45,8 +47,9 @@ class PostEventViewModel @Inject constructor(
 
     var image by mutableStateOf<ImageSource?>(null)
         private set
-
     val nameState = EditTextState(maxLength = 30)
+    var selectedDate by mutableStateOf(format(DateFormatStrategy.Today))
+        private set
     val regionState = SingleFilterState(filterList = Region.values())
     val categoryState = MultiFilterState(filterList = Category.values())
     val eventTypeState = MultiFilterState(filterList = EventType.values())
@@ -64,6 +67,7 @@ class PostEventViewModel @Inject constructor(
                     with(eventInfo) {
                         originEventInfo = this
                         nameState.typeText(name)
+                        selectedDate = date
                         regionState.setFilter(region)
                         categoryState.setFilter(categoryList)
                         eventTypeState.setFilter(eventTypeList)
@@ -71,6 +75,26 @@ class PostEventViewModel @Inject constructor(
                     image = imageSource
                 }
         }
+    }
+
+    fun onPhotoPickerResult(uri: Uri?) {
+
+    }
+
+    fun deleteImage() {
+        image = null
+    }
+
+    fun showDatePicker() {
+        uiState = PostEventUiState.ShowDatePicker
+    }
+
+    fun dismiss() {
+        uiState = PostEventUiState.Idle
+    }
+
+    fun onDateSelect(date: String) {
+        selectedDate = date
     }
 
     fun onPrevStep(onBack: () -> Unit) {
@@ -93,8 +117,12 @@ class PostEventViewModel @Inject constructor(
 
     fun validate(): Boolean {
         return when (currentStep) {
-            PostEventStep.UploadImage -> image != null
-            PostEventStep.EventInfo -> nameState.isValidate() && regionState.selectedFilter != null // TODO("조건 추가")
+            PostEventStep.UploadImage -> true
+            PostEventStep.EventInfo -> nameState.isValidate() &&
+                    selectedDate.isNotEmpty() &&
+                    regionState.selectedFilter != null &&
+                    categoryState.selectedFilterList.isNotEmpty() &&
+                    eventTypeState.selectedFilterList.isNotEmpty()
         }
     }
 
@@ -102,20 +130,12 @@ class PostEventViewModel @Inject constructor(
         return currentStep == totalSteps.last()
     }
 
-    fun onPhotoPickerResult(uri: Uri?) {
-
-    }
-
-    fun deleteImage() {
-        image = null
-    }
-
     private fun postingEvent(onBack: () -> Unit) {
         uiState = PostEventUiState.Loading
         viewModelScope.launch {
             val eventInfo = EventInfo(
                 name = nameState.trimmedText(),
-                date = "", // TODO("입력 날짜 할당")
+                date = selectedDate,
                 region = regionState.selectedFilter!!,
                 categoryList = categoryState.selectedFilterList,
                 eventTypeList = eventTypeState.selectedFilterList,

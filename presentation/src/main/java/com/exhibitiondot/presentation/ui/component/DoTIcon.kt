@@ -153,3 +153,15 @@ fun AddIcon(
         contentDescription = "add-icon"
     )
 }
+
+@Composable
+fun CalendarIcon(
+    modifier: Modifier = Modifier,
+) {
+    Icon(
+        modifier = modifier,
+        painter = painterResource(R.drawable.ic_calender),
+        tint = MaterialTheme.colorScheme.surfaceContainerLow,
+        contentDescription = "calender_icon"
+    )
+}

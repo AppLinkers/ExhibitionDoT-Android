@@ -12,8 +12,15 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDefaults
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
@@ -27,17 +34,10 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.DialogWindowProvider
 import com.exhibitiondot.presentation.R
+import com.exhibitiondot.presentation.mapper.DateFormatStrategy
+import com.exhibitiondot.presentation.mapper.format
 import com.exhibitiondot.presentation.ui.state.IEditTextState
-
-@Composable
-fun getActivityWindow(): Window? = LocalView.current.context.getActivityWindow()
-
-private tailrec fun Context.getActivityWindow(): Window? =
-    when (this) {
-        is Activity -> window
-        is ContextWrapper -> baseContext.getActivityWindow()
-        else -> null
-    }
+import java.util.Calendar
 
 @Composable
 fun HomeSearchDialog(
@@ -105,6 +105,76 @@ fun HomeSearchDialog(
                     )
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun getActivityWindow(): Window? = LocalView.current.context.getActivityWindow()
+
+private tailrec fun Context.getActivityWindow(): Window? =
+    when (this) {
+        is Activity -> window
+        is ContextWrapper -> baseContext.getActivityWindow()
+        else -> null
+    }
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DoTDatePickerDialog(
+    show: Boolean,
+    date: String,
+    onDateSelect: (String) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    fun getDateMillis(date: String): Long {
+        return format(DateFormatStrategy.DateToMillis(date)).toLong()
+    }
+    fun getYearRange(): IntRange {
+        val currentYear = Calendar.getInstance().get(Calendar.YEAR)
+        return currentYear..(currentYear + 1)
+    }
+    val today = format(DateFormatStrategy.Today)
+    val datePickerState = rememberDatePickerState(
+        yearRange = getYearRange(),
+        initialSelectedDateMillis = getDateMillis(date),
+        selectableDates = object : SelectableDates {
+            override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+                return utcTimeMillis >= getDateMillis(today)
+            }
+        }
+    )
+    val selectedDate =
+        datePickerState.selectedDateMillis?.let {
+            format(DateFormatStrategy.MillisToDate(it))
+        } ?: ""
+    if (show) {
+        DatePickerDialog (
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        onDateSelect(selectedDate)
+                        onDismiss()
+                    }
+                ) {
+                    Text(text = stringResource(R.string.confirm))
+                }
+            },
+            colors = DatePickerDefaults.colors(
+                containerColor = MaterialTheme.colorScheme.background,
+            ),
+            onDismissRequest = onDismiss
+        ) {
+            DatePicker(
+                state = datePickerState,
+                title = null,
+                headline = null,
+                showModeToggle = false,
+                colors = DatePickerDefaults.colors(
+                    containerColor = MaterialTheme.colorScheme.background,
+                )
+            )
         }
     }
 }

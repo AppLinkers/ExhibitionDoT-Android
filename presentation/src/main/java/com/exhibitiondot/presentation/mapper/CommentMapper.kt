@@ -8,5 +8,5 @@ fun Comment.toUiModel() =
         id = id,
         nickname = authorNickname,
         content = content,
-        createdAt = createdAt.format(DateFormatStrategy.RelativeTime)
+        createdAt = format(DateFormatStrategy.RelativeTime(createdAt))
     )
