@@ -27,10 +27,9 @@ class CommentPagingSource(
         )
         return when (response) {
             is NetworkState.Success -> {
-                val data = response.data
-                val commentList = data.contents
-                val prevKey = if (data.first) null else data.page -1
-                val nextKey = if (data.last) null else data.page + 1
+                val commentList = response.data.contents
+                val prevKey = if (pageNumber == ApiConst.DEFAULT_PAGE_NUMBER) null else pageNumber - 1
+                val nextKey = if (commentList.isEmpty()) null else pageNumber + 1
                 LoadResult.Page(commentList, prevKey, nextKey)
             }
             is NetworkState.Failure -> {
