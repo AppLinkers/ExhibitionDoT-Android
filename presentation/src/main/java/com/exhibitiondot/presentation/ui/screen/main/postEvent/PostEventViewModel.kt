@@ -1,5 +1,6 @@
 package com.exhibitiondot.presentation.ui.screen.main.postEvent
 
+import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -99,6 +100,14 @@ class PostEventViewModel @Inject constructor(
 
     fun lastStep(): Boolean {
         return currentStep == totalSteps.last()
+    }
+
+    fun onPhotoPickerResult(uri: Uri?) {
+
+    }
+
+    fun deleteImage() {
+        image = null
     }
 
     private fun postingEvent(onBack: () -> Unit) {
