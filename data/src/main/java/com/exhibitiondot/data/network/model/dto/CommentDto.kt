@@ -1,4 +1,4 @@
-package com.exhibitiondot.data.model.dto
+package com.exhibitiondot.data.network.model.dto
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

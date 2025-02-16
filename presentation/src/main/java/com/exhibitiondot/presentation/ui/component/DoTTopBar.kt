@@ -6,13 +6,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,7 +21,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -133,6 +130,7 @@ fun EventDetailTopBar(
     modifier: Modifier = Modifier,
     eventName: String,
     skipImage: Boolean,
+    showDialog: () -> Unit,
     onBack: () -> Unit,
 ) {
     val containerColor by animateColorAsState(
@@ -141,7 +139,15 @@ fun EventDetailTopBar(
         } else {
             Color.Transparent
         },
-        label = "event-detail-top-bar-color-anim"
+        label = "event-detail-top-bar-container-color-anim"
+    )
+    val iconColor by animateColorAsState(
+        targetValue = if (skipImage) {
+            MaterialTheme.colorScheme.surfaceContainerHigh
+        } else {
+            MaterialTheme.colorScheme.background
+        },
+        label = "event-detail-top-bar-icon-color-anim"
     )
     Box(
         modifier = modifier
@@ -157,11 +163,7 @@ fun EventDetailTopBar(
     ) {
         BackIcon(
             modifier = Modifier.align(Alignment.CenterStart),
-            color = if (skipImage) {
-                MaterialTheme.colorScheme.surfaceContainerHigh
-            } else {
-                MaterialTheme.colorScheme.background
-            },
+            color = iconColor,
             onBack = onBack
         )
         Text(
@@ -178,6 +180,11 @@ fun EventDetailTopBar(
             } else {
                 Color.Transparent
             }
+        )
+        MenuIcon(
+            modifier = Modifier.align(Alignment.CenterEnd),
+            color = iconColor,
+            onClick = showDialog
         )
     }
 }

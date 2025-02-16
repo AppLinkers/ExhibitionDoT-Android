@@ -3,6 +3,7 @@ package com.exhibitiondot.presentation.ui.screen.main.home
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -25,7 +26,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -43,6 +43,7 @@ import com.exhibitiondot.presentation.ui.component.DoTLoadingScreen
 import com.exhibitiondot.presentation.ui.component.DoTSpacer
 import com.exhibitiondot.presentation.ui.component.DownIcon
 import com.exhibitiondot.presentation.ui.component.HeartIcon
+import com.exhibitiondot.presentation.ui.component.HomeAddButton
 import com.exhibitiondot.presentation.ui.component.HomeFilterChip
 import com.exhibitiondot.presentation.ui.component.HomeMultiFilterSheet
 import com.exhibitiondot.presentation.ui.component.HomeSearchDialog
@@ -58,6 +59,7 @@ fun HomeRoute(
     modifier: Modifier = Modifier,
     scope: CoroutineScope,
     moveEventDetail: (Long) -> Unit,
+    movePostEvent: (Long?) -> Unit,
     moveMy: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
@@ -74,6 +76,7 @@ fun HomeRoute(
         resetAppliedQuery = viewModel::resetAppliedQuery,
         updateUiState = viewModel::updateUiState,
         onEventItem = moveEventDetail,
+        movePostEvent = { movePostEvent(null) },
         moveMy = moveMy
     )
     if (uiState is HomeUiState.ShowRegionFilter) {
@@ -121,44 +124,55 @@ private fun HomeScreen(
     resetAppliedQuery: () -> Unit,
     updateUiState: (HomeUiState) -> Unit,
     onEventItem: (Long) -> Unit,
+    movePostEvent: () -> Unit,
     moveMy: () -> Unit,
 ) {
-    Column(
+    Box(
         modifier = modifier.fillMaxSize()
     ) {
-        val lazyGridState = rememberLazyGridState()
-        val shadowVisible by remember { derivedStateOf { lazyGridState.firstVisibleItemScrollOffset > 0 } }
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .shadow(
-                    elevation = if (shadowVisible) 0.5.dp else 0.dp
-                )
+            modifier = modifier.fillMaxSize()
         ) {
-            HomeTopBar(
-                modifier = Modifier.fillMaxWidth(),
-                showSearchDialog = { updateUiState(HomeUiState.ShowSearchDialog) },
-                moveMy = moveMy
-            )
-            HomeFilterList(
-                eventParams = eventParams,
-                resetAllFilters = resetAllFilters,
-                resetAppliedQuery = resetAppliedQuery,
-                updateUiState = updateUiState
-            )
+            val lazyGridState = rememberLazyGridState()
+            val shadowVisible by remember { derivedStateOf { lazyGridState.firstVisibleItemScrollOffset > 0 } }
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(
+                        elevation = if (shadowVisible) 0.5.dp else 0.dp
+                    )
+            ) {
+                HomeTopBar(
+                    modifier = Modifier.fillMaxWidth(),
+                    showSearchDialog = { updateUiState(HomeUiState.ShowSearchDialog) },
+                    moveMy = moveMy
+                )
+                HomeFilterList(
+                    eventParams = eventParams,
+                    resetAllFilters = resetAllFilters,
+                    resetAppliedQuery = resetAppliedQuery,
+                    updateUiState = updateUiState
+                )
+            }
+            when (eventList.loadState.refresh) {
+                LoadState.Loading -> DoTLoadingScreen(
+                    modifier = Modifier.weight(1f)
+                )
+                is LoadState.Error -> {}
+                is LoadState.NotLoading -> EventList(
+                    modifier = Modifier.weight(1f),
+                    lazyGridState = lazyGridState,
+                    eventList = eventList,
+                    onEventItem = onEventItem
+                )
+            }
         }
-        when (eventList.loadState.refresh) {
-            LoadState.Loading -> DoTLoadingScreen(
-                modifier = Modifier.weight(1f)
-            )
-            is LoadState.Error -> {}
-            is LoadState.NotLoading -> EventList(
-                modifier = Modifier.weight(1f),
-                lazyGridState = lazyGridState,
-                eventList = eventList,
-                onEventItem = onEventItem
-            )
-        }
+        HomeAddButton(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(all = screenPadding),
+            onClick = movePostEvent
+        )
     }
 }
 
@@ -262,9 +276,6 @@ private fun EventList(
                 )
             }
         }
-        item {
-            DoTSpacer(size = 800)
-        }
     }
 }
 
@@ -284,8 +295,7 @@ private fun EventItem(
                 .fillMaxWidth()
                 .height(220.dp)
                 .clip(MaterialTheme.shapes.medium),
-            url = "https://www.it-b.co.kr/news/photo/202011/45197_42822_152.png",
-            contentScale = ContentScale.FillBounds
+            url = event.imgUrl,
         )
         DoTSpacer(size = 10)
         Text(
@@ -296,7 +306,7 @@ private fun EventItem(
         DoTSpacer(size = 6)
         Text(
             modifier = Modifier.height(50.dp),
-            text = "2024 Naver Corp. 컨퍼런스 (코엑스 컨벤션 홀)",
+            text = event.name,
             style = MaterialTheme.typography.labelMedium,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis

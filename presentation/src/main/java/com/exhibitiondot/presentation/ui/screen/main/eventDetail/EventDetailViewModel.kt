@@ -1,5 +1,8 @@
 package com.exhibitiondot.presentation.ui.screen.main.eventDetail
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
@@ -8,6 +11,7 @@ import androidx.paging.cachedIn
 import androidx.paging.map
 import com.exhibitiondot.domain.model.Comment
 import com.exhibitiondot.domain.usecase.comment.GetCommentListUseCase
+import com.exhibitiondot.domain.usecase.event.DeleteEventUseCase
 import com.exhibitiondot.domain.usecase.event.GetEventDetailUseCase
 import com.exhibitiondot.domain.usecase.event.ToggleEventLikeUseCase
 import com.exhibitiondot.presentation.base.BaseViewModel
@@ -18,11 +22,7 @@ import com.exhibitiondot.presentation.model.GlobalUiModel
 import com.exhibitiondot.presentation.ui.navigation.MainScreen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -30,14 +30,18 @@ import javax.inject.Inject
 class EventDetailViewModel @Inject constructor(
     private val toggleEventLikeUseCase: ToggleEventLikeUseCase,
     private val getEventDetailUseCase: GetEventDetailUseCase,
+    private val deleteEventUseCase: DeleteEventUseCase,
     getCommentListUseCase: GetCommentListUseCase,
     private val uiModel: GlobalUiModel,
     savedStateHandle: SavedStateHandle,
 ) : BaseViewModel() {
     private val eventId = savedStateHandle.toRoute<MainScreen.EventDetail>().eventId
 
-    private val _uiState = MutableStateFlow<EventDetailUiState>(EventDetailUiState.Loading)
-    val uiState: StateFlow<EventDetailUiState> = _uiState.asStateFlow()
+    var uiState by mutableStateOf<EventDetailUiState>(EventDetailUiState.Loading)
+        private set
+
+    var dialogState by mutableStateOf<EventDetailDialogState>(EventDetailDialogState.Nothing)
+        private set
 
     val commentList: Flow<PagingData<CommentUiModel>> =
         getCommentListUseCase(eventId)
@@ -52,10 +56,10 @@ class EventDetailViewModel @Inject constructor(
         viewModelScope.launch {
             getEventDetailUseCase(eventId)
                 .onSuccess { eventDetail ->
-                    _uiState.update { EventDetailUiState.Success(eventDetail.toUiModel()) }
+                    uiState = EventDetailUiState.Success(eventDetail.toUiModel())
                 }
                 .onFailure {
-                    _uiState.update { EventDetailUiState.Failure }
+                    uiState = EventDetailUiState.Failure
                 }
         }
     }
@@ -75,11 +79,40 @@ class EventDetailViewModel @Inject constructor(
                             likeCount = eventDetail.likeCount + 1
                         )
                     }
-                    _uiState.update { EventDetailUiState.Success(newEventDetail) }
+                    uiState = EventDetailUiState.Success(newEventDetail)
                 }
                 .onFailure {
                     uiModel.showToast("좋아요 변경에 실패했어요")
                 }
         }
+    }
+
+    fun showDialog(eventDetailDialogState: EventDetailDialogState) {
+        dialogState = eventDetailDialogState
+    }
+
+    fun dismiss() {
+        dialogState = EventDetailDialogState.Nothing
+    }
+
+    fun onUpdate(movePostEvent: (Long?) -> Unit) {
+        movePostEvent(eventId)
+    }
+
+    fun onDelete(onBack: () -> Unit) {
+        viewModelScope.launch {
+            deleteEventUseCase(eventId)
+                .onSuccess {
+                    uiModel.showToast("이벤트를 삭제했어요")
+                    onBack()
+                }
+                .onFailure {
+                    uiModel.showToast("이벤트 삭제에 실패했어요")
+                }
+        }
+    }
+
+    fun onReport() {
+        uiModel.showToast("게시글을 신고했어요")
     }
 }

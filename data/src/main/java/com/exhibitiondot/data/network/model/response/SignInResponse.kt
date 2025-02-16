@@ -1,4 +1,4 @@
-package com.exhibitiondot.data.model.response
+package com.exhibitiondot.data.network.model.response
 
 import kotlinx.serialization.Serializable
 

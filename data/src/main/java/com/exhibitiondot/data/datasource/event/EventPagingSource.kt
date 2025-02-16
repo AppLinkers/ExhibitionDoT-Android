@@ -4,7 +4,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.exhibitiondot.data.network.api.EventApi
 import com.exhibitiondot.data.network.api.ApiConst
-import com.exhibitiondot.data.model.dto.EventDto
+import com.exhibitiondot.data.network.model.dto.EventDto
 import com.exhibitiondot.data.network.NetworkState
 import com.exhibitiondot.domain.model.EventParams
 
@@ -31,10 +31,9 @@ class EventPagingSource(
         )
         return when (response) {
             is NetworkState.Success -> {
-                val data = response.data
-                val eventList = data.contents
-                val prevKey = if (data.first) null else data.page -1
-                val nextKey = if (data.last) null else data.page + 1
+                val eventList = response.data.contents
+                val prevKey = if (pageNumber == ApiConst.DEFAULT_PAGE_NUMBER) null else pageNumber -1
+                val nextKey = if (eventList.isEmpty()) null else pageNumber + 1
                 LoadResult.Page(eventList, prevKey, nextKey)
             }
             is NetworkState.Failure -> {

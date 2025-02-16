@@ -1,6 +1,6 @@
 package com.exhibitiondot.data.mapper
 
-import com.exhibitiondot.data.model.dto.CommentDto
+import com.exhibitiondot.data.network.model.dto.CommentDto
 import com.exhibitiondot.domain.model.Comment
 
 fun CommentDto.toDomain() =

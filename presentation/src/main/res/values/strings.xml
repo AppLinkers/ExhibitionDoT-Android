@@ -20,6 +20,15 @@
     <string name="home_search_placeholder">검색</string>
     <string name="home_search_announce">다양한 이벤트를 검색해보세요</string>
 
+    <string name="event_post_add">이벤트 추가하기</string>
+    <string name="event_post_update">이벤트 수정하기</string>
+    <string name="event_post_image">대표 이미지</string>
+    <string name="event_post_name">이벤트명</string>
+    <string name="event_post_select_date">날짜</string>
+    <string name="event_post_select_region">지역</string>
+    <string name="event_post_select_category">카테고리</string>
+    <string name="event_post_select_event_type">이벤트 종류</string>
+
     <string name="comment">댓글</string>
 
     <string name="my_page">마이페이지</string>
@@ -40,5 +49,12 @@
     <string name="reset">초기화</string>
     <string name="entire">전체</string>
     <string name="close">닫기</string>
+    <string name="cancel">취소</string>
+    <string name="confirm">확인</string>
     <string name="apply">적용하기</string>
+    <string name="update">수정하기</string>
+    <string name="add">추가하기</string>
+    <string name="delete">삭제하기</string>
+    <string name="report">신고하기</string>
+    <string name="report_description">게시글을 신고할까요?</string>
 </resources>

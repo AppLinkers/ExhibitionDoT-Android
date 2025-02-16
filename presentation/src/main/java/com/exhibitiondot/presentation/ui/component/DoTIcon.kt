@@ -3,9 +3,10 @@ package com.exhibitiondot.presentation.ui.component
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -137,5 +138,44 @@ fun BackIcon(
         painter = painterResource(R.drawable.ic_back),
         tint = color,
         contentDescription = "back-icon"
+    )
+}
+
+@Composable
+fun AddIcon(
+    modifier: Modifier = Modifier,
+    color: Color = MaterialTheme.colorScheme.background,
+) {
+    Icon(
+        modifier = modifier,
+        imageVector = Icons.Rounded.Add,
+        tint = color,
+        contentDescription = "add-icon"
+    )
+}
+
+@Composable
+fun CalendarIcon(
+    modifier: Modifier = Modifier,
+) {
+    Icon(
+        modifier = modifier,
+        painter = painterResource(R.drawable.ic_calender),
+        tint = MaterialTheme.colorScheme.surfaceContainerLow,
+        contentDescription = "calender-icon"
+    )
+}
+
+@Composable
+fun MenuIcon(
+    modifier: Modifier = Modifier,
+    color: Color,
+    onClick: () -> Unit,
+) {
+    Icon(
+        modifier = modifier.clickable(onClick = onClick),
+        painter = painterResource(R.drawable.ic_menu),
+        tint = color,
+        contentDescription = "menu-icon"
     )
 }

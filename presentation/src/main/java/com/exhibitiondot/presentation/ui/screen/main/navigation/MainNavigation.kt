@@ -10,6 +10,7 @@ import com.exhibitiondot.presentation.ui.navigation.ScreenGraph
 import com.exhibitiondot.presentation.ui.screen.main.eventDetail.EventDetailRoute
 import com.exhibitiondot.presentation.ui.screen.main.home.HomeRoute
 import com.exhibitiondot.presentation.ui.screen.main.myPage.MyPageRoute
+import com.exhibitiondot.presentation.ui.screen.main.postEvent.PostEventRoute
 
 fun NavGraphBuilder.nestedMainGraph(appState: DoTAppState) {
     val navController = appState.navController
@@ -19,11 +20,18 @@ fun NavGraphBuilder.nestedMainGraph(appState: DoTAppState) {
             HomeRoute(
                 scope = appState.coroutineScope,
                 moveEventDetail = navController::navigateToEventDetail,
+                movePostEvent = navController::navigateToPostEvent,
                 moveMy = navController::navigateToMyPage,
             )
         }
         composable<MainScreen.EventDetail> {
-            EventDetailRoute(onBack = navController::popBackStack)
+            EventDetailRoute(
+                movePostEvent = navController::navigateToPostEvent,
+                onBack = navController::popBackStack
+            )
+        }
+        composable<MainScreen.PostEvent> {
+            PostEventRoute(onBack = navController::popBackStack)
         }
         composable<MainScreen.MyPage> {
             MyPageRoute(onBack = navController::popBackStack)
@@ -36,5 +44,7 @@ fun NavController.navigateToMainGraph() = navigate(ScreenGraph.MainGraph) {
 }
 
 private fun NavController.navigateToEventDetail(eventId: Long) = navigate(MainScreen.EventDetail(eventId))
+
+private fun NavController.navigateToPostEvent(eventId: Long?) = navigate(MainScreen.PostEvent(eventId))
 
 private fun NavController.navigateToMyPage() = navigate(MainScreen.MyPage)

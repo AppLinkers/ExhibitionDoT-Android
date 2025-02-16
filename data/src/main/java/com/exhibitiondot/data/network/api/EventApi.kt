@@ -1,10 +1,16 @@
 package com.exhibitiondot.data.network.api
 
-import com.exhibitiondot.data.model.dto.EventDetailDto
-import com.exhibitiondot.data.model.response.EventListResponse
+import com.exhibitiondot.data.network.model.dto.EventDetailDto
+import com.exhibitiondot.data.network.model.response.EventListResponse
 import com.exhibitiondot.data.network.NetworkState
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Multipart
+import retrofit2.http.PATCH
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -24,4 +30,22 @@ interface EventApi {
 
     @POST("event/{event-id}/like")
     suspend fun toggleEventLike(@Path("event-id") eventId: Long): NetworkState<Unit>
+
+    @Multipart
+    @POST("event")
+    suspend fun addEvent(
+        @Part file: MultipartBody.Part,
+        @Part("event") event: RequestBody
+    ) : NetworkState<Unit>
+
+    @Multipart
+    @PATCH("event/{event-id}")
+    suspend fun updateEvent(
+        @Part file: MultipartBody.Part? = null,
+        @Part("event") event: RequestBody,
+        @Path("event-id") eventId: Long
+    ) : NetworkState<Unit>
+
+    @DELETE("event/{event-id}")
+    suspend fun deleteEvent(@Path("event-id") eventId: Long) : NetworkState<Unit>
 }
