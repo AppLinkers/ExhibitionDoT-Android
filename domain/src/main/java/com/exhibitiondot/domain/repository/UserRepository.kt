@@ -1,5 +1,6 @@
 package com.exhibitiondot.domain.repository
 
+import com.exhibitiondot.domain.model.UpdateUserInfo
 import com.exhibitiondot.domain.model.User
 
 interface UserRepository {
@@ -9,5 +10,5 @@ interface UserRepository {
 
     suspend fun signUp(user: User): Result<Unit>
 
-    suspend fun changeUserInfo(user: User): Result<Unit>
+    suspend fun updateUserInfo(updateUserInfo: UpdateUserInfo): Result<Unit>
 }

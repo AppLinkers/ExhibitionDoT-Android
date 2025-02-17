@@ -2,7 +2,7 @@ package com.exhibitiondot.data.datasource.user
 
 import com.exhibitiondot.data.network.api.UserApi
 import com.exhibitiondot.data.network.model.dto.UserDto
-import com.exhibitiondot.data.network.model.request.ChangeUserInfoRequest
+import com.exhibitiondot.data.network.model.request.UpdateUserInfoRequest
 import com.exhibitiondot.data.network.model.request.SignInRequest
 import com.exhibitiondot.data.network.model.request.SignUpRequest
 import com.exhibitiondot.data.network.model.response.SignInResponse
@@ -24,7 +24,7 @@ class UserRemoteDataSource @Inject constructor(
         return userApi.getUser()
     }
 
-    override suspend fun changeUserInfo(changeUserInfoRequest: ChangeUserInfoRequest): NetworkState<Unit> {
-        return userApi.changeUserInfo(changeUserInfoRequest)
+    override suspend fun updateUserInfo(updateUserInfoRequest: UpdateUserInfoRequest): NetworkState<Unit> {
+        return userApi.updateUserInfo(updateUserInfoRequest)
     }
 }

@@ -22,12 +22,15 @@ import com.exhibitiondot.presentation.R
 import com.exhibitiondot.presentation.model.UserUiModel
 import com.exhibitiondot.presentation.ui.component.DoTLoadingScreen
 import com.exhibitiondot.presentation.ui.component.DoTSpacer
+import com.exhibitiondot.presentation.ui.component.DoTTitle
 import com.exhibitiondot.presentation.ui.component.DoTTopBar
+import com.exhibitiondot.presentation.ui.component.EditIcon
 import com.exhibitiondot.presentation.ui.theme.screenPadding
 
 @Composable
 fun MyPageRoute(
     modifier: Modifier = Modifier,
+    moveUpdateUserInfo: () -> Unit,
     onBack: () -> Unit,
     viewModel: MyPageViewModel = hiltViewModel()
 ) {
@@ -35,6 +38,7 @@ fun MyPageRoute(
     MyPageScreen(
         modifier = modifier,
         uiState = uiState,
+        moveUpdateUserInfo = moveUpdateUserInfo,
         onBack = onBack
     )
     BackHandler(onBack = onBack)
@@ -44,6 +48,7 @@ fun MyPageRoute(
 private fun MyPageScreen(
     modifier: Modifier,
     uiState: MyPageUiState,
+    moveUpdateUserInfo: () -> Unit,
     onBack: () -> Unit,
 ) {
     Column(
@@ -51,7 +56,10 @@ private fun MyPageScreen(
     ) {
         DoTTopBar(
             title = stringResource(R.string.my_page),
-            onBack = onBack
+            onBack = onBack,
+            trailingIcon = {
+                EditIcon(onClick = moveUpdateUserInfo)
+            }
         )
         when (uiState) {
             MyPageUiState.Loading -> DoTLoadingScreen(
@@ -74,28 +82,25 @@ private fun MyPageBody(
     Column(
         modifier = modifier
             .verticalScroll(rememberScrollState())
-            .padding(all = screenPadding)
+            .padding(
+                start = screenPadding,
+                end = screenPadding,
+                top = 10.dp,
+                bottom = screenPadding
+            )
     ) {
-        MyPageTitle(title = stringResource(R.string.my_page_user_info))
+        DoTTitle(title = stringResource(R.string.my_page_user_info))
+        DoTSpacer(size = 10)
         MyPageAccount(user = user)
         DoTSpacer(size = 40)
-        MyPageTitle(title = stringResource(R.string.my_page_category))
+        DoTTitle(title = stringResource(R.string.my_page_category))
         DoTSpacer(size = 20)
         MyPageTags(tags = user.categoryTags)
         DoTSpacer(size = 40)
-        MyPageTitle(title = stringResource(R.string.my_page_event_type))
+        DoTTitle(title = stringResource(R.string.my_page_event_type))
         DoTSpacer(size = 20)
         MyPageTags(tags = user.eventTypeTags)
     }
-}
-
-@Composable
-private fun MyPageTitle(title: String) {
-    Text(
-        text = title,
-        style = MaterialTheme.typography.bodySmall,
-        color = MaterialTheme.colorScheme.surfaceContainerHigh
-    )
 }
 
 @Composable

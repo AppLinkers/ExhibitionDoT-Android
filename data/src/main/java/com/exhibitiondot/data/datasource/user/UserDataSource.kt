@@ -1,7 +1,7 @@
 package com.exhibitiondot.data.datasource.user
 
 import com.exhibitiondot.data.network.model.dto.UserDto
-import com.exhibitiondot.data.network.model.request.ChangeUserInfoRequest
+import com.exhibitiondot.data.network.model.request.UpdateUserInfoRequest
 import com.exhibitiondot.data.network.model.request.SignInRequest
 import com.exhibitiondot.data.network.model.request.SignUpRequest
 import com.exhibitiondot.data.network.model.response.SignInResponse
@@ -14,5 +14,5 @@ interface UserDataSource {
 
     suspend fun getUser(): NetworkState<UserDto>
 
-    suspend fun changeUserInfo(changeUserInfoRequest: ChangeUserInfoRequest): NetworkState<Unit>
+    suspend fun updateUserInfo(updateUserInfoRequest: UpdateUserInfoRequest): NetworkState<Unit>
 }

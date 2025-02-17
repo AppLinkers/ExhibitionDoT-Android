@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.Send
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -177,5 +178,35 @@ fun MenuIcon(
         painter = painterResource(R.drawable.ic_menu),
         tint = color,
         contentDescription = "menu-icon"
+    )
+}
+
+@Composable
+fun SendIcon(
+    modifier: Modifier = Modifier,
+    enabled: Boolean,
+    onClick: () -> Unit,
+) {
+    Icon(
+        modifier = modifier.clickable(
+            onClick = onClick,
+            enabled = enabled
+        ),
+        imageVector = Icons.AutoMirrored.Rounded.Send,
+        tint = if (enabled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
+        contentDescription = "send-icon"
+    )
+}
+
+@Composable
+fun EditIcon(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+) {
+    Icon(
+        modifier = modifier.clickable(onClick = onClick),
+        painter = painterResource(R.drawable.ic_edit),
+        tint = MaterialTheme.colorScheme.surfaceContainerHigh,
+        contentDescription = "edit-icon"
     )
 }

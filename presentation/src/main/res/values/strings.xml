@@ -30,11 +30,14 @@
     <string name="event_post_select_event_type">이벤트 종류</string>
 
     <string name="comment">댓글</string>
+    <string name="comment_placeholder">댓글을 입력해주세요</string>
 
     <string name="my_page">마이페이지</string>
     <string name="my_page_user_info">계정 정보</string>
     <string name="my_page_category">관심 카테고리</string>
     <string name="my_page_event_type">관심 이벤트</string>
+
+    <string name="update_user_info">정보 수정하기</string>
 
     <string name="category">카테고리</string>
     <string name="event_type">이벤트</string>

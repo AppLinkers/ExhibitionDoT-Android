@@ -22,4 +22,7 @@ sealed interface MainScreen {
 
     @Serializable
     data object MyPage : MainScreen
+
+    @Serializable
+    data object UpdateUserInfo : MainScreen
 }
