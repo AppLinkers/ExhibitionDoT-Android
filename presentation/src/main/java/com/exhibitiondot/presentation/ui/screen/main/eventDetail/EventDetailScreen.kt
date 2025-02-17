@@ -37,7 +37,7 @@ import com.exhibitiondot.presentation.model.EventDetailUiModel
 import com.exhibitiondot.presentation.ui.component.CommentTextField
 import com.exhibitiondot.presentation.ui.component.DoTImage
 import com.exhibitiondot.presentation.ui.component.DoTLoadingScreen
-import com.exhibitiondot.presentation.ui.component.DoTReportDialog
+import com.exhibitiondot.presentation.ui.component.DoTAlertDialog
 import com.exhibitiondot.presentation.ui.component.DoTSpacer
 import com.exhibitiondot.presentation.ui.component.DoTUpdateDeleteDialog
 import com.exhibitiondot.presentation.ui.component.EventDetailTopBar
@@ -78,9 +78,11 @@ fun EventDetailRoute(
         )
         EventDetailUiState.Failure -> {}
     }
-    DoTReportDialog(
+    DoTAlertDialog(
         show = dialogState == EventDetailDialogState.ShowReportDialog,
-        onReport = viewModel::onReport,
+        title = stringResource(R.string.report),
+        text = stringResource(R.string.report_description),
+        onConfirm = viewModel::onReport,
         onDismiss = viewModel::dismiss
     )
     DoTUpdateDeleteDialog(

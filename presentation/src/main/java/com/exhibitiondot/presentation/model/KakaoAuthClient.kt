@@ -56,4 +56,8 @@ class KakaoAuthClient @Inject constructor() {
             }
         }
     }
+
+    fun logOut() {
+        UserApiClient.instance.logout {  }
+    }
 }

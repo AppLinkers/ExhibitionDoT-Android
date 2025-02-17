@@ -179,22 +179,24 @@ fun DoTDatePickerDialog(
 }
 
 @Composable
-fun DoTReportDialog(
+fun DoTAlertDialog(
     show: Boolean,
-    onReport: () -> Unit,
+    title: String,
+    text: String,
+    onConfirm: () -> Unit,
     onDismiss: () -> Unit,
 ) {
     if (show) {
         AlertDialog(
             title = {
-                Text(text = stringResource(R.string.report))
+                Text(text = title)
             },
             text = {
-                Text(text = stringResource(R.string.report_description))
+                Text(text = text)
             },
             confirmButton = {
                 ConfirmButton {
-                    onReport()
+                    onConfirm()
                     onDismiss()
                 }
             },

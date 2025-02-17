@@ -40,9 +40,13 @@ class PreferenceRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateUserId(userId: Long) {
+    override suspend fun updateUserId(userId: Long?) {
         dataStore.edit { store ->
-            store[KEY_USER_ID] = userId.toString()
+            if (userId != null) {
+                store[KEY_USER_ID] = userId.toString()
+            } else {
+                store.remove(KEY_USER_ID)
+            }
         }
     }
 
