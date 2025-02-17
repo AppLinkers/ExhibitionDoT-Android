@@ -28,8 +28,7 @@ class CustomCall<T : Any>(
                             this@CustomCall,
                             Response.success(
                                 NetworkState.UnknownError(
-                                    t = IllegalStateException("body is null"),
-                                    errorState = "body is null"
+                                    t = IllegalStateException("body is null")
                                 )
                             )
                         )
@@ -45,7 +44,7 @@ class CustomCall<T : Any>(
             override fun onFailure(call: Call<T>, t: Throwable) {
                 val errorResponse = when (t) {
                     is IOException -> NetworkState.NetworkError(t)
-                    else -> NetworkState.UnknownError(t, "알 수 없는 에러")
+                    else -> NetworkState.UnknownError(t)
                 }
                 callback.onResponse(
                     this@CustomCall,
