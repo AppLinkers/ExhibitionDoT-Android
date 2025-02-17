@@ -30,6 +30,7 @@
     <string name="event_post_select_event_type">이벤트 종류</string>
 
     <string name="comment">댓글</string>
+    <string name="comment_placeholder">댓글을 입력해주세요</string>
 
     <string name="my_page">마이페이지</string>
     <string name="my_page_user_info">계정 정보</string>

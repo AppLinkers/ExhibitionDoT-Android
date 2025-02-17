@@ -26,6 +26,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.exhibitiondot.presentation.R
 
 enum class SupportingTextType {
@@ -166,6 +167,51 @@ fun SearchTextField(
                 unfocusedContainerColor = MaterialTheme.colorScheme.surface,
             ),
             contentPadding = PaddingValues(all = 16.dp)
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CommentTextField(
+    modifier: Modifier = Modifier,
+    value: String,
+    onValueChange: (String) -> Unit,
+) {
+    val interactionSource = remember { MutableInteractionSource() }
+    BasicTextField(
+        modifier = modifier.fillMaxWidth(),
+        value = value,
+        enabled = true,
+        maxLines = 3,
+        textStyle = MaterialTheme.typography.displayMedium,
+        interactionSource = interactionSource,
+        cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+        onValueChange = onValueChange
+    ) {
+        TextFieldDefaults.DecorationBox(
+            value = value,
+            innerTextField = it,
+            enabled = true,
+            singleLine = false,
+            visualTransformation = VisualTransformation.None,
+            interactionSource = interactionSource,
+            shape = CircleShape,
+            placeholder = { Text(
+                text = stringResource(id = R.string.comment_placeholder),
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onSurface,
+                fontSize = 14.sp
+            ) },
+            colors = TextFieldDefaults.colors(
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                disabledIndicatorColor = Color.Transparent,
+                focusedContainerColor = MaterialTheme.colorScheme.surface,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                disabledContainerColor = Color.Transparent
+            ),
+            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp)
         )
     }
 }

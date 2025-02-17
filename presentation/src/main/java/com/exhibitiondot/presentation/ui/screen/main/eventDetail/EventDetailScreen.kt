@@ -1,5 +1,6 @@
 package com.exhibitiondot.presentation.ui.screen.main.eventDetail
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -30,6 +33,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.exhibitiondot.presentation.R
 import com.exhibitiondot.presentation.model.CommentUiModel
 import com.exhibitiondot.presentation.model.EventDetailUiModel
+import com.exhibitiondot.presentation.ui.component.CommentTextField
 import com.exhibitiondot.presentation.ui.component.DoTImage
 import com.exhibitiondot.presentation.ui.component.DoTLoadingScreen
 import com.exhibitiondot.presentation.ui.component.DoTReportDialog
@@ -38,6 +42,8 @@ import com.exhibitiondot.presentation.ui.component.DoTUpdateDeleteDialog
 import com.exhibitiondot.presentation.ui.component.EventDetailTopBar
 import com.exhibitiondot.presentation.ui.component.HeartIcon
 import com.exhibitiondot.presentation.ui.component.MenuIcon
+import com.exhibitiondot.presentation.ui.component.SendIcon
+import com.exhibitiondot.presentation.ui.state.IEditTextState
 import com.exhibitiondot.presentation.ui.theme.screenPadding
 
 @Composable
@@ -50,6 +56,7 @@ fun EventDetailRoute(
     val uiState = viewModel.uiState
     val dialogState = viewModel.dialogState
     val commentList = viewModel.commentList.collectAsLazyPagingItems()
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     when (uiState) {
         EventDetailUiState.Loading -> DoTLoadingScreen(modifier = modifier)
@@ -57,8 +64,15 @@ fun EventDetailRoute(
             modifier = modifier,
             eventDetail = uiState.eventDetail,
             commentList = commentList,
+            commentState = viewModel.commentState,
             toggleEventLike = viewModel::toggleEventLike,
             showDialog = viewModel::showDialog,
+            addComment = {
+                viewModel.addComment {
+                    keyboardController?.hide()
+                    commentList.refresh()
+                }
+            },
             onBack = onBack
         )
         EventDetailUiState.Failure -> {}
@@ -81,8 +95,10 @@ private fun EventDetailScreen(
     modifier: Modifier,
     eventDetail: EventDetailUiModel,
     commentList: LazyPagingItems<CommentUiModel>,
+    commentState: IEditTextState,
     toggleEventLike: (EventDetailUiModel) -> Unit,
     showDialog: (EventDetailDialogState) -> Unit,
+    addComment: () -> Unit,
     onBack: () -> Unit,
 ) {
     val lazyListState = rememberLazyListState()
@@ -94,7 +110,7 @@ private fun EventDetailScreen(
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             state = lazyListState,
-            contentPadding = PaddingValues(bottom = screenPadding)
+            contentPadding = PaddingValues(bottom = 100.dp)
         ) {
             item {
                 EventDetailView(
@@ -127,6 +143,11 @@ private fun EventDetailScreen(
                 }
             },
             onBack = onBack
+        )
+        EventDetailCommentView(
+            modifier = Modifier.align(Alignment.BottomCenter),
+            commentState = commentState,
+            addComment = addComment
         )
     }
 }
@@ -242,7 +263,8 @@ private fun CommentItem(
             DoTSpacer(size = 10)
             Text(
                 text = comment.content,
-                style = MaterialTheme.typography.displayMedium
+                style = MaterialTheme.typography.displayMedium,
+                lineHeight = 24.sp
             )
         }
         MenuIcon(
@@ -250,5 +272,46 @@ private fun CommentItem(
             color = MaterialTheme.colorScheme.surfaceContainerHigh,
             onClick = showDialog
         )
+    }
+}
+
+@Composable
+private fun EventDetailCommentView(
+    modifier: Modifier = Modifier,
+    commentState: IEditTextState,
+    addComment: () -> Unit,
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(color = MaterialTheme.colorScheme.background),
+    ) {
+        HorizontalDivider(
+            modifier = Modifier.fillMaxWidth(),
+            thickness = 1.dp,
+            color = MaterialTheme.colorScheme.surface
+        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    start = screenPadding,
+                    end = screenPadding,
+                    top = 10.dp,
+                    bottom = screenPadding
+                ),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            CommentTextField(
+                modifier = Modifier.weight(1f),
+                value = commentState.typedText,
+                onValueChange = commentState::typeText
+            )
+            DoTSpacer(size = 10)
+            SendIcon(
+                enabled = commentState.isValidate(),
+                onClick = addComment
+            )
+        }
     }
 }

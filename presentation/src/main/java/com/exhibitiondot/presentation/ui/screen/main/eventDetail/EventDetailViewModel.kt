@@ -125,6 +125,7 @@ class EventDetailViewModel @Inject constructor(
         viewModelScope.launch {
             addCommentUseCase(eventId, commentState.trimmedText())
                 .onSuccess {
+                    commentState.resetText()
                     refresh()
                 }
                 .onFailure {
