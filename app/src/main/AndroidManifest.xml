@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_dot"
@@ -19,7 +19,6 @@
         <activity
             android:name="com.exhibitiondot.presentation.MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.ExhibitionDoT">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -35,7 +34,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data android:host="oauth"
-                    android:scheme="kakao${KAKAO_NATIVE_KEY}" />
+                    android:scheme="${KAKAO_REDIRECT_URI}" />
             </intent-filter>
         </activity>
     </application>
