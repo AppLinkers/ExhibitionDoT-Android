@@ -63,12 +63,12 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
-    fun onNextStep(currentStep: SignUpStep, moveMain: () -> Unit, onBack: () -> Unit) {
+    fun onNextStep(currentStep: SignUpStep, onBack: () -> Unit) {
         val nextStep = currentStep.nextStep()
         if (nextStep != null) {
             _currentStep.update { nextStep }
         } else {
-            signUp(moveMain, onBack)
+            signUp(onBack)
         }
     }
 
@@ -81,7 +81,7 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
-    private fun signUp(moveMain: () -> Unit, onBack: () -> Unit) {
+    private fun signUp(onBack: () -> Unit) {
         _uiState.update { SignUpUiState.Loading }
         viewModelScope.launch {
             val user = User(
@@ -94,9 +94,6 @@ class SignUpViewModel @Inject constructor(
                 eventTypeList = eventTypeState.selectedFilterList
             )
             signUpAndSignInUseCase(user)
-                .onSuccess {
-                    moveMain()
-                }
                 .onFailure { t ->
                     when (t) {
                         is SignUpFailException -> {

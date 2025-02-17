@@ -1,6 +1,7 @@
 package com.exhibitiondot.presentation.ui.screen.sign.signIn
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.exhibitiondot.domain.usecase.user.SignInUseCase
 import com.exhibitiondot.presentation.base.BaseViewModel
@@ -25,21 +26,23 @@ class SignInViewModel @Inject constructor(
 
     fun onKakaoLogin(
         context: Context,
-        moveMain: () -> Unit,
         moveSignUp: (String) -> Unit
     ) {
         _uiState.update { SignInUiState.Loading }
         kakaoAuthClient.loginWithKakao(
             context = context,
-            onSuccess = { getEmailFromAccount(moveMain, moveSignUp) },
-            onFailure = { onFailSignIn("카카오 로그인에 실패했어요.") },
+            onSuccess = { getEmailFromAccount(moveSignUp) },
+            onFailure = { t ->
+                Log.e("카카오 로그인 실패", null, t)
+                onFailSignIn("카카오 로그인에 실패했어요.")
+            },
         )
     }
 
-    private fun getEmailFromAccount(moveMain: () -> Unit, moveSignUp: (String) -> Unit) {
+    private fun getEmailFromAccount(moveSignUp: (String) -> Unit) {
         kakaoAuthClient.getUserEmail(
             onSuccess = { email ->
-                signIn(email, moveMain, moveSignUp)
+                signIn(email, moveSignUp)
             },
             onFailure = {
                 onFailSignIn("다시 시도해주세요")
@@ -47,12 +50,10 @@ class SignInViewModel @Inject constructor(
         )
     }
 
-    private fun signIn(email: String, moveMain: () -> Unit, moveSignUp: (String) -> Unit) {
+    private fun signIn(email: String, moveSignUp: (String) -> Unit) {
         viewModelScope.launch {
             signInUseCase(email)
-                .onSuccess {
-                    moveMain()
-                }.onFailure {
+                .onFailure {
                     moveSignUp(email)
                 }
             _uiState.update { SignInUiState.Nothing }

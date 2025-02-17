@@ -7,7 +7,6 @@ import androidx.navigation.navigation
 import com.exhibitiondot.presentation.ui.DoTAppState
 import com.exhibitiondot.presentation.ui.navigation.ScreenGraph
 import com.exhibitiondot.presentation.ui.navigation.SignScreen
-import com.exhibitiondot.presentation.ui.screen.main.navigation.navigateToMainGraph
 import com.exhibitiondot.presentation.ui.screen.sign.signIn.SignInRoute
 import com.exhibitiondot.presentation.ui.screen.sign.signUp.SignUpRoute
 
@@ -17,13 +16,11 @@ fun NavGraphBuilder.nestedSignGraph(appState: DoTAppState) {
     navigation<ScreenGraph.SignGraph>(startDestination = SignScreen.SignIn) {
         composable<SignScreen.SignIn> {
             SignInRoute(
-                moveMain = navController::navigateToMainGraph,
                 moveSignUp = navController::navigateToSignScreen,
             )
         }
         composable<SignScreen.SignUp> {
             SignUpRoute(
-                moveMain = navController::navigateToMainGraph,
                 onBack = navController::popBackStack,
             )
         }

@@ -38,7 +38,6 @@ import com.exhibitiondot.presentation.ui.theme.screenPadding
 @Composable
 fun SignUpRoute(
     modifier: Modifier = Modifier,
-    moveMain: () -> Unit,
     onBack: () -> Unit,
     viewModel: SignUpViewModel = hiltViewModel(),
 ) {
@@ -60,7 +59,7 @@ fun SignUpRoute(
         categoryState = viewModel.categoryState,
         eventTypeState = viewModel.eventTypeState,
         onPrevStep = { viewModel.onPrevStep(step, onBack) },
-        onNextStep = { viewModel.onNextStep(step, moveMain, onBack) },
+        onNextStep = { viewModel.onNextStep(step, onBack) },
     )
     BackHandler {
         viewModel.onPrevStep(step, onBack)

@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import com.exhibitiondot.presentation.R
 import com.exhibitiondot.presentation.model.CommentUiModel
 import com.exhibitiondot.presentation.model.EventDetailUiModel
@@ -121,7 +122,7 @@ private fun EventDetailScreen(
             }
             items(
                 count = commentList.itemCount,
-                key = { index -> commentList[index]?.id ?: index }
+                key = commentList.itemKey { it.id }
             ) { index ->
                 commentList[index]?.let { comment ->
                     CommentItem(

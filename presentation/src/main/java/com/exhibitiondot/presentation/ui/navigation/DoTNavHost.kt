@@ -2,8 +2,13 @@ package com.exhibitiondot.presentation.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import com.exhibitiondot.presentation.ui.DoTAppState
 import com.exhibitiondot.presentation.ui.screen.AuthViewModel
@@ -18,13 +23,15 @@ fun DoTNavHost(
     appState: DoTAppState,
     authViewModel: AuthViewModel = hiltViewModel()
 ) {
-    LaunchedEffect(Unit) {
-        authViewModel.authFlow.collect { isAuthenticated ->
-            if (isAuthenticated) {
-                appState.navController.navigateToMainGraph()
-            } else {
-                appState.navController.navigateToSignGraph()
-            }
+    var firstAccess by rememberSaveable { mutableStateOf(true) }
+    val isAuthenticated by authViewModel.authFlow.collectAsStateWithLifecycle(initialValue = false)
+    LaunchedEffect(isAuthenticated) {
+        if (isAuthenticated) {
+            appState.navController.navigateToMainGraph()
+        } else if (firstAccess.not()) {
+            appState.navController.navigateToSignGraph()
+        } else {
+            firstAccess = false
         }
     }
     NavHost(
