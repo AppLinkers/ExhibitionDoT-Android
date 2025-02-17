@@ -10,6 +10,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
 import com.exhibitiondot.domain.model.Comment
+import com.exhibitiondot.domain.usecase.comment.AddCommentUseCase
 import com.exhibitiondot.domain.usecase.comment.GetCommentListUseCase
 import com.exhibitiondot.domain.usecase.event.DeleteEventUseCase
 import com.exhibitiondot.domain.usecase.event.GetEventDetailUseCase
@@ -20,6 +21,7 @@ import com.exhibitiondot.presentation.model.CommentUiModel
 import com.exhibitiondot.presentation.model.EventDetailUiModel
 import com.exhibitiondot.presentation.model.GlobalUiModel
 import com.exhibitiondot.presentation.ui.navigation.MainScreen
+import com.exhibitiondot.presentation.ui.state.EditTextState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -31,6 +33,7 @@ class EventDetailViewModel @Inject constructor(
     private val toggleEventLikeUseCase: ToggleEventLikeUseCase,
     private val getEventDetailUseCase: GetEventDetailUseCase,
     private val deleteEventUseCase: DeleteEventUseCase,
+    private val addCommentUseCase: AddCommentUseCase,
     getCommentListUseCase: GetCommentListUseCase,
     private val uiModel: GlobalUiModel,
     savedStateHandle: SavedStateHandle,
@@ -47,6 +50,8 @@ class EventDetailViewModel @Inject constructor(
         getCommentListUseCase(eventId)
             .map { pagingData -> pagingData.map(Comment::toUiModel) }
             .cachedIn(viewModelScope)
+
+    val commentState = EditTextState(maxLength = 400)
 
     init {
         getEventDetail()
@@ -114,5 +119,17 @@ class EventDetailViewModel @Inject constructor(
 
     fun onReport() {
         uiModel.showToast("게시글을 신고했어요")
+    }
+
+    fun addComment(refresh: () -> Unit) {
+        viewModelScope.launch {
+            addCommentUseCase(eventId, commentState.trimmedText())
+                .onSuccess {
+                    refresh()
+                }
+                .onFailure {
+                    uiModel.showToast("댓글 작성에 실패했어요")
+                }
+        }
     }
 }
