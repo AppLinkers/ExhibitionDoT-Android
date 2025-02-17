@@ -1,12 +1,13 @@
 package com.exhibitiondot.data.repository
 
 import com.exhibitiondot.data.datasource.user.UserDataSource
-import com.exhibitiondot.data.mapper.toChangeUserInfoRequest
 import com.exhibitiondot.data.mapper.toDomain
+import com.exhibitiondot.data.mapper.toRequest
 import com.exhibitiondot.data.mapper.toSignUpRequest
 import com.exhibitiondot.data.network.model.request.SignInRequest
 import com.exhibitiondot.data.network.NetworkState
 import com.exhibitiondot.domain.exception.NetworkFailException
+import com.exhibitiondot.domain.model.UpdateUserInfo
 import com.exhibitiondot.domain.model.User
 import com.exhibitiondot.domain.repository.UserRepository
 import javax.inject.Inject
@@ -47,8 +48,8 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun changeUserInfo(user: User): Result<Unit> {
-        val response = userDataSource.changeUserInfo(user.toChangeUserInfoRequest())
+    override suspend fun updateUserInfo(updateUserInfo: UpdateUserInfo): Result<Unit> {
+        val response = userDataSource.updateUserInfo(updateUserInfo.toRequest())
         return when (response) {
             is NetworkState.Success -> Result.success(response.data)
             is NetworkState.Failure -> Result.failure(

@@ -4,6 +4,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.exhibitiondot.domain.model.UpdateUserInfo
 import com.exhibitiondot.domain.model.User
 import com.exhibitiondot.domain.repository.PreferenceRepository
 import kotlinx.coroutines.flow.Flow
@@ -23,6 +24,19 @@ class PreferenceRepositoryImpl @Inject constructor(
 
     override fun updateCurrentUser(user: User) {
         _currentUser.update { user }
+    }
+
+    override fun updateCurrentUser(updateUserInfo: UpdateUserInfo) {
+        _currentUser.update {
+            with(updateUserInfo) {
+                currentUser.value.copy(
+                    nickname =  nickname,
+                    region = region,
+                    categoryList = categoryList,
+                    eventTypeList = eventTypeList
+                )
+            }
+        }
     }
 
     override suspend fun updateUserId(userId: Long) {

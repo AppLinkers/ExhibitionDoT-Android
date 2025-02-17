@@ -1,7 +1,7 @@
 package com.exhibitiondot.data.network.api
 
 import com.exhibitiondot.data.network.model.dto.UserDto
-import com.exhibitiondot.data.network.model.request.ChangeUserInfoRequest
+import com.exhibitiondot.data.network.model.request.UpdateUserInfoRequest
 import com.exhibitiondot.data.network.model.request.SignInRequest
 import com.exhibitiondot.data.network.model.request.SignUpRequest
 import com.exhibitiondot.data.network.model.response.SignInResponse
@@ -22,5 +22,5 @@ interface UserApi {
     suspend fun getUser(): NetworkState<UserDto>
 
     @PATCH("user")
-    suspend fun changeUserInfo(@Body changeUserInfoRequest: ChangeUserInfoRequest): NetworkState<Unit>
+    suspend fun updateUserInfo(@Body updateUserInfoRequest: UpdateUserInfoRequest): NetworkState<Unit>
 }
