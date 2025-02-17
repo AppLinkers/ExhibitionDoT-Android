@@ -10,6 +10,7 @@ import com.exhibitiondot.domain.repository.PreferenceRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
@@ -18,7 +19,7 @@ class PreferenceRepositoryImpl @Inject constructor(
     private val dataStore: DataStore<Preferences>
 ) : PreferenceRepository {
     private val _currentUser = MutableStateFlow(User.NONE)
-    override val currentUser: StateFlow<User> = _currentUser
+    override val currentUser: StateFlow<User> = _currentUser.asStateFlow()
 
     override val userId: Flow<String?> = dataStore.data.map { store -> store[KEY_USER_ID] }
 

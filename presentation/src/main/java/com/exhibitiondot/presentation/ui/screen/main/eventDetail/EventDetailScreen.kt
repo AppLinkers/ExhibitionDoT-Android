@@ -281,6 +281,7 @@ private fun EventDetailCommentView(
     commentState: IEditTextState,
     addComment: () -> Unit,
 ) {
+    val sendEnabled by remember { derivedStateOf { commentState.isValidate() } }
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -309,7 +310,7 @@ private fun EventDetailCommentView(
             )
             DoTSpacer(size = 10)
             SendIcon(
-                enabled = commentState.isValidate(),
+                enabled = sendEnabled,
                 onClick = addComment
             )
         }

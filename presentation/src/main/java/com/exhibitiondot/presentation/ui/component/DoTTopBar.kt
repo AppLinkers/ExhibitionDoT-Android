@@ -33,6 +33,7 @@ fun DoTTopBar(
     modifier: Modifier = Modifier,
     title: String? = null,
     onBack: (() -> Unit)? = null,
+    trailingIcon: (@Composable () -> Unit)? = null
 ) {
     Row (
         modifier = modifier
@@ -54,6 +55,10 @@ fun DoTTopBar(
                 text = it,
                 style = MaterialTheme.typography.bodyMedium
             )
+        }
+        trailingIcon?.let { icon ->
+            DoTSpacer(modifier = Modifier.weight(1f))
+            icon()
         }
     }
 }

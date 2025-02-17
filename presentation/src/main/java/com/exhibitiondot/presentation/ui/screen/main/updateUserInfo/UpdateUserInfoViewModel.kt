@@ -48,6 +48,11 @@ class UpdateUserInfoViewModel @Inject constructor(
         }
     }
 
+    fun validate(): Boolean {
+        return nicknameState.isValidate() &&
+                regionState.selectedFilter != null
+    }
+
     fun onUpdate(onBack: () -> Unit) {
         uiState = UpdateUserInfoUiState.Loading
         viewModelScope.launch {

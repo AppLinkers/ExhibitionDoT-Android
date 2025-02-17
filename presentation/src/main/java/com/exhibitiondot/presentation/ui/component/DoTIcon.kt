@@ -197,3 +197,16 @@ fun SendIcon(
         contentDescription = "send-icon"
     )
 }
+
+@Composable
+fun EditIcon(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+) {
+    Icon(
+        modifier = modifier.clickable(onClick = onClick),
+        painter = painterResource(R.drawable.ic_edit),
+        tint = MaterialTheme.colorScheme.surfaceContainerHigh,
+        contentDescription = "edit-icon"
+    )
+}

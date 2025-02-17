@@ -39,6 +39,7 @@ import com.exhibitiondot.presentation.ui.component.DoTButton
 import com.exhibitiondot.presentation.ui.component.DoTDatePickerDialog
 import com.exhibitiondot.presentation.ui.component.DoTSpacer
 import com.exhibitiondot.presentation.ui.component.DoTTextField
+import com.exhibitiondot.presentation.ui.component.DoTTitle
 import com.exhibitiondot.presentation.ui.component.DoTTopBar
 import com.exhibitiondot.presentation.ui.component.MultiFilterSelectScreen
 import com.exhibitiondot.presentation.ui.component.PostEventImage
@@ -188,7 +189,7 @@ private fun UploadImageScreen(
             .padding(horizontal = screenPadding)
             .verticalScroll(scrollState)
     ) {
-        PostEventTitle(
+        DoTTitle(
             title = stringResource(R.string.event_post_image)
         )
         Box(
@@ -223,7 +224,7 @@ private fun EventInfoScreen(
             .padding(horizontal = screenPadding)
             .verticalScroll(scrollState)
     ) {
-        PostEventTitle(
+        DoTTitle(
             title = stringResource(R.string.event_post_name)
         )
         DoTSpacer(size = 5)
@@ -235,7 +236,7 @@ private fun EventInfoScreen(
             imeAction = ImeAction.Done
         )
         DoTSpacer(size = 40)
-        PostEventTitle(
+        DoTTitle(
             title = stringResource(R.string.event_post_select_date)
         )
         DoTSpacer(size = 15)
@@ -244,34 +245,25 @@ private fun EventInfoScreen(
             onClick = showPhotoPicker
         )
         DoTSpacer(size = 40)
-        PostEventTitle(
+        DoTTitle(
             title = stringResource(R.string.event_post_select_region)
         )
         DoTSpacer(size = 15)
         SingleFilterSelectScreen(filterState = regionState)
         DoTSpacer(size = 40)
-        PostEventTitle(
+        DoTTitle(
             title = stringResource(R.string.event_post_select_category)
         )
         DoTSpacer(size = 15)
         MultiFilterSelectScreen(filterState = categoryState)
         DoTSpacer(size = 40)
-        PostEventTitle(
+        DoTTitle(
             title = stringResource(R.string.event_post_select_event_type)
         )
         DoTSpacer(size = 15)
         MultiFilterSelectScreen(filterState = eventTypeState)
         DoTSpacer(size = 40)
     }
-}
-
-@Composable
-private fun PostEventTitle(title: String) {
-    Text(
-        text = title,
-        style = MaterialTheme.typography.bodySmall,
-        color = MaterialTheme.colorScheme.surfaceContainerHigh
-    )
 }
 
 @Composable
