@@ -41,7 +41,12 @@ fun NavGraphBuilder.nestedMainGraph(appState: DoTAppState) {
             )
         }
         composable<MainScreen.UpdateUserInfo> {
-            UpdateUserInfoRoute(onBack = navController::popBackStack)
+            UpdateUserInfoRoute(
+                onBack = {
+                    navController.popBackStack(route = MainScreen.MyPage, inclusive = true)
+                    navController.navigateToMyPage()
+                }
+            )
         }
     }
 }
