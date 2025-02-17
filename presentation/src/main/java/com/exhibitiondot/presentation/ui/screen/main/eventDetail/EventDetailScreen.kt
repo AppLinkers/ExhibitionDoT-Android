@@ -105,7 +105,12 @@ private fun EventDetailScreen(
     onBack: () -> Unit,
 ) {
     val lazyListState = rememberLazyListState()
-    val skipImage by remember { derivedStateOf { lazyListState.firstVisibleItemScrollOffset > 700 } }
+    val skipImage by remember {
+        derivedStateOf {
+            (lazyListState.firstVisibleItemIndex == 0 &&
+                    lazyListState.firstVisibleItemScrollOffset < 1085).not()
+        }
+    }
 
     Box(
         modifier = modifier.fillMaxSize()
