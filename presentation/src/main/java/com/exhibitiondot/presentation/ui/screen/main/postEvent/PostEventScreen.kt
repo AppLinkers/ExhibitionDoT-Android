@@ -56,6 +56,7 @@ fun PostEventRoute(
     onBack: () -> Unit,
     viewModel: PostEventViewModel = hiltViewModel(),
 ) {
+    val uiState = viewModel.uiState
     val pickMedia = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri -> viewModel.onPhotoPickerResult(uri) }
@@ -64,7 +65,7 @@ fun PostEventRoute(
 
     PostEventScreen(
         modifier = modifier,
-        uiState = viewModel.uiState,
+        uiState = uiState,
         currentStep = viewModel.currentStep,
         image = viewModel.image,
         nameState = viewModel.nameState,
@@ -85,12 +86,13 @@ fun PostEventRoute(
         deleteImage = viewModel::deleteImage,
         showPhotoPicker = viewModel::showDatePicker
     )
-    DoTDatePickerDialog(
-        show = viewModel.uiState == PostEventUiState.ShowDatePicker,
-        date = viewModel.selectedDate,
-        onDateSelect = viewModel::onDateSelect,
-        onDismiss = viewModel::dismiss
-    )
+    if (uiState is PostEventUiState.ShowDatePicker) {
+        DoTDatePickerDialog(
+            date = uiState.date,
+            onDateSelect = viewModel::onDateSelect,
+            onDismiss = viewModel::dismiss
+        )
+    }
     BackHandler {
         viewModel.onPrevStep(onBack)
     }

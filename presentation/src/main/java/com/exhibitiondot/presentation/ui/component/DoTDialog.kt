@@ -126,7 +126,6 @@ private tailrec fun Context.getActivityWindow(): Window? =
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DoTDatePickerDialog(
-    show: Boolean,
     date: String,
     onDateSelect: (String) -> Unit,
     onDismiss: () -> Unit,
@@ -152,29 +151,27 @@ fun DoTDatePickerDialog(
         datePickerState.selectedDateMillis?.let {
             format(DateFormatStrategy.MillisToDate(it))
         } ?: ""
-    if (show) {
-        DatePickerDialog (
-            confirmButton = {
-                ConfirmButton {
-                    onDateSelect(selectedDate)
-                    onDismiss()
-                }
-            },
+    DatePickerDialog (
+        confirmButton = {
+            ConfirmButton {
+                onDateSelect(selectedDate)
+                onDismiss()
+            }
+        },
+        colors = DatePickerDefaults.colors(
+            containerColor = MaterialTheme.colorScheme.background,
+        ),
+        onDismissRequest = onDismiss
+    ) {
+        DatePicker(
+            state = datePickerState,
+            title = null,
+            headline = null,
+            showModeToggle = false,
             colors = DatePickerDefaults.colors(
                 containerColor = MaterialTheme.colorScheme.background,
-            ),
-            onDismissRequest = onDismiss
-        ) {
-            DatePicker(
-                state = datePickerState,
-                title = null,
-                headline = null,
-                showModeToggle = false,
-                colors = DatePickerDefaults.colors(
-                    containerColor = MaterialTheme.colorScheme.background,
-                )
             )
-        }
+        )
     }
 }
 

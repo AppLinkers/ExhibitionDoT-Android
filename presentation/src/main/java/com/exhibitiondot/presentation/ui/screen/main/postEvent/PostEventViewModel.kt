@@ -114,7 +114,7 @@ class PostEventViewModel @Inject constructor(
     }
 
     fun showDatePicker() {
-        uiState = PostEventUiState.ShowDatePicker
+        uiState = PostEventUiState.ShowDatePicker(selectedDate)
     }
 
     fun dismiss() {
