@@ -16,6 +16,7 @@ import com.exhibitiondot.domain.usecase.event.DeleteEventUseCase
 import com.exhibitiondot.domain.usecase.event.GetEventDetailUseCase
 import com.exhibitiondot.domain.usecase.event.ToggleEventLikeUseCase
 import com.exhibitiondot.presentation.base.BaseViewModel
+import com.exhibitiondot.presentation.mapper.getMessage
 import com.exhibitiondot.presentation.mapper.toUiModel
 import com.exhibitiondot.presentation.model.CommentUiModel
 import com.exhibitiondot.presentation.model.EventDetailUiModel
@@ -89,8 +90,9 @@ class EventDetailViewModel @Inject constructor(
                     flagModel.setHomeUpdateFlag(true)
                     uiState = EventDetailUiState.Success(newEventDetail)
                 }
-                .onFailure {
-                    uiModel.showToast("좋아요 변경에 실패했어요")
+                .onFailure { t ->
+                    val msg = t.getMessage("좋아요 변경에 실패했어요")
+                    uiModel.showToast(msg)
                 }
         }
     }
@@ -115,8 +117,9 @@ class EventDetailViewModel @Inject constructor(
                     uiModel.showToast("이벤트를 삭제했어요")
                     onBack()
                 }
-                .onFailure {
-                    uiModel.showToast("이벤트 삭제에 실패했어요")
+                .onFailure { t ->
+                    val msg = t.getMessage("이벤트 삭제에 실패했어요")
+                    uiModel.showToast(msg)
                 }
         }
     }
@@ -132,8 +135,9 @@ class EventDetailViewModel @Inject constructor(
                     commentState.resetText()
                     refresh()
                 }
-                .onFailure {
-                    uiModel.showToast("댓글 작성에 실패했어요")
+                .onFailure { t ->
+                    val msg = t.getMessage("댓글 작성에 실패했어요")
+                    uiModel.showToast(msg)
                 }
         }
     }

@@ -18,6 +18,7 @@ import com.exhibitiondot.domain.usecase.event.UpdateEventUseCase
 import com.exhibitiondot.presentation.base.BaseViewModel
 import com.exhibitiondot.presentation.mapper.DateFormatStrategy
 import com.exhibitiondot.presentation.mapper.format
+import com.exhibitiondot.presentation.mapper.getMessage
 import com.exhibitiondot.presentation.model.GlobalFlagModel
 import com.exhibitiondot.presentation.model.GlobalUiModel
 import com.exhibitiondot.presentation.ui.navigation.MainScreen
@@ -185,8 +186,9 @@ class PostEventViewModel @Inject constructor(
                 deleteFile(selectedImage)
                 onBack()
             }
-            .onFailure {
-                showMessage("이벤트 추가에 실패했어요")
+            .onFailure { t ->
+                val msg = t.getMessage("이벤트 추가에 실패했어요")
+                showMessage(msg)
             }
     }
 
@@ -203,8 +205,9 @@ class PostEventViewModel @Inject constructor(
                 deleteFile(selectedImage)
                 moveEventDetail(eventId)
             }
-            .onFailure {
-                showMessage("이벤트 수정에 실패했어요")
+            .onFailure { t ->
+                val msg = t.getMessage("이벤트 수정에 실패했어요")
+                showMessage(msg)
             }
     }
 
