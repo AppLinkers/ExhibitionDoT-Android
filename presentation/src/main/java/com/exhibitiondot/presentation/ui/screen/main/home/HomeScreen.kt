@@ -64,9 +64,9 @@ fun HomeRoute(
     moveMy: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
+    val uiState = viewModel.uiState
     val eventParams by viewModel.eventParams.collectAsStateWithLifecycle()
     val eventList = viewModel.eventList.collectAsLazyPagingItems()
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val homeUpdateFlag by viewModel.flagModel.homeUpdateFlag.collectAsStateWithLifecycle()
 
     LaunchedEffect(homeUpdateFlag) {
@@ -82,7 +82,10 @@ fun HomeRoute(
         eventList = eventList,
         resetAllFilters = viewModel::resetAllFilters,
         resetAppliedQuery = viewModel::resetAppliedQuery,
-        updateUiState = viewModel::updateUiState,
+        showSearchDialog = viewModel::showSearchDialog,
+        showRegionFilter = viewModel::showRegionFilter,
+        showCategoryFilter = viewModel::showCategoryFilter,
+        showEventTypeFilter = viewModel::showEventTypeFilter,
         onEventItem = moveEventDetail,
         movePostEvent = { movePostEvent(null) },
         moveMy = moveMy
@@ -130,7 +133,10 @@ private fun HomeScreen(
     eventList: LazyPagingItems<EventUiModel>,
     resetAllFilters: () -> Unit,
     resetAppliedQuery: () -> Unit,
-    updateUiState: (HomeUiState) -> Unit,
+    showSearchDialog: () -> Unit,
+    showRegionFilter: () -> Unit,
+    showCategoryFilter: () -> Unit,
+    showEventTypeFilter: () -> Unit,
     onEventItem: (Long) -> Unit,
     movePostEvent: () -> Unit,
     moveMy: () -> Unit,
@@ -152,14 +158,16 @@ private fun HomeScreen(
             ) {
                 HomeTopBar(
                     modifier = Modifier.fillMaxWidth(),
-                    showSearchDialog = { updateUiState(HomeUiState.ShowSearchDialog) },
+                    showSearchDialog = showSearchDialog,
                     moveMy = moveMy
                 )
                 HomeFilterList(
                     eventParams = eventParams,
                     resetAllFilters = resetAllFilters,
                     resetAppliedQuery = resetAppliedQuery,
-                    updateUiState = updateUiState
+                    showRegionFilter = showRegionFilter,
+                    showCategoryFilter = showCategoryFilter,
+                    showEventTypeFilter = showEventTypeFilter,
                 )
             }
             when (eventList.loadState.refresh) {
@@ -190,7 +198,9 @@ private fun HomeFilterList(
     eventParams: EventParams,
     resetAllFilters: () -> Unit,
     resetAppliedQuery: () -> Unit,
-    updateUiState: (HomeUiState) -> Unit,
+    showRegionFilter: () -> Unit,
+    showCategoryFilter: () -> Unit,
+    showEventTypeFilter: () -> Unit,
 ) {
     val scrollState = rememberScrollState()
     Row(
@@ -231,9 +241,9 @@ private fun HomeFilterList(
             )
         }
         HomeFilterChip(
-            text = eventParams.reginText(default = stringResource(R.string.region)),
+            text = eventParams.regionText(default = stringResource(R.string.region)),
             isApplied = eventParams.region != null,
-            onClick = { updateUiState(HomeUiState.ShowRegionFilter) },
+            onClick = showRegionFilter,
             trailingIcon = {
                 DownIcon(size = 20)
             }
@@ -241,7 +251,7 @@ private fun HomeFilterList(
         HomeFilterChip(
             text = eventParams.categoryText(default = stringResource(R.string.category)),
             isApplied = eventParams.categoryList.isNotEmpty(),
-            onClick = { updateUiState(HomeUiState.ShowCategoryFilter) },
+            onClick = showCategoryFilter,
             trailingIcon = {
                 DownIcon(size = 20)
             }
@@ -249,7 +259,7 @@ private fun HomeFilterList(
         HomeFilterChip(
             text = eventParams.eventTypeText(default = stringResource(R.string.event_type)),
             isApplied = eventParams.eventTypeList.isNotEmpty(),
-            onClick = { updateUiState(HomeUiState.ShowEventTypeFilter) },
+            onClick = showEventTypeFilter,
             trailingIcon = {
                 DownIcon(size = 20)
             }

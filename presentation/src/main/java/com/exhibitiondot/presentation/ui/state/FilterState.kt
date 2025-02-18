@@ -13,7 +13,7 @@ interface IFilterState<T : Filter> {
 
 interface ISingleFilterState<T : Filter.SingleFilter> : IFilterState<T> {
     var selectedFilter: T?
-    fun setFilter(filter: T)
+    fun setFilter(filter: T?)
 }
 
 interface IMultiFilerState<T : Filter.MultiFilter> : IFilterState<T> {
@@ -31,7 +31,7 @@ class SingleFilterState<T : Filter.SingleFilter>(
         selectedFilter = filter
     }
 
-    override fun setFilter(filter: T) {
+    override fun setFilter(filter: T?) {
         selectedFilter = filter
     }
 

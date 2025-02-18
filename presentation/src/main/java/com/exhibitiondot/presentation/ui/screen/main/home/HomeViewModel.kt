@@ -1,5 +1,8 @@
 package com.exhibitiondot.presentation.ui.screen.main.home
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
@@ -50,18 +53,12 @@ class HomeViewModel @Inject constructor(
             }
             .cachedIn(viewModelScope)
 
-    private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Nothing)
-    val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
+    var uiState by mutableStateOf<HomeUiState>(HomeUiState.Idle)
+        private set
 
-    val regionState = SingleFilterState(
-        filterList = Region.values()
-    )
-    val categoryState = MultiFilterState(
-        filterList = Category.values()
-    )
-    val eventTypeState = MultiFilterState(
-        filterList = EventType.values()
-    )
+    val regionState = SingleFilterState(filterList = Region.values())
+    val categoryState = MultiFilterState(filterList = Category.values())
+    val eventTypeState = MultiFilterState(filterList = EventType.values())
     val queryState = EditTextState(maxLength = 20)
 
     init {
@@ -95,15 +92,29 @@ class HomeViewModel @Inject constructor(
 
     fun applyQuery() {
         _eventParams.update { eventParams.value.copy(query = queryState.trimmedText()) }
-        dismiss()
     }
 
-    fun updateUiState(uiState: HomeUiState) {
-        _uiState.update { uiState }
+    fun showSearchDialog() {
+        uiState = HomeUiState.ShowSearchDialog
+    }
+
+    fun showRegionFilter() {
+        regionState.setFilter(eventParams.value.region)
+        uiState = HomeUiState.ShowRegionFilter
+    }
+
+    fun showCategoryFilter() {
+        categoryState.setFilter(eventParams.value.categoryList)
+        uiState = HomeUiState.ShowCategoryFilter
+    }
+
+    fun showEventTypeFilter() {
+        eventTypeState.setFilter(eventParams.value.eventTypeList)
+        uiState = HomeUiState.ShowEventTypeFilter
     }
 
     fun dismiss() {
-        updateUiState(HomeUiState.Nothing)
+        uiState = HomeUiState.Idle
     }
 
     fun applyRegionFilter() {

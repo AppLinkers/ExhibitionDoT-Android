@@ -83,7 +83,10 @@ fun HomeSearchDialog(
         ) {
             HomeSearchBar(
                 queryState = queryState,
-                applyQuery = applyQuery,
+                applyQuery = {
+                    applyQuery()
+                    onDismissRequest()
+                },
                 focusRequester = focusRequester,
                 onBack = onDismissRequest
             )
