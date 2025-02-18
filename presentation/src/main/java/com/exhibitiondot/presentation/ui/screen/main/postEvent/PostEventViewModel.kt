@@ -13,7 +13,7 @@ import com.exhibitiondot.domain.model.EventType
 import com.exhibitiondot.domain.model.ImageSource
 import com.exhibitiondot.domain.model.Region
 import com.exhibitiondot.domain.usecase.event.AddEventUseCase
-import com.exhibitiondot.domain.usecase.event.GetEventInfoUseCase
+import com.exhibitiondot.domain.usecase.event.GetEventDetailUseCase
 import com.exhibitiondot.domain.usecase.event.UpdateEventUseCase
 import com.exhibitiondot.presentation.base.BaseViewModel
 import com.exhibitiondot.presentation.mapper.DateFormatStrategy
@@ -34,7 +34,7 @@ import javax.inject.Inject
 class PostEventViewModel @Inject constructor(
     private val addEventUseCase: AddEventUseCase,
     private val updateEventUseCase: UpdateEventUseCase,
-    private val getEventInfoUseCase: GetEventInfoUseCase,
+    private val getEventDetailUseCase: GetEventDetailUseCase,
     private val imageProcessor: ImageProcessor,
     private val uiModel: GlobalUiModel,
     savedStateHandle: SavedStateHandle,
@@ -65,16 +65,16 @@ class PostEventViewModel @Inject constructor(
 
     private fun setEventInfo(eventId: Long) {
         viewModelScope.launch {
-            getEventInfoUseCase(eventId)
-                .onSuccess { (eventInfo, imageSource) ->
-                    with(eventInfo) {
+            getEventDetailUseCase(eventId)
+                .onSuccess { eventDetail ->
+                    with(eventDetail) {
                         nameState.typeText(name)
                         selectedDate = date
                         regionState.setFilter(region)
                         categoryState.setFilter(categoryList)
                         eventTypeState.setFilter(eventTypeList)
+                        image = ImageSource.Remote(imgUrl)
                     }
-                    image = imageSource
                 }
         }
     }
