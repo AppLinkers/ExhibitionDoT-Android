@@ -85,13 +85,15 @@ class PostEventViewModel @Inject constructor(
     fun onPhotoPickerResult(uri: Uri?) {
         if (uri != null) {
             viewModelScope.launch(Dispatchers.IO) {
-                val file = imageProcessor.uriToCompressedFile(uri, 420, 500)
+                val result = imageProcessor.uriToCompressedFile(uri, 420, 500)
                 withContext(Dispatchers.Main) {
-                    if (file == null) {
-                        uiModel.showToast("이미지 변환에 실패했어요")
-                    } else {
-                        image = ImageSource.Local(file)
-                    }
+                    result
+                        .onSuccess { file ->
+                            image = ImageSource.Local(file)
+                        }
+                        .onFailure {
+                            uiModel.showToast("이미지 변환에 실패했어요")
+                        }
                 }
             }
         }
