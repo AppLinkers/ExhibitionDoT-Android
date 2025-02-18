@@ -132,10 +132,10 @@ class PostEventViewModel @Inject constructor(
         }
     }
 
-    fun onNextStep(onBack: () -> Unit) {
+    fun onNextStep(moveEventDetail: (Long) -> Unit, onBack: () -> Unit) {
         val nextIdx = totalSteps.indexOf(currentStep) + 1
         if (nextIdx > totalSteps.lastIndex) {
-            postingEvent(onBack)
+            postingEvent(moveEventDetail, onBack)
         } else {
             currentStep = totalSteps[nextIdx]
         }
@@ -156,7 +156,7 @@ class PostEventViewModel @Inject constructor(
         return currentStep == totalSteps.last()
     }
 
-    private fun postingEvent(onBack: () -> Unit) {
+    private fun postingEvent(moveEventDetail: (Long) -> Unit, onBack: () -> Unit) {
         uiState = PostEventUiState.Loading
         viewModelScope.launch {
             val eventInfo = EventInfo(
@@ -167,7 +167,7 @@ class PostEventViewModel @Inject constructor(
                 eventTypeList = eventTypeState.selectedFilterList,
             )
             if (editMode) {
-                updateEvent(eventId!!, eventInfo, onBack)
+                updateEvent(eventId!!, eventInfo, moveEventDetail)
             } else {
                 addEvent(eventInfo, onBack)
             }
@@ -187,13 +187,17 @@ class PostEventViewModel @Inject constructor(
             }
     }
 
-    private suspend fun updateEvent(eventId: Long, eventInfo: EventInfo, onBack: () -> Unit) {
+    private suspend fun updateEvent(
+        eventId: Long,
+        eventInfo: EventInfo,
+        moveEventDetail: (Long) -> Unit
+    ) {
         val selectedImage = image!!
         updateEventUseCase(selectedImage, eventInfo, eventId)
             .onSuccess {
                 showMessage("이벤트를 수정했어요")
                 deleteFile(selectedImage)
-                onBack()
+                moveEventDetail(eventId)
             }
             .onFailure {
                 showMessage("이벤트 수정에 실패했어요")

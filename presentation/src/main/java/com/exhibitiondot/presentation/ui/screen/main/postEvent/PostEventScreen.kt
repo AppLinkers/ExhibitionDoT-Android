@@ -52,6 +52,7 @@ import com.exhibitiondot.presentation.ui.theme.screenPadding
 @Composable
 fun PostEventRoute(
     modifier: Modifier = Modifier,
+    moveEventDetail: (Long) -> Unit,
     onBack: () -> Unit,
     viewModel: PostEventViewModel = hiltViewModel(),
 ) {
@@ -75,7 +76,7 @@ fun PostEventRoute(
         buttonEnabled = buttonEnabled,
         lastStep = viewModel.lastStep(),
         onPrevStep = { viewModel.onPrevStep(onBack) },
-        onNextStep = { viewModel.onNextStep(onBack) },
+        onNextStep = { viewModel.onNextStep(moveEventDetail, onBack) },
         addImage = {
             pickMedia.launch(
                 PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
