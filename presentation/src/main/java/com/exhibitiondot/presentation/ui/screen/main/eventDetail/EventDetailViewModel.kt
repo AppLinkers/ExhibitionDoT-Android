@@ -16,9 +16,11 @@ import com.exhibitiondot.domain.usecase.event.DeleteEventUseCase
 import com.exhibitiondot.domain.usecase.event.GetEventDetailUseCase
 import com.exhibitiondot.domain.usecase.event.ToggleEventLikeUseCase
 import com.exhibitiondot.presentation.base.BaseViewModel
+import com.exhibitiondot.presentation.mapper.getMessage
 import com.exhibitiondot.presentation.mapper.toUiModel
 import com.exhibitiondot.presentation.model.CommentUiModel
 import com.exhibitiondot.presentation.model.EventDetailUiModel
+import com.exhibitiondot.presentation.model.GlobalFlagModel
 import com.exhibitiondot.presentation.model.GlobalUiModel
 import com.exhibitiondot.presentation.ui.navigation.MainScreen
 import com.exhibitiondot.presentation.ui.state.EditTextState
@@ -36,6 +38,7 @@ class EventDetailViewModel @Inject constructor(
     private val addCommentUseCase: AddCommentUseCase,
     getCommentListUseCase: GetCommentListUseCase,
     private val uiModel: GlobalUiModel,
+    private val flagModel: GlobalFlagModel,
     savedStateHandle: SavedStateHandle,
 ) : BaseViewModel() {
     private val eventId = savedStateHandle.toRoute<MainScreen.EventDetail>().eventId
@@ -84,10 +87,12 @@ class EventDetailViewModel @Inject constructor(
                             likeCount = eventDetail.likeCount + 1
                         )
                     }
+                    flagModel.setHomeUpdateFlag(true)
                     uiState = EventDetailUiState.Success(newEventDetail)
                 }
-                .onFailure {
-                    uiModel.showToast("좋아요 변경에 실패했어요")
+                .onFailure { t ->
+                    val msg = t.getMessage("좋아요 변경에 실패했어요")
+                    uiModel.showToast(msg)
                 }
         }
     }
@@ -108,11 +113,13 @@ class EventDetailViewModel @Inject constructor(
         viewModelScope.launch {
             deleteEventUseCase(eventId)
                 .onSuccess {
+                    flagModel.setHomeUpdateFlag(true)
                     uiModel.showToast("이벤트를 삭제했어요")
                     onBack()
                 }
-                .onFailure {
-                    uiModel.showToast("이벤트 삭제에 실패했어요")
+                .onFailure { t ->
+                    val msg = t.getMessage("이벤트 삭제에 실패했어요")
+                    uiModel.showToast(msg)
                 }
         }
     }
@@ -128,8 +135,9 @@ class EventDetailViewModel @Inject constructor(
                     commentState.resetText()
                     refresh()
                 }
-                .onFailure {
-                    uiModel.showToast("댓글 작성에 실패했어요")
+                .onFailure { t ->
+                    val msg = t.getMessage("댓글 작성에 실패했어요")
+                    uiModel.showToast(msg)
                 }
         }
     }

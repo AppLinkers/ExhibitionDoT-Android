@@ -9,15 +9,8 @@ class UpdateUserInfoUseCase @Inject constructor(
     private val userRepository: UserRepository,
     private val preferenceRepository: PreferenceRepository,
 ) {
-    suspend operator fun invoke(updateUserInfo: UpdateUserInfo): Result<Unit> {
-        userRepository.updateUserInfo(updateUserInfo)
-            .onSuccess {
-                preferenceRepository.updateCurrentUser(updateUserInfo)
-                return Result.success(it)
-            }
-            .onFailure { t ->
-                return Result.failure(t)
-            }
-        return Result.failure(IllegalStateException())
+    suspend operator fun invoke(updateUserInfo: UpdateUserInfo): Result<Unit> = runCatching {
+        userRepository.updateUserInfo(updateUserInfo).getOrThrow()
+        preferenceRepository.updateCurrentUser(updateUserInfo)
     }
 }

@@ -5,8 +5,9 @@ import androidx.paging.map
 import com.exhibitiondot.data.datasource.event.EventDataSource
 import com.exhibitiondot.data.mapper.toDomain
 import com.exhibitiondot.data.mapper.toDto
+import com.exhibitiondot.data.mapper.toResult
 import com.exhibitiondot.data.network.model.dto.EventDto
-import com.exhibitiondot.data.network.NetworkState
+import com.exhibitiondot.data.network.model.dto.EventDetailDto
 import com.exhibitiondot.domain.model.Event
 import com.exhibitiondot.domain.model.EventDetail
 import com.exhibitiondot.domain.model.EventInfo
@@ -26,27 +27,15 @@ class EventRepositoryImpl @Inject constructor(
             .map { pagingData -> pagingData.map(EventDto::toDomain) }
 
     override suspend fun getEventDetail(eventId: Long): Result<EventDetail> {
-        val response = eventDataSource.getEventDetail(eventId)
-        return when (response) {
-            is NetworkState.Success -> Result.success(response.data.toDomain())
-            else -> Result.failure(IllegalStateException())
-        }
+        return eventDataSource.getEventDetail(eventId).toResult(EventDetailDto::toDomain)
     }
 
     override suspend fun toggleEventLike(eventId: Long): Result<Unit> {
-        val response = eventDataSource.toggleEventLike(eventId)
-        return when (response) {
-            is NetworkState.Success -> Result.success(response.data)
-            else -> Result.failure(IllegalStateException())
-        }
+        return eventDataSource.toggleEventLike(eventId).toResult {  }
     }
 
     override suspend fun addEvent(file: File, eventInfo: EventInfo): Result<Unit> {
-        val response = eventDataSource.addEvent(file, eventInfo.toDto())
-        return when (response) {
-            is NetworkState.Success -> Result.success(response.data)
-            else -> Result.failure(IllegalStateException())
-        }
+        return eventDataSource.addEvent(file, eventInfo.toDto()).toResult {  }
     }
 
     override suspend fun updateEvent(
@@ -54,18 +43,10 @@ class EventRepositoryImpl @Inject constructor(
         eventInfo: EventInfo,
         eventId: Long
     ): Result<Unit> {
-        val response = eventDataSource.updateEvent(file, eventInfo.toDto(), eventId)
-        return when (response) {
-            is NetworkState.Success -> Result.success(response.data)
-            else -> Result.failure(IllegalStateException())
-        }
+        return eventDataSource.updateEvent(file, eventInfo.toDto(), eventId).toResult {  }
     }
 
     override suspend fun deleteEvent(eventId: Long): Result<Unit> {
-        val response = eventDataSource.deleteEvent(eventId)
-        return when (response) {
-            is NetworkState.Success -> Result.success(response.data)
-            else -> Result.failure(IllegalStateException())
-        }
+        return eventDataSource.deleteEvent(eventId).toResult {  }
     }
 }

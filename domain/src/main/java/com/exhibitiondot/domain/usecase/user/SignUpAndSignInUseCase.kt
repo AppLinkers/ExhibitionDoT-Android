@@ -7,20 +7,8 @@ class SignUpAndSignInUseCase @Inject constructor(
     private val signUpUseCase: SignUpUseCase,
     private val signInUseCase: SignInUseCase,
 ) {
-    suspend operator fun invoke(user: User): Result<Unit> {
-        signUpUseCase(user)
-            .onSuccess {
-                signInUseCase(user.email)
-                    .onSuccess {
-                        return Result.success(it)
-                    }
-                    .onFailure { t ->
-                        return Result.failure(t)
-                    }
-            }
-            .onFailure { t ->
-                return Result.failure(t)
-            }
-        return Result.failure(IllegalStateException())
+    suspend operator fun invoke(user: User): Result<Unit> = runCatching {
+        signUpUseCase(user).getOrThrow()
+        signInUseCase(user.email).getOrThrow()
     }
 }

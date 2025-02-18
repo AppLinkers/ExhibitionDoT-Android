@@ -3,10 +3,10 @@ package com.exhibitiondot.data.repository
 import com.exhibitiondot.data.datasource.user.UserDataSource
 import com.exhibitiondot.data.mapper.toDomain
 import com.exhibitiondot.data.mapper.toRequest
+import com.exhibitiondot.data.mapper.toResult
 import com.exhibitiondot.data.mapper.toSignUpRequest
 import com.exhibitiondot.data.network.model.request.SignInRequest
-import com.exhibitiondot.data.network.NetworkState
-import com.exhibitiondot.domain.exception.NetworkFailException
+import com.exhibitiondot.data.network.model.dto.UserDto
 import com.exhibitiondot.domain.model.UpdateUserInfo
 import com.exhibitiondot.domain.model.User
 import com.exhibitiondot.domain.repository.UserRepository
@@ -16,46 +16,21 @@ class UserRepositoryImpl @Inject constructor(
     private val userDataSource: UserDataSource
 ) : UserRepository {
     override suspend fun getUser(): Result<User> {
-        val response = userDataSource.getUser()
-        return when (response) {
-            is NetworkState.Success -> Result.success(response.data.toDomain())
-            is NetworkState.Failure -> Result.failure(
-                NetworkFailException(response.code, response.error)
-            )
-            else -> Result.failure(IllegalStateException())
-        }
+        return userDataSource.getUser().toResult(UserDto::toDomain)
     }
 
     override suspend fun signIn(email: String): Result<Long> {
-        val response = userDataSource.sigIn(SignInRequest(email))
-        return when (response) {
-            is NetworkState.Success -> Result.success(response.data.userId)
-            is NetworkState.Failure -> Result.failure(
-                NetworkFailException(response.code, response.error)
-            )
-            else -> Result.failure(IllegalStateException())
-        }
+        val request = SignInRequest(email)
+        return userDataSource.sigIn(request).toResult { it.userId }
     }
 
     override suspend fun signUp(user: User): Result<Unit> {
-        val response = userDataSource.signUp(user.toSignUpRequest())
-        return when (response) {
-            is NetworkState.Success -> Result.success(response.data)
-            is NetworkState.Failure -> Result.failure(
-                NetworkFailException(response.code, response.error)
-            )
-            else -> Result.failure(IllegalStateException())
-        }
+        val request = user.toSignUpRequest()
+        return userDataSource.signUp(request).toResult { }
     }
 
     override suspend fun updateUserInfo(updateUserInfo: UpdateUserInfo): Result<Unit> {
-        val response = userDataSource.updateUserInfo(updateUserInfo.toRequest())
-        return when (response) {
-            is NetworkState.Success -> Result.success(response.data)
-            is NetworkState.Failure -> Result.failure(
-                NetworkFailException(response.code, response.error)
-            )
-            else -> Result.failure(IllegalStateException())
-        }
+        val request = updateUserInfo.toRequest()
+        return userDataSource.updateUserInfo(request).toResult { }
     }
 }

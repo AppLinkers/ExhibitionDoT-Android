@@ -19,7 +19,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.exhibitiondot.domain.model.Category
 import com.exhibitiondot.domain.model.EventType
 import com.exhibitiondot.domain.model.Region
@@ -38,32 +37,31 @@ import com.exhibitiondot.presentation.ui.theme.screenPadding
 @Composable
 fun SignUpRoute(
     modifier: Modifier = Modifier,
-    moveMain: () -> Unit,
     onBack: () -> Unit,
     viewModel: SignUpViewModel = hiltViewModel(),
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val step by viewModel.currentStep.collectAsStateWithLifecycle()
-    val progress by animateFloatAsState(step.percentage, label = "progress-anim")
+    val progress by animateFloatAsState(viewModel.currentStep.percentage, label = "progress-anim")
     val buttonEnabled by remember { derivedStateOf { viewModel.validate() } }
+    val lastStep by remember { derivedStateOf { viewModel.lastStep() } }
 
     SignUpScreen(
         modifier = modifier,
-        uiState = uiState,
-        step = step,
+        uiState = viewModel.uiState,
+        step = viewModel.currentStep,
         progress = progress,
         buttonEnabled = buttonEnabled,
+        lastStep = lastStep,
         nameState = viewModel.nameState,
         nicknameState = viewModel.nicknameState,
         phoneState = viewModel.phoneState,
         regionState = viewModel.regionState,
         categoryState = viewModel.categoryState,
         eventTypeState = viewModel.eventTypeState,
-        onPrevStep = { viewModel.onPrevStep(step, onBack) },
-        onNextStep = { viewModel.onNextStep(step, moveMain, onBack) },
+        onPrevStep = { viewModel.onPrevStep(onBack) },
+        onNextStep = { viewModel.onNextStep(onBack) },
     )
     BackHandler {
-        viewModel.onPrevStep(step, onBack)
+        viewModel.onPrevStep(onBack)
     }
 }
 
@@ -74,6 +72,7 @@ private fun SignUpScreen(
     step: SignUpStep,
     progress: Float,
     buttonEnabled: Boolean,
+    lastStep: Boolean,
     nameState: IEditTextState,
     nicknameState: IEditTextState,
     phoneState: IEditTextState,
@@ -119,7 +118,7 @@ private fun SignUpScreen(
             }
             DoTSpacer(modifier = Modifier.weight(1f))
             DoTButton(
-                text = if (step.nextStep() != null) {
+                text = if (lastStep) {
                     stringResource(R.string.next)
                 } else {
                     stringResource(R.string.signup)

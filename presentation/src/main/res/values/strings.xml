@@ -36,6 +36,9 @@
     <string name="my_page_user_info">계정 정보</string>
     <string name="my_page_category">관심 카테고리</string>
     <string name="my_page_event_type">관심 이벤트</string>
+    <string name="my_page_manage_account">계정 관리</string>
+    <string name="my_page_terms_and_policy">약관 및 정책</string>
+    <string name="my_page_privacy_policy">개인정보 처리방침</string>
 
     <string name="update_user_info">정보 수정하기</string>
 
@@ -60,4 +63,7 @@
     <string name="delete">삭제하기</string>
     <string name="report">신고하기</string>
     <string name="report_description">게시글을 신고할까요?</string>
+    <string name="logout">로그아웃</string>
+    <string name="withdraw">탈퇴하기</string>
+    <string name="withdraw_description">정말 탈퇴하시겠습니까?</string>
 </resources>

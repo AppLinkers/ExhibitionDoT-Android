@@ -13,7 +13,7 @@ data class EventParams(
                 query.isNotEmpty()
     }
 
-    fun reginText(default: String): String {
+    fun regionText(default: String): String {
         return region?.name ?: default
     }
 

@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -119,9 +120,9 @@ fun DoTTextField(
 @Composable
 fun SearchTextField(
     modifier: Modifier = Modifier,
-    value: String,
+    value: TextFieldValue,
     focusRequester: FocusRequester,
-    onValueChange: (String) -> Unit,
+    onValueChange: (TextFieldValue) -> Unit,
     onResetValue: () -> Unit,
     onSearch: () -> Unit
 ) {
@@ -141,7 +142,7 @@ fun SearchTextField(
         onValueChange = onValueChange
     ) {
         TextFieldDefaults.DecorationBox(
-            value = value,
+            value = value.text,
             innerTextField = it,
             enabled = true,
             singleLine = true,
@@ -156,7 +157,7 @@ fun SearchTextField(
                 )
             },
             trailingIcon = {
-                if (value.isNotEmpty()) {
+                if (value.text.isNotEmpty()) {
                     XCircle(size = 20, onClick = onResetValue)
                 }
             },

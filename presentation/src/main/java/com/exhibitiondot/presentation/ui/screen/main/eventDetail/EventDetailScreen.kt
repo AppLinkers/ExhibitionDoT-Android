@@ -23,20 +23,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import com.exhibitiondot.presentation.R
 import com.exhibitiondot.presentation.model.CommentUiModel
 import com.exhibitiondot.presentation.model.EventDetailUiModel
 import com.exhibitiondot.presentation.ui.component.CommentTextField
 import com.exhibitiondot.presentation.ui.component.DoTImage
 import com.exhibitiondot.presentation.ui.component.DoTLoadingScreen
-import com.exhibitiondot.presentation.ui.component.DoTReportDialog
+import com.exhibitiondot.presentation.ui.component.DoTAlertDialog
 import com.exhibitiondot.presentation.ui.component.DoTSpacer
 import com.exhibitiondot.presentation.ui.component.DoTUpdateDeleteDialog
 import com.exhibitiondot.presentation.ui.component.EventDetailTopBar
@@ -56,7 +56,6 @@ fun EventDetailRoute(
     val uiState = viewModel.uiState
     val dialogState = viewModel.dialogState
     val commentList = viewModel.commentList.collectAsLazyPagingItems()
-    val keyboardController = LocalSoftwareKeyboardController.current
 
     when (uiState) {
         EventDetailUiState.Loading -> DoTLoadingScreen(modifier = modifier)
@@ -67,19 +66,16 @@ fun EventDetailRoute(
             commentState = viewModel.commentState,
             toggleEventLike = viewModel::toggleEventLike,
             showDialog = viewModel::showDialog,
-            addComment = {
-                viewModel.addComment {
-                    keyboardController?.hide()
-                    commentList.refresh()
-                }
-            },
+            addComment = { viewModel.addComment { commentList.refresh() } },
             onBack = onBack
         )
         EventDetailUiState.Failure -> {}
     }
-    DoTReportDialog(
+    DoTAlertDialog(
         show = dialogState == EventDetailDialogState.ShowReportDialog,
-        onReport = viewModel::onReport,
+        title = stringResource(R.string.report),
+        text = stringResource(R.string.report_description),
+        onConfirm = viewModel::onReport,
         onDismiss = viewModel::dismiss
     )
     DoTUpdateDeleteDialog(
@@ -102,7 +98,12 @@ private fun EventDetailScreen(
     onBack: () -> Unit,
 ) {
     val lazyListState = rememberLazyListState()
-    val skipImage by remember { derivedStateOf { lazyListState.firstVisibleItemScrollOffset > 700 } }
+    val skipImage by remember {
+        derivedStateOf {
+            (lazyListState.firstVisibleItemIndex == 0 &&
+                    lazyListState.firstVisibleItemScrollOffset < 1085).not()
+        }
+    }
 
     Box(
         modifier = modifier.fillMaxSize()
@@ -115,13 +116,12 @@ private fun EventDetailScreen(
             item {
                 EventDetailView(
                     eventDetail = eventDetail,
-                    commentCount = commentList.itemCount,
                     toggleEventLike = toggleEventLike,
                 )
             }
             items(
                 count = commentList.itemCount,
-                key = { index -> commentList[index]?.id ?: index }
+                key = commentList.itemKey { it.id }
             ) { index ->
                 commentList[index]?.let { comment ->
                     CommentItem(
@@ -156,7 +156,6 @@ private fun EventDetailScreen(
 private fun EventDetailView(
     modifier: Modifier = Modifier,
     eventDetail: EventDetailUiModel,
-    commentCount: Int,
     toggleEventLike: (EventDetailUiModel) -> Unit,
 ) {
     Column(
@@ -227,7 +226,7 @@ private fun EventDetailView(
             }
             DoTSpacer(size = 60)
             Text(
-                text = "${stringResource(R.string.comment)} $commentCount",
+                text = stringResource(R.string.comment),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.surfaceContainerHigh
             )

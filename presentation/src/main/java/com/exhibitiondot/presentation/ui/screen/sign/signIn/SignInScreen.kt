@@ -26,7 +26,6 @@ import com.exhibitiondot.presentation.ui.theme.screenPadding
 @Composable
 fun SignInRoute(
     modifier: Modifier = Modifier,
-    moveMain: () -> Unit,
     moveSignUp: (String) -> Unit,
     viewModel: SignInViewModel = hiltViewModel(),
 ) {
@@ -36,7 +35,7 @@ fun SignInRoute(
     SignInScreen(
         modifier = modifier,
         uiState = uiState,
-        onLogin = { viewModel.onKakaoLogin(context, moveMain, moveSignUp) }
+        onLogin = { viewModel.onKakaoLogin(context, moveSignUp) }
     )
 }
 

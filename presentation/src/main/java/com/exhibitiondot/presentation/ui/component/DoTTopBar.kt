@@ -21,11 +21,11 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.exhibitiondot.presentation.R
-import com.exhibitiondot.presentation.ui.state.IEditTextState
 import com.exhibitiondot.presentation.ui.theme.screenPadding
 
 @Composable
@@ -103,8 +103,10 @@ fun HomeTopBar(
 @Composable
 fun HomeSearchBar(
     modifier: Modifier = Modifier,
-    queryState: IEditTextState,
+    value: TextFieldValue,
     focusRequester: FocusRequester,
+    onValueChange: (TextFieldValue) -> Unit,
+    onResetValue: () -> Unit,
     applyQuery: () -> Unit,
     onBack: () -> Unit,
 ) {
@@ -121,10 +123,10 @@ fun HomeSearchBar(
         BackIcon(onBack = onBack)
         DoTSpacer(size = 10)
         SearchTextField(
-            value = queryState.typedText,
+            value = value,
             focusRequester = focusRequester,
-            onValueChange = queryState::typeText,
-            onResetValue = queryState::resetText,
+            onValueChange = onValueChange,
+            onResetValue = onResetValue,
             onSearch = applyQuery
         )
     }

@@ -1,10 +1,12 @@
 package com.exhibitiondot.presentation.ui.screen.main.myPage
 
-import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -12,6 +14,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -20,6 +25,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.exhibitiondot.presentation.R
 import com.exhibitiondot.presentation.model.UserUiModel
+import com.exhibitiondot.presentation.ui.component.DoTAlertDialog
 import com.exhibitiondot.presentation.ui.component.DoTLoadingScreen
 import com.exhibitiondot.presentation.ui.component.DoTSpacer
 import com.exhibitiondot.presentation.ui.component.DoTTitle
@@ -35,13 +41,24 @@ fun MyPageRoute(
     viewModel: MyPageViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    var showDialog by remember { mutableStateOf(false) }
+
     MyPageScreen(
         modifier = modifier,
         uiState = uiState,
         moveUpdateUserInfo = moveUpdateUserInfo,
+        onSignOut = viewModel::signOut,
+        onWithDraw = { showDialog = true },
+        onPrivacyPolicy = {},
         onBack = onBack
     )
-    BackHandler(onBack = onBack)
+    DoTAlertDialog(
+        show = showDialog,
+        title = stringResource(R.string.withdraw),
+        text = stringResource(R.string.withdraw_description),
+        onConfirm = viewModel::signOut,
+        onDismiss = { showDialog = false }
+    )
 }
 
 @Composable
@@ -49,6 +66,9 @@ private fun MyPageScreen(
     modifier: Modifier,
     uiState: MyPageUiState,
     moveUpdateUserInfo: () -> Unit,
+    onSignOut: () -> Unit,
+    onWithDraw: () -> Unit,
+    onPrivacyPolicy: () -> Unit,
     onBack: () -> Unit,
 ) {
     Column(
@@ -67,7 +87,10 @@ private fun MyPageScreen(
             )
             is MyPageUiState.Success -> MyPageBody(
                 modifier = Modifier.weight(1f),
-                user = uiState.user
+                user = uiState.user,
+                onSignOut = onSignOut,
+                onWithDraw = onWithDraw,
+                onPrivacyPolicy = onPrivacyPolicy,
             )
         }
 
@@ -78,6 +101,9 @@ private fun MyPageScreen(
 private fun MyPageBody(
     modifier: Modifier = Modifier,
     user: UserUiModel,
+    onSignOut: () -> Unit,
+    onWithDraw: () -> Unit,
+    onPrivacyPolicy: () -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -93,13 +119,36 @@ private fun MyPageBody(
         DoTSpacer(size = 10)
         MyPageAccount(user = user)
         DoTSpacer(size = 40)
+
         DoTTitle(title = stringResource(R.string.my_page_category))
         DoTSpacer(size = 20)
         MyPageTags(tags = user.categoryTags)
-        DoTSpacer(size = 40)
+        DoTSpacer(size = 60)
+
         DoTTitle(title = stringResource(R.string.my_page_event_type))
         DoTSpacer(size = 20)
         MyPageTags(tags = user.eventTypeTags)
+        DoTSpacer(size = 60)
+
+        DoTTitle(title = stringResource(R.string.my_page_manage_account))
+        DoTSpacer(size = 10)
+        MyPageTextBox(
+            text = stringResource(R.string.logout),
+            onClick = onSignOut
+        )
+        MyPageTextBox(
+            text = stringResource(R.string.withdraw),
+            onClick = onWithDraw
+        )
+        DoTSpacer(size = 60)
+
+        DoTTitle(title = stringResource(R.string.my_page_terms_and_policy))
+        DoTSpacer(size = 10)
+        MyPageTextBox(
+            text = stringResource(R.string.my_page_privacy_policy),
+            onClick = onPrivacyPolicy
+        )
+        DoTSpacer(size = 60)
     }
 }
 
@@ -159,4 +208,23 @@ private fun MyPageTags(tags: String) {
         style = MaterialTheme.typography.labelMedium,
         color = MaterialTheme.colorScheme.primary
     )
+}
+
+@Composable
+private fun MyPageTextBox(
+    text: String,
+    onClick: () -> Unit,
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(vertical = 20.dp),
+        contentAlignment = Alignment.CenterStart
+    ) {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.displayMedium
+        )
+    }
 }

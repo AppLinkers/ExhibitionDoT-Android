@@ -1,5 +1,8 @@
 package com.exhibitiondot.presentation.ui.screen.main.home
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
@@ -14,7 +17,7 @@ import com.exhibitiondot.domain.usecase.user.GetCacheFirstUserFlowUseCase
 import com.exhibitiondot.presentation.base.BaseViewModel
 import com.exhibitiondot.presentation.mapper.toUiModel
 import com.exhibitiondot.presentation.model.EventUiModel
-import com.exhibitiondot.presentation.ui.state.EditTextState
+import com.exhibitiondot.presentation.model.GlobalFlagModel
 import com.exhibitiondot.presentation.ui.state.MultiFilterState
 import com.exhibitiondot.presentation.ui.state.SingleFilterState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,7 +35,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     getCacheFirstUserFlowUseCase: GetCacheFirstUserFlowUseCase,
-    private val getEventListUseCase: GetEventListUseCase
+    private val getEventListUseCase: GetEventListUseCase,
+    val flagModel: GlobalFlagModel,
 ) : BaseViewModel() {
     private val _eventParams = MutableStateFlow(EventParams.NONE)
     val eventParams: StateFlow<EventParams> = _eventParams.asStateFlow()
@@ -48,19 +52,12 @@ class HomeViewModel @Inject constructor(
             }
             .cachedIn(viewModelScope)
 
-    private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Nothing)
-    val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
+    var uiState by mutableStateOf<HomeUiState>(HomeUiState.Idle)
+        private set
 
-    val regionState = SingleFilterState(
-        filterList = Region.values()
-    )
-    val categoryState = MultiFilterState(
-        filterList = Category.values()
-    )
-    val eventTypeState = MultiFilterState(
-        filterList = EventType.values()
-    )
-    val queryState = EditTextState(maxLength = 20)
+    val regionState = SingleFilterState(filterList = Region.values())
+    val categoryState = MultiFilterState(filterList = Category.values())
+    val eventTypeState = MultiFilterState(filterList = EventType.values())
 
     init {
         viewModelScope.launch {
@@ -87,21 +84,34 @@ class HomeViewModel @Inject constructor(
     }
 
     fun resetAppliedQuery() {
-        queryState.resetText()
         _eventParams.update { eventParams.value.copy(query = "") }
     }
 
-    fun applyQuery() {
-        _eventParams.update { eventParams.value.copy(query = queryState.trimmedText()) }
-        dismiss()
+    fun applyQuery(query: String) {
+        _eventParams.update { eventParams.value.copy(query = query) }
     }
 
-    fun updateUiState(uiState: HomeUiState) {
-        _uiState.update { uiState }
+    fun showSearchDialog() {
+        uiState = HomeUiState.ShowSearchDialog(eventParams.value.query)
+    }
+
+    fun showRegionFilter() {
+        regionState.setFilter(eventParams.value.region)
+        uiState = HomeUiState.ShowRegionFilter
+    }
+
+    fun showCategoryFilter() {
+        categoryState.setFilter(eventParams.value.categoryList)
+        uiState = HomeUiState.ShowCategoryFilter
+    }
+
+    fun showEventTypeFilter() {
+        eventTypeState.setFilter(eventParams.value.eventTypeList)
+        uiState = HomeUiState.ShowEventTypeFilter
     }
 
     fun dismiss() {
-        updateUiState(HomeUiState.Nothing)
+        uiState = HomeUiState.Idle
     }
 
     fun applyRegionFilter() {

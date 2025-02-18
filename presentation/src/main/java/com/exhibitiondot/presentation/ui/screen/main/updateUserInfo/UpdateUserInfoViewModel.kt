@@ -11,6 +11,7 @@ import com.exhibitiondot.domain.model.UpdateUserInfo
 import com.exhibitiondot.domain.usecase.user.GetCacheFirstUserFlowUseCase
 import com.exhibitiondot.domain.usecase.user.UpdateUserInfoUseCase
 import com.exhibitiondot.presentation.base.BaseViewModel
+import com.exhibitiondot.presentation.mapper.getMessage
 import com.exhibitiondot.presentation.model.GlobalUiModel
 import com.exhibitiondot.presentation.ui.state.EditTextState
 import com.exhibitiondot.presentation.ui.state.MultiFilterState
@@ -67,8 +68,9 @@ class UpdateUserInfoViewModel @Inject constructor(
                     uiModel.showToast("정보를 수정했어요")
                     onBack()
                 }
-                .onFailure {
-                    uiModel.showToast("정보 수정에 실패했어요")
+                .onFailure { t ->
+                    val msg = t.getMessage("정보 수정에 실패했어요")
+                    uiModel.showToast(msg)
                     uiState = UpdateUserInfoUiState.Idle
                 }
         }

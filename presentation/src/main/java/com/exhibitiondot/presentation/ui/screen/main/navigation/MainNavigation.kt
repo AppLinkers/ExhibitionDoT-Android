@@ -32,7 +32,13 @@ fun NavGraphBuilder.nestedMainGraph(appState: DoTAppState) {
             )
         }
         composable<MainScreen.PostEvent> {
-            PostEventRoute(onBack = navController::popBackStack)
+            PostEventRoute(
+                moveEventDetail = { eventId ->
+                    navController.popBackStack(route = MainScreen.EventDetail(eventId), inclusive = true)
+                    navController.navigateToEventDetail(eventId)
+                },
+                onBack = navController::popBackStack
+            )
         }
         composable<MainScreen.MyPage> {
             MyPageRoute(

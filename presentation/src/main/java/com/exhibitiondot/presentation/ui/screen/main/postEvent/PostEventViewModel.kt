@@ -13,11 +13,13 @@ import com.exhibitiondot.domain.model.EventType
 import com.exhibitiondot.domain.model.ImageSource
 import com.exhibitiondot.domain.model.Region
 import com.exhibitiondot.domain.usecase.event.AddEventUseCase
-import com.exhibitiondot.domain.usecase.event.GetEventInfoUseCase
+import com.exhibitiondot.domain.usecase.event.GetEventDetailUseCase
 import com.exhibitiondot.domain.usecase.event.UpdateEventUseCase
 import com.exhibitiondot.presentation.base.BaseViewModel
 import com.exhibitiondot.presentation.mapper.DateFormatStrategy
 import com.exhibitiondot.presentation.mapper.format
+import com.exhibitiondot.presentation.mapper.getMessage
+import com.exhibitiondot.presentation.model.GlobalFlagModel
 import com.exhibitiondot.presentation.model.GlobalUiModel
 import com.exhibitiondot.presentation.ui.navigation.MainScreen
 import com.exhibitiondot.presentation.ui.state.EditTextState
@@ -34,9 +36,10 @@ import javax.inject.Inject
 class PostEventViewModel @Inject constructor(
     private val addEventUseCase: AddEventUseCase,
     private val updateEventUseCase: UpdateEventUseCase,
-    private val getEventInfoUseCase: GetEventInfoUseCase,
+    private val getEventDetailUseCase: GetEventDetailUseCase,
     private val imageProcessor: ImageProcessor,
     private val uiModel: GlobalUiModel,
+    private val flagModel: GlobalFlagModel,
     savedStateHandle: SavedStateHandle,
 ) : BaseViewModel() {
     private val eventId = savedStateHandle.toRoute<MainScreen.PostEvent>().eventId
@@ -65,16 +68,16 @@ class PostEventViewModel @Inject constructor(
 
     private fun setEventInfo(eventId: Long) {
         viewModelScope.launch {
-            getEventInfoUseCase(eventId)
-                .onSuccess { (eventInfo, imageSource) ->
-                    with(eventInfo) {
+            getEventDetailUseCase(eventId)
+                .onSuccess { eventDetail ->
+                    with(eventDetail) {
                         nameState.typeText(name)
                         selectedDate = date
                         regionState.setFilter(region)
                         categoryState.setFilter(categoryList)
                         eventTypeState.setFilter(eventTypeList)
+                        image = ImageSource.Remote(imgUrl)
                     }
-                    image = imageSource
                 }
         }
     }
@@ -82,13 +85,15 @@ class PostEventViewModel @Inject constructor(
     fun onPhotoPickerResult(uri: Uri?) {
         if (uri != null) {
             viewModelScope.launch(Dispatchers.IO) {
-                val file = imageProcessor.uriToCompressedFile(uri, 420, 500)
+                val result = imageProcessor.uriToCompressedFile(uri, 420, 500)
                 withContext(Dispatchers.Main) {
-                    if (file == null) {
-                        uiModel.showToast("이미지 변환에 실패했어요")
-                    } else {
-                        image = ImageSource.Local(file)
-                    }
+                    result
+                        .onSuccess { file ->
+                            image = ImageSource.Local(file)
+                        }
+                        .onFailure {
+                            uiModel.showToast("이미지 변환에 실패했어요")
+                        }
                 }
             }
         }
@@ -111,7 +116,7 @@ class PostEventViewModel @Inject constructor(
     }
 
     fun showDatePicker() {
-        uiState = PostEventUiState.ShowDatePicker
+        uiState = PostEventUiState.ShowDatePicker(selectedDate)
     }
 
     fun dismiss() {
@@ -132,10 +137,10 @@ class PostEventViewModel @Inject constructor(
         }
     }
 
-    fun onNextStep(onBack: () -> Unit) {
+    fun onNextStep(moveEventDetail: (Long) -> Unit, onBack: () -> Unit) {
         val nextIdx = totalSteps.indexOf(currentStep) + 1
         if (nextIdx > totalSteps.lastIndex) {
-            postingEvent(onBack)
+            postingEvent(moveEventDetail, onBack)
         } else {
             currentStep = totalSteps[nextIdx]
         }
@@ -156,7 +161,7 @@ class PostEventViewModel @Inject constructor(
         return currentStep == totalSteps.last()
     }
 
-    private fun postingEvent(onBack: () -> Unit) {
+    private fun postingEvent(moveEventDetail: (Long) -> Unit, onBack: () -> Unit) {
         uiState = PostEventUiState.Loading
         viewModelScope.launch {
             val eventInfo = EventInfo(
@@ -167,7 +172,7 @@ class PostEventViewModel @Inject constructor(
                 eventTypeList = eventTypeState.selectedFilterList,
             )
             if (editMode) {
-                updateEvent(eventId!!, eventInfo, onBack)
+                updateEvent(eventId!!, eventInfo, moveEventDetail)
             } else {
                 addEvent(eventInfo, onBack)
             }
@@ -178,25 +183,33 @@ class PostEventViewModel @Inject constructor(
         val selectedImage = image as ImageSource.Local
         addEventUseCase(selectedImage, eventInfo)
             .onSuccess {
+                flagModel.setHomeUpdateFlag(true)
                 showMessage("이벤트를 추가했어요")
                 deleteFile(selectedImage)
                 onBack()
             }
-            .onFailure {
-                showMessage("이벤트 추가에 실패했어요")
+            .onFailure { t ->
+                val msg = t.getMessage("이벤트 추가에 실패했어요")
+                showMessage(msg)
             }
     }
 
-    private suspend fun updateEvent(eventId: Long, eventInfo: EventInfo, onBack: () -> Unit) {
+    private suspend fun updateEvent(
+        eventId: Long,
+        eventInfo: EventInfo,
+        moveEventDetail: (Long) -> Unit
+    ) {
         val selectedImage = image!!
         updateEventUseCase(selectedImage, eventInfo, eventId)
             .onSuccess {
+                flagModel.setHomeUpdateFlag(true)
                 showMessage("이벤트를 수정했어요")
                 deleteFile(selectedImage)
-                onBack()
+                moveEventDetail(eventId)
             }
-            .onFailure {
-                showMessage("이벤트 수정에 실패했어요")
+            .onFailure { t ->
+                val msg = t.getMessage("이벤트 수정에 실패했어요")
+                showMessage(msg)
             }
     }
 

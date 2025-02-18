@@ -14,5 +14,5 @@ interface PreferenceRepository {
 
     fun updateCurrentUser(updateUserInfo: UpdateUserInfo)
 
-    suspend fun updateUserId(userId: Long)
+    suspend fun updateUserId(userId: Long?)
 }

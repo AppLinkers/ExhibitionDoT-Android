@@ -1,5 +1,6 @@
 package com.exhibitiondot.domain.usecase.user
 
+import com.exhibitiondot.domain.exception.NetworkFailException
 import com.exhibitiondot.domain.exception.SignUpFailException
 import com.exhibitiondot.domain.model.User
 import com.exhibitiondot.domain.repository.PreferenceRepository
@@ -10,15 +11,14 @@ class SignUpUseCase @Inject constructor(
     private val userRepository: UserRepository,
     private val preferenceRepository: PreferenceRepository,
 ) {
-    suspend operator fun invoke(user: User): Result<Unit> {
+    suspend operator fun invoke(user: User): Result<Unit> = runCatching {
         userRepository.signUp(user)
-            .onSuccess {
-                preferenceRepository.updateCurrentUser(user)
-                return Result.success(it)
+            .getOrElse { exception ->
+                when (exception) {
+                    is NetworkFailException -> throw exception
+                    else -> throw SignUpFailException(exception)
+                }
             }
-            .onFailure { t ->
-                return Result.failure(SignUpFailException(t))
-            }
-        return Result.failure(IllegalStateException())
+        preferenceRepository.updateCurrentUser(user)
     }
 }

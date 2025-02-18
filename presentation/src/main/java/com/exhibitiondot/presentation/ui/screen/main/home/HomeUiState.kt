@@ -1,9 +1,9 @@
 package com.exhibitiondot.presentation.ui.screen.main.home
 
 sealed interface HomeUiState {
-    data object Nothing : HomeUiState
+    data object Idle : HomeUiState
 
-    data object ShowSearchDialog : HomeUiState
+    data class ShowSearchDialog(val query: String) : HomeUiState
 
     data object ShowRegionFilter : HomeUiState
 

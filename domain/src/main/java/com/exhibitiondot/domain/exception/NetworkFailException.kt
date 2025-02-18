@@ -1,3 +1,3 @@
 package com.exhibitiondot.domain.exception
 
-class NetworkFailException(code: Int, error: String?) : Exception(error)
+data class NetworkFailException(val code: Int, val error: String?) : Exception(error)
