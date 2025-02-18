@@ -18,7 +18,6 @@ import com.exhibitiondot.presentation.base.BaseViewModel
 import com.exhibitiondot.presentation.mapper.toUiModel
 import com.exhibitiondot.presentation.model.EventUiModel
 import com.exhibitiondot.presentation.model.GlobalFlagModel
-import com.exhibitiondot.presentation.ui.state.EditTextState
 import com.exhibitiondot.presentation.ui.state.MultiFilterState
 import com.exhibitiondot.presentation.ui.state.SingleFilterState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -59,7 +58,6 @@ class HomeViewModel @Inject constructor(
     val regionState = SingleFilterState(filterList = Region.values())
     val categoryState = MultiFilterState(filterList = Category.values())
     val eventTypeState = MultiFilterState(filterList = EventType.values())
-    val queryState = EditTextState(maxLength = 20)
 
     init {
         viewModelScope.launch {
@@ -86,16 +84,15 @@ class HomeViewModel @Inject constructor(
     }
 
     fun resetAppliedQuery() {
-        queryState.resetText()
         _eventParams.update { eventParams.value.copy(query = "") }
     }
 
-    fun applyQuery() {
-        _eventParams.update { eventParams.value.copy(query = queryState.trimmedText()) }
+    fun applyQuery(query: String) {
+        _eventParams.update { eventParams.value.copy(query = query) }
     }
 
     fun showSearchDialog() {
-        uiState = HomeUiState.ShowSearchDialog
+        uiState = HomeUiState.ShowSearchDialog(eventParams.value.query)
     }
 
     fun showRegionFilter() {

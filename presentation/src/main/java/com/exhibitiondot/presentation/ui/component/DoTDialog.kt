@@ -26,27 +26,31 @@ import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.DialogWindowProvider
 import com.exhibitiondot.presentation.R
 import com.exhibitiondot.presentation.mapper.DateFormatStrategy
 import com.exhibitiondot.presentation.mapper.format
-import com.exhibitiondot.presentation.ui.state.IEditTextState
 import com.exhibitiondot.presentation.ui.theme.screenPadding
 import java.util.Calendar
 
 @Composable
 fun HomeSearchDialog(
     modifier: Modifier = Modifier,
-    queryState: IEditTextState,
-    applyQuery: () -> Unit,
+    query: String,
+    applyQuery: (String) -> Unit,
     onDismissRequest: () -> Unit,
 ) {
     Dialog(
@@ -60,6 +64,9 @@ fun HomeSearchDialog(
         val dialogWindow = (LocalView.current.parent as? DialogWindowProvider)?.window
         val parentView = LocalView.current.parent as View
         val focusRequester = remember { FocusRequester() }
+        var textFieldValue by remember {
+            mutableStateOf(TextFieldValue(text = query, selection = TextRange(query.length)))
+        }
         SideEffect {
             if (activityWindow != null && dialogWindow != null) {
                 val attributes = WindowManager.LayoutParams().apply {
@@ -82,12 +89,18 @@ fun HomeSearchDialog(
                 .background(color = MaterialTheme.colorScheme.background)
         ) {
             HomeSearchBar(
-                queryState = queryState,
+                value = textFieldValue,
+                focusRequester = focusRequester,
+                onValueChange = { value ->
+                    textFieldValue = value
+                },
+                onResetValue = { textFieldValue = TextFieldValue() },
                 applyQuery = {
-                    applyQuery()
+                    if (textFieldValue.text.isNotEmpty()) {
+                        applyQuery(textFieldValue.text)
+                    }
                     onDismissRequest()
                 },
-                focusRequester = focusRequester,
                 onBack = onDismissRequest
             )
             Box(

@@ -119,7 +119,7 @@ fun HomeRoute(
     }
     if (uiState is HomeUiState.ShowSearchDialog) {
         HomeSearchDialog(
-            queryState = viewModel.queryState,
+            query = uiState.query,
             applyQuery = viewModel::applyQuery,
             onDismissRequest = viewModel::dismiss
         )
