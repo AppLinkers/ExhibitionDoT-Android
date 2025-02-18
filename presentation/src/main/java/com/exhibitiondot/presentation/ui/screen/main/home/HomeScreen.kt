@@ -67,11 +67,12 @@ fun HomeRoute(
     val eventParams by viewModel.eventParams.collectAsStateWithLifecycle()
     val eventList = viewModel.eventList.collectAsLazyPagingItems()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val homeUpdateFlag = viewModel.flagModel.homeUpdateFlag
+    val homeUpdateFlag by viewModel.flagModel.homeUpdateFlag.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
-        viewModel.useFlag(homeUpdateFlag) {
+    LaunchedEffect(homeUpdateFlag) {
+        if (homeUpdateFlag) {
             eventList.refresh()
+            viewModel.flagModel.setHomeUpdateFlag(false)
         }
     }
 

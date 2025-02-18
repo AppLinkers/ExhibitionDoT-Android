@@ -19,6 +19,7 @@ import com.exhibitiondot.presentation.base.BaseViewModel
 import com.exhibitiondot.presentation.mapper.toUiModel
 import com.exhibitiondot.presentation.model.CommentUiModel
 import com.exhibitiondot.presentation.model.EventDetailUiModel
+import com.exhibitiondot.presentation.model.GlobalFlagModel
 import com.exhibitiondot.presentation.model.GlobalUiModel
 import com.exhibitiondot.presentation.ui.navigation.MainScreen
 import com.exhibitiondot.presentation.ui.state.EditTextState
@@ -36,6 +37,7 @@ class EventDetailViewModel @Inject constructor(
     private val addCommentUseCase: AddCommentUseCase,
     getCommentListUseCase: GetCommentListUseCase,
     private val uiModel: GlobalUiModel,
+    private val flagModel: GlobalFlagModel,
     savedStateHandle: SavedStateHandle,
 ) : BaseViewModel() {
     private val eventId = savedStateHandle.toRoute<MainScreen.EventDetail>().eventId
@@ -84,6 +86,7 @@ class EventDetailViewModel @Inject constructor(
                             likeCount = eventDetail.likeCount + 1
                         )
                     }
+                    flagModel.setHomeUpdateFlag(true)
                     uiState = EventDetailUiState.Success(newEventDetail)
                 }
                 .onFailure {
@@ -108,6 +111,7 @@ class EventDetailViewModel @Inject constructor(
         viewModelScope.launch {
             deleteEventUseCase(eventId)
                 .onSuccess {
+                    flagModel.setHomeUpdateFlag(true)
                     uiModel.showToast("이벤트를 삭제했어요")
                     onBack()
                 }

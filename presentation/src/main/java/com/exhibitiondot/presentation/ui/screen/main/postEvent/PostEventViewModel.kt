@@ -18,6 +18,7 @@ import com.exhibitiondot.domain.usecase.event.UpdateEventUseCase
 import com.exhibitiondot.presentation.base.BaseViewModel
 import com.exhibitiondot.presentation.mapper.DateFormatStrategy
 import com.exhibitiondot.presentation.mapper.format
+import com.exhibitiondot.presentation.model.GlobalFlagModel
 import com.exhibitiondot.presentation.model.GlobalUiModel
 import com.exhibitiondot.presentation.ui.navigation.MainScreen
 import com.exhibitiondot.presentation.ui.state.EditTextState
@@ -37,6 +38,7 @@ class PostEventViewModel @Inject constructor(
     private val getEventDetailUseCase: GetEventDetailUseCase,
     private val imageProcessor: ImageProcessor,
     private val uiModel: GlobalUiModel,
+    private val flagModel: GlobalFlagModel,
     savedStateHandle: SavedStateHandle,
 ) : BaseViewModel() {
     private val eventId = savedStateHandle.toRoute<MainScreen.PostEvent>().eventId
@@ -178,6 +180,7 @@ class PostEventViewModel @Inject constructor(
         val selectedImage = image as ImageSource.Local
         addEventUseCase(selectedImage, eventInfo)
             .onSuccess {
+                flagModel.setHomeUpdateFlag(true)
                 showMessage("이벤트를 추가했어요")
                 deleteFile(selectedImage)
                 onBack()
@@ -195,6 +198,7 @@ class PostEventViewModel @Inject constructor(
         val selectedImage = image!!
         updateEventUseCase(selectedImage, eventInfo, eventId)
             .onSuccess {
+                flagModel.setHomeUpdateFlag(true)
                 showMessage("이벤트를 수정했어요")
                 deleteFile(selectedImage)
                 moveEventDetail(eventId)
