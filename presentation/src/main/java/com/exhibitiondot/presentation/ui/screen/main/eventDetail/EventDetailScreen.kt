@@ -23,7 +23,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -57,7 +56,6 @@ fun EventDetailRoute(
     val uiState = viewModel.uiState
     val dialogState = viewModel.dialogState
     val commentList = viewModel.commentList.collectAsLazyPagingItems()
-    val keyboardController = LocalSoftwareKeyboardController.current
 
     when (uiState) {
         EventDetailUiState.Loading -> DoTLoadingScreen(modifier = modifier)
@@ -68,12 +66,7 @@ fun EventDetailRoute(
             commentState = viewModel.commentState,
             toggleEventLike = viewModel::toggleEventLike,
             showDialog = viewModel::showDialog,
-            addComment = {
-                viewModel.addComment {
-                    keyboardController?.hide()
-                    commentList.refresh()
-                }
-            },
+            addComment = { viewModel.addComment { commentList.refresh() } },
             onBack = onBack
         )
         EventDetailUiState.Failure -> {}
@@ -123,7 +116,6 @@ private fun EventDetailScreen(
             item {
                 EventDetailView(
                     eventDetail = eventDetail,
-                    commentCount = commentList.itemCount,
                     toggleEventLike = toggleEventLike,
                 )
             }
@@ -164,7 +156,6 @@ private fun EventDetailScreen(
 private fun EventDetailView(
     modifier: Modifier = Modifier,
     eventDetail: EventDetailUiModel,
-    commentCount: Int,
     toggleEventLike: (EventDetailUiModel) -> Unit,
 ) {
     Column(
@@ -235,7 +226,7 @@ private fun EventDetailView(
             }
             DoTSpacer(size = 60)
             Text(
-                text = "${stringResource(R.string.comment)} $commentCount",
+                text = stringResource(R.string.comment),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.surfaceContainerHigh
             )
