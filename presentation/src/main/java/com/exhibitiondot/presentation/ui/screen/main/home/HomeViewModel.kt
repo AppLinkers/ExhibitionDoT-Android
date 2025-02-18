@@ -14,6 +14,7 @@ import com.exhibitiondot.domain.usecase.user.GetCacheFirstUserFlowUseCase
 import com.exhibitiondot.presentation.base.BaseViewModel
 import com.exhibitiondot.presentation.mapper.toUiModel
 import com.exhibitiondot.presentation.model.EventUiModel
+import com.exhibitiondot.presentation.model.GlobalFlagModel
 import com.exhibitiondot.presentation.ui.state.EditTextState
 import com.exhibitiondot.presentation.ui.state.MultiFilterState
 import com.exhibitiondot.presentation.ui.state.SingleFilterState
@@ -32,7 +33,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     getCacheFirstUserFlowUseCase: GetCacheFirstUserFlowUseCase,
-    private val getEventListUseCase: GetEventListUseCase
+    private val getEventListUseCase: GetEventListUseCase,
+    val flagModel: GlobalFlagModel,
 ) : BaseViewModel() {
     private val _eventParams = MutableStateFlow(EventParams.NONE)
     val eventParams: StateFlow<EventParams> = _eventParams.asStateFlow()

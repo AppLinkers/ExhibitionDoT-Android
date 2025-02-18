@@ -19,6 +19,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -65,8 +66,14 @@ fun HomeRoute(
 ) {
     val eventParams by viewModel.eventParams.collectAsStateWithLifecycle()
     val eventList = viewModel.eventList.collectAsLazyPagingItems()
-
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val homeUpdateFlag = viewModel.flagModel.homeUpdateFlag
+
+    LaunchedEffect(Unit) {
+        viewModel.useFlag(homeUpdateFlag) {
+            eventList.refresh()
+        }
+    }
 
     HomeScreen(
         modifier = modifier,
