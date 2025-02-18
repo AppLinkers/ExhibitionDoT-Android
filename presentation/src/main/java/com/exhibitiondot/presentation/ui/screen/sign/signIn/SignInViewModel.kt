@@ -1,7 +1,6 @@
 package com.exhibitiondot.presentation.ui.screen.sign.signIn
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.exhibitiondot.domain.usecase.user.SignInUseCase
 import com.exhibitiondot.presentation.base.BaseViewModel
@@ -32,10 +31,7 @@ class SignInViewModel @Inject constructor(
         kakaoAuthClient.loginWithKakao(
             context = context,
             onSuccess = { getEmailFromAccount(moveSignUp) },
-            onFailure = { t ->
-                Log.e("카카오 로그인 실패", null, t)
-                onFailSignIn("카카오 로그인에 실패했어요.")
-            },
+            onFailure = { onFailSignIn("카카오 로그인에 실패했어요") }
         )
     }
 

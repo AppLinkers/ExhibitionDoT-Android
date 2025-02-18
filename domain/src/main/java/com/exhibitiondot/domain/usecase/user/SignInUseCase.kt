@@ -1,5 +1,6 @@
 package com.exhibitiondot.domain.usecase.user
 
+import com.exhibitiondot.domain.exception.NetworkFailException
 import com.exhibitiondot.domain.exception.SignInFailException
 import com.exhibitiondot.domain.repository.PreferenceRepository
 import com.exhibitiondot.domain.repository.UserRepository
@@ -11,7 +12,12 @@ class SignInUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(email: String): Result<Unit> = runCatching {
         val userId = userRepository.signIn(email)
-            .getOrElse { exception -> throw SignInFailException(exception) }
+            .getOrElse { exception ->
+                when (exception) {
+                    is NetworkFailException -> throw exception
+                    else -> throw SignInFailException(exception)
+                }
+            }
         preferenceRepository.updateUserId(userId)
     }
 }

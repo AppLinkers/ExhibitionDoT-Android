@@ -3,6 +3,7 @@ package com.exhibitiondot.presentation.ui.screen.sign.signUp
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.exhibitiondot.domain.exception.NetworkFailException
 import com.exhibitiondot.domain.exception.SignInFailException
 import com.exhibitiondot.domain.exception.SignUpFailException
 import com.exhibitiondot.domain.model.Category
@@ -11,6 +12,7 @@ import com.exhibitiondot.domain.model.Region
 import com.exhibitiondot.domain.model.User
 import com.exhibitiondot.domain.usecase.user.SignUpAndSignInUseCase
 import com.exhibitiondot.presentation.base.BaseViewModel
+import com.exhibitiondot.presentation.mapper.getMessage
 import com.exhibitiondot.presentation.model.GlobalUiModel
 import com.exhibitiondot.presentation.ui.navigation.SignScreen
 import com.exhibitiondot.presentation.ui.state.EditTextState
@@ -96,11 +98,13 @@ class SignUpViewModel @Inject constructor(
             signUpAndSignInUseCase(user)
                 .onFailure { t ->
                     when (t) {
-                        is SignUpFailException -> {
-                            onFailure("회원가입에 실패했어요")
+                        is SignUpFailException, is NetworkFailException -> {
+                            val msg = t.getMessage("회원가입에 실패했어요")
+                            onFailure(msg)
                         }
                         is SignInFailException -> {
-                            onFailure("다시 로그인 해주세요")
+                            val msg = t.getMessage("다시 로그인 해주세요")
+                            onFailure(msg)
                             onBack()
                         }
                     }
