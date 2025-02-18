@@ -1,5 +1,8 @@
 package com.exhibitiondot.presentation.ui.screen.sign.signUp
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
@@ -20,10 +23,6 @@ import com.exhibitiondot.presentation.ui.state.MultiFilterState
 import com.exhibitiondot.presentation.ui.state.PhoneEditTextState
 import com.exhibitiondot.presentation.ui.state.SingleFilterState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -35,11 +34,11 @@ class SignUpViewModel @Inject constructor(
 ) : BaseViewModel() {
     private val email = savedStateHandle.toRoute<SignScreen.SignUp>().email
 
-    private val _uiState = MutableStateFlow<SignUpUiState>(SignUpUiState.Nothing)
-    val uiState: StateFlow<SignUpUiState> = _uiState.asStateFlow()
-
-    private val _currentStep = MutableStateFlow<SignUpStep>(SignUpStep.InfoStep)
-    val currentStep: StateFlow<SignUpStep> = _currentStep.asStateFlow()
+    var uiState by mutableStateOf<SignUpUiState>(SignUpUiState.Idle)
+        private set
+    var currentStep by mutableStateOf(SignUpStep.InfoStep)
+        private set
+    private val totalSteps = SignUpStep.entries
 
     val nameState = EditTextState(maxLength = 10)
     val nicknameState = EditTextState(maxLength = 10)
@@ -49,33 +48,33 @@ class SignUpViewModel @Inject constructor(
         initFilter = Region.Seoul,
         filterList = Region.values()
     )
-    val categoryState = MultiFilterState(
-        filterList = Category.values()
-    )
-    val eventTypeState = MultiFilterState(
-        filterList = EventType.values()
-    )
+    val categoryState = MultiFilterState(filterList = Category.values())
+    val eventTypeState = MultiFilterState(filterList = EventType.values())
 
-    fun onPrevStep(currentStep: SignUpStep, onBack: () -> Unit) {
-        val prevStep = currentStep.prevStep()
-        if (prevStep != null) {
-            _currentStep.update { prevStep }
-        } else {
+    fun onPrevStep(onBack: () -> Unit) {
+        val prevIdx = totalSteps.indexOf(currentStep) - 1
+        if (prevIdx < 0) {
             onBack()
+        } else {
+            currentStep = totalSteps[prevIdx]
         }
     }
 
-    fun onNextStep(currentStep: SignUpStep, onBack: () -> Unit) {
-        val nextStep = currentStep.nextStep()
-        if (nextStep != null) {
-            _currentStep.update { nextStep }
-        } else {
+    fun onNextStep(onBack: () -> Unit) {
+        val nextIdx = totalSteps.indexOf(currentStep) + 1
+        if (nextIdx > totalSteps.lastIndex) {
             signUp(onBack)
+        } else {
+            currentStep = totalSteps[nextIdx]
         }
+    }
+
+    fun lastStep(): Boolean {
+        return currentStep == totalSteps.last()
     }
 
     fun validate(): Boolean {
-        return when (currentStep.value) {
+        return when (currentStep) {
             SignUpStep.InfoStep -> {
                 nameState.isValidate() && nicknameState.isValidate() && phoneState.isValidate()
             }
@@ -84,7 +83,7 @@ class SignUpViewModel @Inject constructor(
     }
 
     private fun signUp(onBack: () -> Unit) {
-        _uiState.update { SignUpUiState.Loading }
+        uiState = SignUpUiState.Loading
         viewModelScope.launch {
             val user = User(
                 email = email,
@@ -113,7 +112,7 @@ class SignUpViewModel @Inject constructor(
     }
 
     private fun onFailure(msg: String) {
-        _uiState.update { SignUpUiState.Nothing }
+        uiState = SignUpUiState.Idle
         uiModel.showToast(msg)
     }
 }
