@@ -10,15 +10,9 @@ class SignUpUseCase @Inject constructor(
     private val userRepository: UserRepository,
     private val preferenceRepository: PreferenceRepository,
 ) {
-    suspend operator fun invoke(user: User): Result<Unit> {
+    suspend operator fun invoke(user: User): Result<Unit> = runCatching {
         userRepository.signUp(user)
-            .onSuccess {
-                preferenceRepository.updateCurrentUser(user)
-                return Result.success(it)
-            }
-            .onFailure { t ->
-                return Result.failure(SignUpFailException(t))
-            }
-        return Result.failure(IllegalStateException())
+            .getOrElse { exception -> throw SignUpFailException(exception) }
+        preferenceRepository.updateCurrentUser(user)
     }
 }
