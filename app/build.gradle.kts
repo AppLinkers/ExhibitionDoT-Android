@@ -79,4 +79,7 @@ dependencies {
 
     // kakao-login
     implementation(libs.kakao.login)
+
+    // coil
+    implementation(libs.coil.compose)
 }
