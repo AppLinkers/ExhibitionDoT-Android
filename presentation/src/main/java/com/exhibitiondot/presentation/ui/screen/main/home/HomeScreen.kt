@@ -1,15 +1,15 @@
 package com.exhibitiondot.presentation.ui.screen.main.home
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
@@ -25,8 +25,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -43,7 +44,6 @@ import com.exhibitiondot.presentation.ui.component.DoTImage
 import com.exhibitiondot.presentation.ui.component.DoTLoadingScreen
 import com.exhibitiondot.presentation.ui.component.DoTSpacer
 import com.exhibitiondot.presentation.ui.component.DownIcon
-import com.exhibitiondot.presentation.ui.component.HeartIcon
 import com.exhibitiondot.presentation.ui.component.HomeAddButton
 import com.exhibitiondot.presentation.ui.component.HomeFilterChip
 import com.exhibitiondot.presentation.ui.component.HomeMultiFilterSheet
@@ -279,9 +279,6 @@ private fun EventList(
         modifier = modifier.fillMaxSize(),
         columns = GridCells.Fixed(2),
         state = lazyGridState,
-        contentPadding = PaddingValues(horizontal = screenPadding),
-        verticalArrangement = Arrangement.spacedBy(14.dp),
-        horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         items(
             count = eventList.itemCount,
@@ -303,48 +300,54 @@ private fun EventItem(
     event: EventUiModel,
     onEventItem: () -> Unit,
 ) {
-    Column(
+    Box(
         modifier = modifier
             .fillMaxWidth()
+            .aspectRatio(ratio = 3 / 4f)
             .clickable(onClick = onEventItem)
     ) {
         DoTImage(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(220.dp)
-                .clip(MaterialTheme.shapes.medium),
+            modifier = Modifier.fillMaxSize(),
             url = event.imgUrl,
         )
-        DoTSpacer(size = 10)
-        Text(
-            text = event.date,
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.primary
-        )
-        DoTSpacer(size = 6)
-        Text(
-            modifier = Modifier.height(50.dp),
-            text = event.name,
-            style = MaterialTheme.typography.labelMedium,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis
-        )
-        DoTSpacer(size = 12)
-        if (event.likeCount != 0) {
-            Row (
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.End
-            ) {
-                HeartIcon(
-                    size = 16,
-                    isLike = true
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            Color.Transparent,
+                            Color.Black.copy(alpha = 0.1f),
+                            Color.Black.copy(alpha = 0.2f),
+                            Color.Black.copy(alpha = 0.3f),
+                            Color.Black.copy(alpha = 0.4f),
+                            Color.Black.copy(alpha = 0.4f),
+                            Color.Black.copy(alpha = 0.5f),
+                        )
+                    )
                 )
-                DoTSpacer(size = 4)
+                .padding(
+                    vertical = screenPadding,
+                    horizontal = 10.dp
+                ),
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
+            ) {
                 Text(
-                    text = "${event.likeCount}",
+                    text = event.date,
                     style = MaterialTheme.typography.displaySmall,
-                    color = MaterialTheme.colorScheme.error
+                    color = MaterialTheme.colorScheme.primaryContainer
+                )
+                DoTSpacer(size = 6)
+                Text(
+                    text = event.name,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.background,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
         }

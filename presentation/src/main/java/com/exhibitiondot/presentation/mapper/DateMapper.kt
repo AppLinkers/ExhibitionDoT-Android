@@ -15,13 +15,6 @@ sealed interface DateFormatStrategy {
         }
     }
 
-    data class MonthDay(val date: String) : DateFormatStrategy {
-        override fun format(): String {
-            val (_, mm, dd) = date.split(SPLIT_DELIMITER)
-            return "${mm}월 ${dd}일"
-        }
-    }
-
     data class RelativeTime(val date: String) : DateFormatStrategy {
         override fun format(): String {
             val parsedDate = formatter.parse(date)

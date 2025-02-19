@@ -12,8 +12,7 @@ fun Event.toUiModel() =
         id = id,
         name = name,
         imgUrl = imgUrl,
-        date = format(DateFormatStrategy.MonthDay(date)),
-        likeCount = likeCount
+        date = format(DateFormatStrategy.FullDate(date)),
     )
 
 fun EventDetail.toUiModel() =
