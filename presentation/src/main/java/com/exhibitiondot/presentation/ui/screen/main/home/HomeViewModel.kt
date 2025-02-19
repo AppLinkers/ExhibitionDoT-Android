@@ -18,7 +18,7 @@ import com.exhibitiondot.presentation.base.BaseViewModel
 import com.exhibitiondot.presentation.mapper.toUiModel
 import com.exhibitiondot.presentation.model.EventUiModel
 import com.exhibitiondot.presentation.model.GlobalFlagModel
-import com.exhibitiondot.presentation.ui.state.MultiFilterState
+import com.exhibitiondot.presentation.ui.state.MultiFilterForQueryState
 import com.exhibitiondot.presentation.ui.state.SingleFilterState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -56,22 +56,25 @@ class HomeViewModel @Inject constructor(
         private set
 
     val regionState = SingleFilterState(filterList = Region.values())
-    val categoryState = MultiFilterState(filterList = Category.values())
-    val eventTypeState = MultiFilterState(filterList = EventType.values())
+    val categoryState = MultiFilterForQueryState(filterList = Category.values())
+    val eventTypeState = MultiFilterForQueryState(filterList = EventType.values())
 
     init {
         viewModelScope.launch {
             getCacheFirstUserFlowUseCase().collect { user ->
-                _eventParams.update {
-                    eventParams.value.copy(
-                        region = user.region,
-                        categoryList = user.categoryList,
-                        eventTypeList = user.eventTypeList,
-                    )
+                with(user) {
+                    regionState.setFilter(region)
+                    categoryState.setFilter(categoryList)
+                    eventTypeState.setFilter(eventTypeList)
+                }.also {
+                    _eventParams.update {
+                        eventParams.value.copy(
+                            region = regionState.selectedFilter,
+                            categoryList = categoryState.selectedFilterList,
+                            eventTypeList = eventTypeState.selectedFilterList,
+                        )
+                    }
                 }
-                regionState.setFilter(user.region)
-                categoryState.setFilter(user.categoryList)
-                eventTypeState.setFilter(user.eventTypeList)
             }
         }
     }

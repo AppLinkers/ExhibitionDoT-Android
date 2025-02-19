@@ -40,7 +40,7 @@ class SingleFilterState<T : Filter.SingleFilter>(
     }
 }
 
-class MultiFilterState<T : Filter.MultiFilter>(
+open class MultiFilterState<T : Filter.MultiFilter>(
     initFilterList: List<T> = emptyList(),
     override val filterList: List<T>,
 ) : IMultiFilerState<T> {
@@ -49,10 +49,8 @@ class MultiFilterState<T : Filter.MultiFilter>(
     override fun selectFilter(filter: T) {
         selectedFilterList = if (filter in selectedFilterList) {
             selectedFilterList - filter
-        } else if (selectedFilterList.size + 1 < filterList.size) {
-            selectedFilterList + filter
         } else {
-            emptyList()
+            selectedFilterList + filter
         }
     }
 
@@ -62,5 +60,27 @@ class MultiFilterState<T : Filter.MultiFilter>(
 
     override fun resetAll() {
         selectedFilterList = emptyList()
+    }
+}
+
+class MultiFilterForQueryState<T : Filter.MultiFilter>(
+    initFilterList: List<T> = emptyList(),
+    override val filterList: List<T>,
+) : MultiFilterState<T>(initFilterList, filterList) {
+
+    override fun selectFilter(filter: T) {
+        if (selectedFilterList.size + 1 == filterList.size) {
+            selectedFilterList = emptyList()
+        } else {
+            super.selectFilter(filter)
+        }
+    }
+
+    override fun setFilter(filterList: List<T>) {
+        if (this.filterList.size == filterList.size) {
+            selectedFilterList = emptyList()
+        } else {
+            super.setFilter(filterList)
+        }
     }
 }
