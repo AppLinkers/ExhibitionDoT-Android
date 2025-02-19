@@ -6,9 +6,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -101,7 +101,7 @@ private fun EventDetailScreen(
     val skipImage by remember {
         derivedStateOf {
             (lazyListState.firstVisibleItemIndex == 0 &&
-                    lazyListState.firstVisibleItemScrollOffset < 1085).not()
+                    lazyListState.firstVisibleItemScrollOffset < 1100).not()
         }
     }
 
@@ -163,8 +163,8 @@ private fun EventDetailView(
     ) {
         DoTImage(
             modifier = Modifier
-                .fillMaxSize()
-                .height(500.dp),
+                .fillMaxWidth()
+                .aspectRatio(ratio = 3 / 4f),
             url = eventDetail.imgUrl,
             contentScale = ContentScale.FillBounds
         )

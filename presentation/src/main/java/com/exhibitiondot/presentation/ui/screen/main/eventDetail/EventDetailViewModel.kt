@@ -87,7 +87,6 @@ class EventDetailViewModel @Inject constructor(
                             likeCount = eventDetail.likeCount + 1
                         )
                     }
-                    flagModel.setHomeUpdateFlag(true)
                     uiState = EventDetailUiState.Success(newEventDetail)
                 }
                 .onFailure { t ->
