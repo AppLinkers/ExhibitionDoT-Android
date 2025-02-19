@@ -2,6 +2,7 @@ package com.exhibitiondot.presentation.ui.screen.main.eventDetail
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -113,7 +114,8 @@ private fun EventDetailScreen(
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             state = lazyListState,
-            contentPadding = PaddingValues(bottom = 100.dp)
+            contentPadding = PaddingValues(bottom = 100.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
             item {
                 EventDetailView(
@@ -271,17 +273,11 @@ private fun CommentItem(
             modifier = Modifier.weight(1f)
         ) {
             Text(
-                text = comment.nickname,
-                style = MaterialTheme.typography.bodySmall,
+                text = "${comment.nickname} ㆍ ${comment.createdAt}",
+                style = MaterialTheme.typography.displaySmall,
                 color = MaterialTheme.colorScheme.surfaceContainerHigh
             )
-            DoTSpacer(size = 4)
-            Text(
-                text = comment.createdAt,
-                style = MaterialTheme.typography.displaySmall,
-                color = MaterialTheme.colorScheme.surfaceContainer,
-            )
-            DoTSpacer(size = 10)
+            DoTSpacer(size = 14)
             Text(
                 text = comment.content,
                 style = MaterialTheme.typography.displayMedium,

@@ -6,7 +6,7 @@ import com.exhibitiondot.presentation.model.CommentUiModel
 fun Comment.toUiModel() =
     CommentUiModel(
         id = id,
-        nickname = authorNickname,
+        nickname = "@$authorNickname",
         content = content,
         createdAt = format(DateFormatStrategy.RelativeTime(createdAt))
     )

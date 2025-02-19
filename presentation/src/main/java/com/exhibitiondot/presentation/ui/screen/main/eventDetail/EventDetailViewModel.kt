@@ -54,7 +54,7 @@ class EventDetailViewModel @Inject constructor(
             .map { pagingData -> pagingData.map(Comment::toUiModel) }
             .cachedIn(viewModelScope)
 
-    val commentState = EditTextState(maxLength = 400)
+    val commentState = EditTextState(maxLength = 1_000)
 
     init {
         getEventDetail()
