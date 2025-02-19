@@ -40,6 +40,7 @@ import androidx.paging.compose.itemKey
 import com.exhibitiondot.domain.model.EventParams
 import com.exhibitiondot.presentation.R
 import com.exhibitiondot.presentation.model.EventUiModel
+import com.exhibitiondot.presentation.ui.component.DoTEmptyScreen
 import com.exhibitiondot.presentation.ui.component.DoTImage
 import com.exhibitiondot.presentation.ui.component.DoTLoadingScreen
 import com.exhibitiondot.presentation.ui.component.DoTRefreshScreen
@@ -179,12 +180,21 @@ private fun HomeScreen(
                     modifier = Modifier.weight(1f),
                     onRefresh = eventList::refresh
                 )
-                is LoadState.NotLoading -> EventList(
-                    modifier = Modifier.weight(1f),
-                    lazyGridState = lazyGridState,
-                    eventList = eventList,
-                    onEventItem = onEventItem
-                )
+                is LoadState.NotLoading -> {
+                    if (eventList.itemCount == 0) {
+                        DoTEmptyScreen(
+                            modifier = Modifier.weight(1f),
+                            description = stringResource(R.string.home_empty_description)
+                        )
+                    } else {
+                        EventList(
+                            modifier = Modifier.weight(1f),
+                            lazyGridState = lazyGridState,
+                            eventList = eventList,
+                            onEventItem = onEventItem
+                        )
+                    }
+                }
             }
         }
         HomeAddButton(
