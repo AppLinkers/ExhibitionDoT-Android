@@ -22,6 +22,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -161,13 +163,33 @@ private fun EventDetailView(
     Column(
         modifier = modifier.fillMaxSize()
     ) {
-        DoTImage(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(ratio = 3 / 4f),
-            url = eventDetail.imgUrl,
-            contentScale = ContentScale.FillBounds
-        )
+        ) {
+            DoTImage(
+                modifier = Modifier.fillMaxSize(),
+                url = eventDetail.imgUrl,
+                contentScale = ContentScale.FillBounds
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                Color.Black.copy(alpha = 0.2f),
+                                Color.Black.copy(alpha = 0.1f),
+                                Color.Transparent,
+                                Color.Transparent,
+                                Color.Transparent,
+                            )
+                        )
+                    )
+            )
+        }
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -295,10 +317,8 @@ private fun EventDetailCommentView(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(
-                    start = screenPadding,
-                    end = screenPadding,
-                    top = 10.dp,
-                    bottom = screenPadding
+                    horizontal = screenPadding,
+                    vertical = 10.dp
                 ),
             verticalAlignment = Alignment.CenterVertically,
         ) {
