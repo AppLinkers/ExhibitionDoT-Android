@@ -42,6 +42,7 @@ import com.exhibitiondot.presentation.R
 import com.exhibitiondot.presentation.model.EventUiModel
 import com.exhibitiondot.presentation.ui.component.DoTImage
 import com.exhibitiondot.presentation.ui.component.DoTLoadingScreen
+import com.exhibitiondot.presentation.ui.component.DoTRefreshScreen
 import com.exhibitiondot.presentation.ui.component.DoTSpacer
 import com.exhibitiondot.presentation.ui.component.DownIcon
 import com.exhibitiondot.presentation.ui.component.HomeAddButton
@@ -174,7 +175,10 @@ private fun HomeScreen(
                 LoadState.Loading -> DoTLoadingScreen(
                     modifier = Modifier.weight(1f)
                 )
-                is LoadState.Error -> {}
+                is LoadState.Error -> DoTRefreshScreen(
+                    modifier = Modifier.weight(1f),
+                    onRefresh = eventList::refresh
+                )
                 is LoadState.NotLoading -> EventList(
                     modifier = Modifier.weight(1f),
                     lazyGridState = lazyGridState,

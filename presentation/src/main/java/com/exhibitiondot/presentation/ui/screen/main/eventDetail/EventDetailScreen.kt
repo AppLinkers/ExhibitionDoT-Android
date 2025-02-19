@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -30,6 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
@@ -40,6 +42,7 @@ import com.exhibitiondot.presentation.ui.component.CommentTextField
 import com.exhibitiondot.presentation.ui.component.DoTImage
 import com.exhibitiondot.presentation.ui.component.DoTLoadingScreen
 import com.exhibitiondot.presentation.ui.component.DoTAlertDialog
+import com.exhibitiondot.presentation.ui.component.DoTRefreshScreen
 import com.exhibitiondot.presentation.ui.component.DoTSpacer
 import com.exhibitiondot.presentation.ui.component.DoTUpdateDeleteDialog
 import com.exhibitiondot.presentation.ui.component.EventDetailTopBar
@@ -62,6 +65,7 @@ fun EventDetailRoute(
 
     when (uiState) {
         EventDetailUiState.Loading -> DoTLoadingScreen(modifier = modifier)
+        EventDetailUiState.Failure -> {}
         is EventDetailUiState.Success -> EventDetailScreen(
             modifier = modifier,
             eventDetail = uiState.eventDetail,
@@ -72,7 +76,6 @@ fun EventDetailRoute(
             addComment = { viewModel.addComment { commentList.refresh() } },
             onBack = onBack
         )
-        EventDetailUiState.Failure -> {}
     }
     DoTAlertDialog(
         show = dialogState == EventDetailDialogState.ShowReportDialog,
@@ -123,15 +126,34 @@ private fun EventDetailScreen(
                     toggleEventLike = toggleEventLike,
                 )
             }
-            items(
-                count = commentList.itemCount,
-                key = commentList.itemKey { it.id }
-            ) { index ->
-                commentList[index]?.let { comment ->
-                    CommentItem(
-                        comment = comment,
-                        showDialog = { showDialog(EventDetailDialogState.ShowReportDialog) }
+            when (commentList.loadState.refresh) {
+                LoadState.Loading -> item {
+                    DoTLoadingScreen(
+                        modifier = Modifier.height(200.dp)
                     )
+                }
+                is LoadState.Error -> item {
+                    DoTRefreshScreen(
+                        modifier = Modifier.height(200.dp),
+                        onRefresh = commentList::refresh
+                    )
+                }
+                is LoadState.NotLoading -> {
+                    if (commentList.itemCount == 0) {
+
+                    } else {
+                        items(
+                            count = commentList.itemCount,
+                            key = commentList.itemKey { it.id }
+                        ) { index ->
+                            commentList[index]?.let { comment ->
+                                CommentItem(
+                                    comment = comment,
+                                    showDialog = { showDialog(EventDetailDialogState.ShowReportDialog) }
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }

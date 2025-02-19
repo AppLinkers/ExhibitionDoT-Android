@@ -7,6 +7,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.Send
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -208,5 +209,20 @@ fun EditIcon(
         painter = painterResource(R.drawable.ic_edit),
         tint = MaterialTheme.colorScheme.surfaceContainerHigh,
         contentDescription = "edit-icon"
+    )
+}
+
+@Composable
+fun RefreshIcon(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+) {
+    Icon(
+        modifier = modifier
+            .size(50.dp)
+            .onClick(onClick = onClick),
+        imageVector = Icons.Rounded.Refresh,
+        tint = MaterialTheme.colorScheme.primary,
+        contentDescription = "refresh-icon",
     )
 }

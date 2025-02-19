@@ -75,14 +75,14 @@ fun HomeTopBar(
             .padding(
                 top = 30.dp,
                 bottom = 6.dp,
-                start = screenPadding,
+                start = 12.dp,
                 end = screenPadding
             ),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Image(
-            modifier = Modifier.size(60.dp),
+            modifier = Modifier.size(56.dp),
             painter = painterResource(R.drawable.app_logo_white),
             contentDescription = "app-logo-white"
         )
