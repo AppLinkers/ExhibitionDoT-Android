@@ -19,6 +19,7 @@
     <string name="home_select_event_type">이벤트 선택하기</string>
     <string name="home_search_placeholder">검색</string>
     <string name="home_search_announce">다양한 이벤트를 검색해보세요</string>
+    <string name="home_empty_description">검색 결과가 없어요</string>
 
     <string name="event_post_add">이벤트 추가하기</string>
     <string name="event_post_update">이벤트 수정하기</string>
@@ -31,6 +32,7 @@
 
     <string name="comment">댓글</string>
     <string name="comment_placeholder">댓글을 입력해주세요</string>
+    <string name="comment_empty_description">첫 댓글을 남겨보세요</string>
 
     <string name="my_page">마이페이지</string>
     <string name="my_page_user_info">계정 정보</string>

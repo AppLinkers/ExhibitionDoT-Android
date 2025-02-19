@@ -1,13 +1,13 @@
 package com.exhibitiondot.presentation.ui.component
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.Send
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.exhibitiondot.presentation.R
+import com.exhibitiondot.presentation.util.onClick
 
 @Composable
 fun XCircle(
@@ -31,7 +32,7 @@ fun XCircle(
                 color = MaterialTheme.colorScheme.onSurface,
                 shape = CircleShape
             )
-            .clickable(onClick = onClick),
+            .onClick(onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
         XIcon(
@@ -102,10 +103,10 @@ fun RedoIcon(
 @Composable
 fun UserIcon(
     modifier: Modifier = Modifier,
-    size: Int
+    onClick: () -> Unit,
 ) {
     Icon(
-        modifier = modifier.size(size.dp),
+        modifier = modifier.onClick(onClick = onClick),
         painter = painterResource(R.drawable.ic_user),
         tint = MaterialTheme.colorScheme.surfaceContainerHigh,
         contentDescription = "user-icon"
@@ -135,7 +136,7 @@ fun BackIcon(
     Icon(
         modifier = modifier
             .size(30.dp)
-            .clickable(onClick = onBack),
+            .onClick(onClick = onBack),
         painter = painterResource(R.drawable.ic_back),
         tint = color,
         contentDescription = "back-icon"
@@ -174,7 +175,7 @@ fun MenuIcon(
     onClick: () -> Unit,
 ) {
     Icon(
-        modifier = modifier.clickable(onClick = onClick),
+        modifier = modifier.onClick(onClick = onClick),
         painter = painterResource(R.drawable.ic_menu),
         tint = color,
         contentDescription = "menu-icon"
@@ -188,7 +189,7 @@ fun SendIcon(
     onClick: () -> Unit,
 ) {
     Icon(
-        modifier = modifier.clickable(
+        modifier = modifier.onClick(
             onClick = onClick,
             enabled = enabled
         ),
@@ -204,9 +205,24 @@ fun EditIcon(
     onClick: () -> Unit,
 ) {
     Icon(
-        modifier = modifier.clickable(onClick = onClick),
+        modifier = modifier.onClick(onClick = onClick),
         painter = painterResource(R.drawable.ic_edit),
         tint = MaterialTheme.colorScheme.surfaceContainerHigh,
         contentDescription = "edit-icon"
+    )
+}
+
+@Composable
+fun RefreshIcon(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+) {
+    Icon(
+        modifier = modifier
+            .size(50.dp)
+            .onClick(onClick = onClick),
+        imageVector = Icons.Rounded.Refresh,
+        tint = MaterialTheme.colorScheme.primary,
+        contentDescription = "refresh-icon",
     )
 }

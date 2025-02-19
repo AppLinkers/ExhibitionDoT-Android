@@ -2,10 +2,12 @@ package com.exhibitiondot.presentation.ui.screen.main.eventDetail
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -22,11 +24,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
@@ -37,6 +42,8 @@ import com.exhibitiondot.presentation.ui.component.CommentTextField
 import com.exhibitiondot.presentation.ui.component.DoTImage
 import com.exhibitiondot.presentation.ui.component.DoTLoadingScreen
 import com.exhibitiondot.presentation.ui.component.DoTAlertDialog
+import com.exhibitiondot.presentation.ui.component.DoTEmptyScreen
+import com.exhibitiondot.presentation.ui.component.DoTRefreshScreen
 import com.exhibitiondot.presentation.ui.component.DoTSpacer
 import com.exhibitiondot.presentation.ui.component.DoTUpdateDeleteDialog
 import com.exhibitiondot.presentation.ui.component.EventDetailTopBar
@@ -59,6 +66,7 @@ fun EventDetailRoute(
 
     when (uiState) {
         EventDetailUiState.Loading -> DoTLoadingScreen(modifier = modifier)
+        EventDetailUiState.Failure -> {}
         is EventDetailUiState.Success -> EventDetailScreen(
             modifier = modifier,
             eventDetail = uiState.eventDetail,
@@ -69,7 +77,6 @@ fun EventDetailRoute(
             addComment = { viewModel.addComment { commentList.refresh() } },
             onBack = onBack
         )
-        EventDetailUiState.Failure -> {}
     }
     DoTAlertDialog(
         show = dialogState == EventDetailDialogState.ShowReportDialog,
@@ -101,7 +108,7 @@ private fun EventDetailScreen(
     val skipImage by remember {
         derivedStateOf {
             (lazyListState.firstVisibleItemIndex == 0 &&
-                    lazyListState.firstVisibleItemScrollOffset < 1085).not()
+                    lazyListState.firstVisibleItemScrollOffset < 1100).not()
         }
     }
 
@@ -111,7 +118,8 @@ private fun EventDetailScreen(
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             state = lazyListState,
-            contentPadding = PaddingValues(bottom = 100.dp)
+            contentPadding = PaddingValues(bottom = 100.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
             item {
                 EventDetailView(
@@ -119,15 +127,39 @@ private fun EventDetailScreen(
                     toggleEventLike = toggleEventLike,
                 )
             }
-            items(
-                count = commentList.itemCount,
-                key = commentList.itemKey { it.id }
-            ) { index ->
-                commentList[index]?.let { comment ->
-                    CommentItem(
-                        comment = comment,
-                        showDialog = { showDialog(EventDetailDialogState.ShowReportDialog) }
+            when (commentList.loadState.refresh) {
+                LoadState.Loading -> item {
+                    DoTLoadingScreen(
+                        modifier = Modifier.height(200.dp)
                     )
+                }
+                is LoadState.Error -> item {
+                    DoTRefreshScreen(
+                        modifier = Modifier.height(200.dp),
+                        onRefresh = commentList::refresh
+                    )
+                }
+                is LoadState.NotLoading -> {
+                    if (commentList.itemCount == 0) {
+                        item {
+                            DoTEmptyScreen(
+                                modifier = Modifier.height(200.dp),
+                                description = stringResource(R.string.comment_empty_description)
+                            )
+                        }
+                    } else {
+                        items(
+                            count = commentList.itemCount,
+                            key = commentList.itemKey { it.id }
+                        ) { index ->
+                            commentList[index]?.let { comment ->
+                                CommentItem(
+                                    comment = comment,
+                                    showDialog = { showDialog(EventDetailDialogState.ShowReportDialog) }
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -161,13 +193,33 @@ private fun EventDetailView(
     Column(
         modifier = modifier.fillMaxSize()
     ) {
-        DoTImage(
+        Box(
             modifier = Modifier
-                .fillMaxSize()
-                .height(500.dp),
-            url = eventDetail.imgUrl,
-            contentScale = ContentScale.FillBounds
-        )
+                .fillMaxWidth()
+                .aspectRatio(ratio = 3 / 4f),
+        ) {
+            DoTImage(
+                modifier = Modifier.fillMaxSize(),
+                url = eventDetail.imgUrl,
+                contentScale = ContentScale.FillBounds
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                Color.Black.copy(alpha = 0.2f),
+                                Color.Black.copy(alpha = 0.1f),
+                                Color.Transparent,
+                                Color.Transparent,
+                                Color.Transparent,
+                            )
+                        )
+                    )
+            )
+        }
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -249,17 +301,11 @@ private fun CommentItem(
             modifier = Modifier.weight(1f)
         ) {
             Text(
-                text = comment.nickname,
-                style = MaterialTheme.typography.bodySmall,
+                text = "${comment.nickname} ㆍ ${comment.createdAt}",
+                style = MaterialTheme.typography.displaySmall,
                 color = MaterialTheme.colorScheme.surfaceContainerHigh
             )
-            DoTSpacer(size = 4)
-            Text(
-                text = comment.createdAt,
-                style = MaterialTheme.typography.displaySmall,
-                color = MaterialTheme.colorScheme.surfaceContainer,
-            )
-            DoTSpacer(size = 10)
+            DoTSpacer(size = 14)
             Text(
                 text = comment.content,
                 style = MaterialTheme.typography.displayMedium,
@@ -295,10 +341,8 @@ private fun EventDetailCommentView(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(
-                    start = screenPadding,
-                    end = screenPadding,
-                    top = 10.dp,
-                    bottom = screenPadding
+                    horizontal = screenPadding,
+                    vertical = 10.dp
                 ),
             verticalAlignment = Alignment.CenterVertically,
         ) {

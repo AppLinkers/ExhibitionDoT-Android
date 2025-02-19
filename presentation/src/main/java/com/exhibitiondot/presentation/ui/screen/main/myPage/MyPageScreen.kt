@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -107,48 +108,74 @@ private fun MyPageBody(
 ) {
     Column(
         modifier = modifier
+            .fillMaxWidth()
             .verticalScroll(rememberScrollState())
-            .padding(
-                start = screenPadding,
-                end = screenPadding,
-                top = 10.dp,
-                bottom = screenPadding
-            )
     ) {
-        DoTTitle(title = stringResource(R.string.my_page_user_info))
-        DoTSpacer(size = 10)
-        MyPageAccount(user = user)
-        DoTSpacer(size = 40)
+        MyPageBlock(paddingTop = 10) {
+            DoTTitle(title = stringResource(R.string.my_page_user_info))
+            DoTSpacer(size = 10)
+            MyPageAccount(user = user)
+        }
+        MyPageBlock {
+            DoTTitle(title = stringResource(R.string.my_page_category))
+            DoTSpacer(size = 20)
+            MyPageTags(tags = user.categoryTags)
+            DoTSpacer(size = 40)
 
-        DoTTitle(title = stringResource(R.string.my_page_category))
-        DoTSpacer(size = 20)
-        MyPageTags(tags = user.categoryTags)
-        DoTSpacer(size = 60)
+            DoTTitle(title = stringResource(R.string.my_page_event_type))
+            DoTSpacer(size = 20)
+            MyPageTags(tags = user.eventTypeTags)
+        }
+        MyPageBlock {
+            DoTTitle(title = stringResource(R.string.my_page_manage_account))
+            DoTSpacer(size = 10)
+            MyPageTextBox(
+                text = stringResource(R.string.logout),
+                onClick = onSignOut
+            )
+            MyPageTextBox(
+                text = stringResource(R.string.withdraw),
+                onClick = onWithDraw
+            )
+        }
+        MyPageBlock(needDivider = false) {
+            DoTTitle(title = stringResource(R.string.my_page_terms_and_policy))
+            DoTSpacer(size = 10)
+            MyPageTextBox(
+                text = stringResource(R.string.my_page_privacy_policy),
+                onClick = onPrivacyPolicy
+            )
+        }
+    }
+}
 
-        DoTTitle(title = stringResource(R.string.my_page_event_type))
-        DoTSpacer(size = 20)
-        MyPageTags(tags = user.eventTypeTags)
-        DoTSpacer(size = 60)
-
-        DoTTitle(title = stringResource(R.string.my_page_manage_account))
-        DoTSpacer(size = 10)
-        MyPageTextBox(
-            text = stringResource(R.string.logout),
-            onClick = onSignOut
-        )
-        MyPageTextBox(
-            text = stringResource(R.string.withdraw),
-            onClick = onWithDraw
-        )
-        DoTSpacer(size = 60)
-
-        DoTTitle(title = stringResource(R.string.my_page_terms_and_policy))
-        DoTSpacer(size = 10)
-        MyPageTextBox(
-            text = stringResource(R.string.my_page_privacy_policy),
-            onClick = onPrivacyPolicy
-        )
-        DoTSpacer(size = 60)
+@Composable
+private fun MyPageBlock(
+    modifier: Modifier = Modifier,
+    paddingTop: Int = 30,
+    needDivider: Boolean = true,
+    content: @Composable () -> Unit,
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+    ) {
+        DoTSpacer(size = paddingTop)
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = screenPadding)
+        ) {
+            content()
+        }
+        DoTSpacer(size = 30)
+        if (needDivider) {
+            HorizontalDivider(
+                modifier = Modifier.fillMaxWidth(),
+                thickness = 3.dp,
+                color = MaterialTheme.colorScheme.surface
+            )
+        }
     }
 }
 

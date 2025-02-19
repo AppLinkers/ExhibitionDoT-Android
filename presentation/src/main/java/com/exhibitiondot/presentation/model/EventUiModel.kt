@@ -5,5 +5,4 @@ data class EventUiModel(
     val name: String,
     val imgUrl: String,
     val date: String,
-    val likeCount: Int
 )

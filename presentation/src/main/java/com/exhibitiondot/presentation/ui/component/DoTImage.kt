@@ -50,12 +50,12 @@ fun PostEventImage(
     Box(
         modifier = modifier
             .width(312.dp)
-            .height(372.dp)
+            .height(412.dp)
     ) {
         Box(
             modifier = Modifier
                 .width(300.dp)
-                .height(360.dp)
+                .height(400.dp)
                 .align(Alignment.BottomStart)
         ) {
             image?.let {

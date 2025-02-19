@@ -81,11 +81,11 @@ fun KakaoLoginButton(
                 color = MaterialTheme.colorScheme.tertiaryContainer,
                 shape = MaterialTheme.shapes.medium,
             )
-            .padding(horizontal = 20.dp)
             .clickable(
                 enabled = enabled,
                 onClick = onLogin,
-            ),
+            )
+            .padding(horizontal = 20.dp),
     ) {
         Image(
             modifier = Modifier
