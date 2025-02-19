@@ -3,7 +3,6 @@ package com.exhibitiondot.presentation.ui.component
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -27,6 +26,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.exhibitiondot.presentation.R
 import com.exhibitiondot.presentation.ui.theme.screenPadding
+import com.exhibitiondot.presentation.util.onClick
 
 @Composable
 fun DoTTopBar(
@@ -87,13 +87,10 @@ fun HomeTopBar(
             contentDescription = "app-logo-white"
         )
         Row {
-            UserIcon(
-                modifier = Modifier.clickable(onClick = moveMy),
-                size = 24
-            )
+            UserIcon(onClick = moveMy)
             DoTSpacer(size = 16)
             SearchIcon(
-                modifier = Modifier.clickable(onClick = showSearchDialog),
+                modifier = Modifier.onClick(onClick = showSearchDialog),
                 size = 24
             )
         }
