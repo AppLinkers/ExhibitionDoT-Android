@@ -8,6 +8,9 @@ sealed interface SignScreen {
 
     @Serializable
     data class SignUp(val email: String) : SignScreen
+
+    @Serializable
+    data object EmailSignIn : SignScreen
 }
 
 sealed interface MainScreen {

@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -108,6 +109,35 @@ fun KakaoLoginButton(
                 strokeWidth = 3
             )
         }
+    }
+}
+
+@Composable
+fun EmailLoginButton(
+    modifier: Modifier = Modifier,
+    onLogin: () -> Unit,
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(buttonHeight)
+            .background(
+                color = MaterialTheme.colorScheme.surface,
+                shape = MaterialTheme.shapes.medium,
+            )
+            .clickable(onClick = onLogin)
+            .padding(horizontal = 20.dp),
+    ) {
+        Icon(
+            modifier = Modifier.align(Alignment.CenterStart),
+            painter = painterResource(id = R.drawable.ic_email),
+            contentDescription = "email-icon"
+        )
+        Text(
+            modifier = Modifier.align(Alignment.Center),
+            text = stringResource(id = R.string.email_login),
+            style = MaterialTheme.typography.labelLarge
+        )
     }
 }
 
