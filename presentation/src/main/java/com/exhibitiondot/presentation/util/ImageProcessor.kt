@@ -21,19 +21,27 @@ import kotlin.io.path.createTempFile
 class ImageProcessor @Inject constructor(
     @ApplicationContext private val context: Context,
 ) {
-    suspend fun uriToCompressedFile(uri: Uri, reqWidth: Int, reqHeight: Int): Result<File> = runCatching {
-        val (suffix, compressFormat) = getSuffixAndCompressFormatByVersion()
-        val tempFile = createTempImageFile(suffix = suffix)
-        val downSampledBitmap = getDownSampledBitmap(uri, reqWidth, reqHeight).getOrThrow()
-        val correctedBitmap = rotateBitmapIfRequired(downSampledBitmap, uri).getOrThrow()
-        compressBitmapToFile(correctedBitmap, tempFile, compressFormat)
-            .getOrThrow()
-            .also {
-                downSampledBitmap.recycle()
-                correctedBitmap.recycle()
-            }
-        tempFile
-    }
+    suspend fun compressUriToFile(uri: Uri, reqWidth: Int, reqHeight: Int): Result<File>
+        = runCatching {
+            val downSampledBitmap = getDownSampledBitmap(uri, reqWidth, reqHeight).getOrThrow()
+            val correctedBitmap = rotateBitmapIfRequired(downSampledBitmap, uri)
+                .getOrElse { t ->
+                    downSampledBitmap.recycle()
+                    throw t
+                }
+            val (suffix, compressFormat) = getSuffixAndCompressFormatByVersion()
+            val tempFile = createTempImageFile(suffix = suffix)
+            compressBitmapToFile(correctedBitmap, tempFile, compressFormat)
+                .also {
+                    downSampledBitmap.recycle()
+                    correctedBitmap.recycle()
+                }
+                .getOrElse { t ->
+                    tempFile.delete()
+                    throw t
+                }
+            tempFile
+        }
 
     private fun getSuffixAndCompressFormatByVersion(): Pair<String, CompressFormat> {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
