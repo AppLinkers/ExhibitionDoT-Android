@@ -1,6 +1,8 @@
 package com.exhibitiondot.data.network.retrofit
 
 import com.exhibitiondot.data.network.NetworkState
+import com.exhibitiondot.data.network.model.response.ErrorResponse
+import kotlinx.serialization.json.Json
 import okhttp3.Request
 import okio.Timeout
 import retrofit2.Call
@@ -15,8 +17,6 @@ class CustomCall<T : Any>(
         call.enqueue(object : Callback<T> {
             override fun onResponse(call: Call<T>, response: Response<T>) {
                 val body = response.body()
-                val code = response.code()
-                val error = response.errorBody()?.string()
                 if (response.isSuccessful) {
                     if (body != null) {
                         callback.onResponse(
@@ -34,10 +34,23 @@ class CustomCall<T : Any>(
                         )
                     }
                 } else {
-                    callback.onResponse(
-                        this@CustomCall,
-                        Response.success(NetworkState.Failure(code, error))
-                    )
+                    val errorBody = response.errorBody()?.string()
+                    if (errorBody != null) {
+                        val errorResponse = Json.decodeFromString<ErrorResponse>(errorBody)
+                        callback.onResponse(
+                            this@CustomCall,
+                            Response.success(NetworkState.Failure(errorResponse))
+                        )
+                    } else {
+                        callback.onResponse(
+                            this@CustomCall,
+                            Response.success(
+                                NetworkState.UnknownError(
+                                    t = IllegalStateException("errorBody is null")
+                                )
+                            )
+                        )
+                    }
                 }
             }
 

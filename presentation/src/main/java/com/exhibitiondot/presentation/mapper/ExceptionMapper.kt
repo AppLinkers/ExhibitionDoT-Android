@@ -4,7 +4,7 @@ import com.exhibitiondot.domain.exception.NetworkFailException
 
 fun Throwable.getMessage(defaultMsg: String): String {
     return when (this) {
-        is NetworkFailException -> message ?: defaultMsg
+        is NetworkFailException -> error
         else -> defaultMsg
     }
 }
