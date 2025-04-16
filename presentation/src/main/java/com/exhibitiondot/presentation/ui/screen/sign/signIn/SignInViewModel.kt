@@ -20,7 +20,7 @@ class SignInViewModel @Inject constructor(
     private val kakaoAuthClient: KakaoAuthClient,
     private val uiModel: GlobalUiModel
 ) : BaseViewModel() {
-    private val _uiState = MutableStateFlow<SignInUiState>(SignInUiState.Nothing)
+    private val _uiState = MutableStateFlow<SignInUiState>(SignInUiState.Idle)
     val uiState: StateFlow<SignInUiState> = _uiState.asStateFlow()
 
     fun onKakaoLogin(
@@ -52,12 +52,12 @@ class SignInViewModel @Inject constructor(
                 .onFailure {
                     moveSignUp(email)
                 }
-            _uiState.update { SignInUiState.Nothing }
+            _uiState.update { SignInUiState.Idle }
         }
     }
 
     private fun onFailSignIn(msg: String) {
-        _uiState.update { SignInUiState.Nothing }
+        _uiState.update { SignInUiState.Idle }
         uiModel.showToast(msg)
     }
 }

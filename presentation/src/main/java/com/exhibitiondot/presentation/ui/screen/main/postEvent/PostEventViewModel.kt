@@ -85,7 +85,7 @@ class PostEventViewModel @Inject constructor(
     fun onPhotoPickerResult(uri: Uri?) {
         if (uri != null) {
             viewModelScope.launch(Dispatchers.IO) {
-                val result = imageProcessor.uriToCompressedFile(uri, 420, 560)
+                val result = imageProcessor.compressUriToFile(uri, 420, 560)
                 withContext(Dispatchers.Main) {
                     result
                         .onSuccess { file ->

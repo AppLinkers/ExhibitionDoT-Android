@@ -20,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -43,6 +44,7 @@ fun MyPageRoute(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var showDialog by remember { mutableStateOf(false) }
+    val uriHandler = LocalUriHandler.current
 
     MyPageScreen(
         modifier = modifier,
@@ -50,7 +52,7 @@ fun MyPageRoute(
         moveUpdateUserInfo = moveUpdateUserInfo,
         onSignOut = viewModel::signOut,
         onWithDraw = { showDialog = true },
-        onPrivacyPolicy = {},
+        onPrivacyPolicy = { uriHandler.openUri("https://www.naver.com") },
         onBack = onBack
     )
     DoTAlertDialog(

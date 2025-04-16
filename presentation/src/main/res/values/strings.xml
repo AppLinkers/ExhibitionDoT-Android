@@ -3,12 +3,15 @@
     <string name="app_name">전시회 DoT</string>
     <string name="app_catch_phrase">당신의 전시, 세상의 전시를 잇다</string>
     <string name="kakao_login">카카오 로그인</string>
+    <string name="email_login">이메일 로그인</string>
 
     <string name="signup">가입하기</string>
     <string name="signup_info_step_description">회원님의 정보를 입력해주세요</string>
     <string name="signup_region_step_description">거주지를 선택해주세요</string>
     <string name="signup_category_step_description">관심있는 카테고리를 선택해보세요</string>
     <string name="signup_event_type_step_description">관심있는 이벤트를 선택해보세요</string>
+
+    <string name="email_sign_in_placeholder">가입된 이메일</string>
 
     <string name="signup_name_placeholder">이름</string>
     <string name="signup_nickname_placeholder">별명</string>
@@ -65,6 +68,7 @@
     <string name="delete">삭제하기</string>
     <string name="report">신고하기</string>
     <string name="report_description">게시글을 신고할까요?</string>
+    <string name="login">로그인</string>
     <string name="logout">로그아웃</string>
     <string name="withdraw">탈퇴하기</string>
     <string name="withdraw_description">정말 탈퇴하시겠습니까?</string>

@@ -20,6 +20,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.exhibitiondot.presentation.R
 import com.exhibitiondot.presentation.ui.component.DoTSpacer
+import com.exhibitiondot.presentation.ui.component.EmailLoginButton
 import com.exhibitiondot.presentation.ui.component.KakaoLoginButton
 import com.exhibitiondot.presentation.ui.theme.screenPadding
 
@@ -27,6 +28,7 @@ import com.exhibitiondot.presentation.ui.theme.screenPadding
 fun SignInRoute(
     modifier: Modifier = Modifier,
     moveSignUp: (String) -> Unit,
+    moveEmailSignIn: () -> Unit,
     viewModel: SignInViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
@@ -35,7 +37,8 @@ fun SignInRoute(
     SignInScreen(
         modifier = modifier,
         uiState = uiState,
-        onLogin = { viewModel.onKakaoLogin(context, moveSignUp) }
+        onLogin = { viewModel.onKakaoLogin(context, moveSignUp) },
+        onEmailLogin = moveEmailSignIn,
     )
 }
 
@@ -44,6 +47,7 @@ private fun SignInScreen(
     modifier: Modifier,
     uiState: SignInUiState,
     onLogin: () -> Unit,
+    onEmailLogin: () -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -72,5 +76,8 @@ private fun SignInScreen(
             enabled = uiState != SignInUiState.Loading,
             onLogin = onLogin
         )
+
+        DoTSpacer(size = 10)
+        EmailLoginButton(onLogin = onEmailLogin)
     }
 }

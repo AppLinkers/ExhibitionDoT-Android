@@ -7,6 +7,7 @@ import androidx.navigation.navigation
 import com.exhibitiondot.presentation.ui.DoTAppState
 import com.exhibitiondot.presentation.ui.navigation.ScreenGraph
 import com.exhibitiondot.presentation.ui.navigation.SignScreen
+import com.exhibitiondot.presentation.ui.screen.sign.emailSignIn.EmailSignInRoute
 import com.exhibitiondot.presentation.ui.screen.sign.signIn.SignInRoute
 import com.exhibitiondot.presentation.ui.screen.sign.signUp.SignUpRoute
 
@@ -17,10 +18,16 @@ fun NavGraphBuilder.nestedSignGraph(appState: DoTAppState) {
         composable<SignScreen.SignIn> {
             SignInRoute(
                 moveSignUp = navController::navigateToSignScreen,
+                moveEmailSignIn = navController::navigateToEmailSignInScreen
             )
         }
         composable<SignScreen.SignUp> {
             SignUpRoute(
+                onBack = navController::popBackStack,
+            )
+        }
+        composable<SignScreen.EmailSignIn> {
+            EmailSignInRoute(
                 onBack = navController::popBackStack,
             )
         }
@@ -32,3 +39,5 @@ fun NavController.navigateToSignGraph() = navigate(ScreenGraph.SignGraph) {
 }
 
 private fun NavController.navigateToSignScreen(email: String) = navigate(SignScreen.SignUp(email))
+
+private fun NavController.navigateToEmailSignInScreen() = navigate(SignScreen.EmailSignIn)
