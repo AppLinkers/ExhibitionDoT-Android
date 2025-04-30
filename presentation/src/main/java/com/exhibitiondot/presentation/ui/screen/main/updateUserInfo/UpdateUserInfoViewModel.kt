@@ -31,9 +31,9 @@ class UpdateUserInfoViewModel @Inject constructor(
         private set
 
     val nicknameState = EditTextState(maxLength = 10)
-    val regionState = SingleFilterState(filterList = Region.values())
-    val categoryState = MultiFilterState(filterList = Category.values())
-    val eventTypeState = MultiFilterState(filterList = EventType.values())
+    val regionState = SingleFilterState(filterList = Region.entries)
+    val categoryState = MultiFilterState(filterList = Category.entries)
+    val eventTypeState = MultiFilterState(filterList = EventType.entries)
 
     init {
         viewModelScope.launch {

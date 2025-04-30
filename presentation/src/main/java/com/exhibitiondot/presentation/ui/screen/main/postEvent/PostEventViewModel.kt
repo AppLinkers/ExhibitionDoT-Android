@@ -56,9 +56,9 @@ class PostEventViewModel @Inject constructor(
     val nameState = EditTextState(maxLength = 20)
     var selectedDate by mutableStateOf(format(DateFormatStrategy.Today))
         private set
-    val regionState = SingleFilterState(filterList = Region.values())
-    val categoryState = MultiFilterState(filterList = Category.values())
-    val eventTypeState = MultiFilterState(filterList = EventType.values())
+    val regionState = SingleFilterState(filterList = Region.entries)
+    val categoryState = MultiFilterState(filterList = Category.entries)
+    val eventTypeState = MultiFilterState(filterList = EventType.entries)
 
     init {
         eventId?.let {

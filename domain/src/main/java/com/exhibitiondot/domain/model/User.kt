@@ -15,7 +15,7 @@ data class User(
             name = "",
             phone = "",
             nickname = "",
-            region = Region.Seoul,
+            region = Region.SEOUL,
             categoryList = listOf(),
             eventTypeList = listOf()
         )

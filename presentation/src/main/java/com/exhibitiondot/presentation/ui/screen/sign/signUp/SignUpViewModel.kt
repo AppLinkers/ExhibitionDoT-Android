@@ -45,11 +45,11 @@ class SignUpViewModel @Inject constructor(
     val phoneState = PhoneEditTextState()
 
     val regionState = SingleFilterState(
-        initFilter = Region.Seoul,
-        filterList = Region.values()
+        initFilter = Region.SEOUL,
+        filterList = Region.entries
     )
-    val categoryState = MultiFilterState(filterList = Category.values())
-    val eventTypeState = MultiFilterState(filterList = EventType.values())
+    val categoryState = MultiFilterState(filterList = Category.entries)
+    val eventTypeState = MultiFilterState(filterList = EventType.entries)
 
     fun onPrevStep(onBack: () -> Unit) {
         val prevIdx = totalSteps.indexOf(currentStep) - 1
