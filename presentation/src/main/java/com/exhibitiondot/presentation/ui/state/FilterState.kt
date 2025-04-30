@@ -4,6 +4,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.exhibitiondot.domain.model.Filter
+import com.exhibitiondot.domain.model.MultiFilter
+import com.exhibitiondot.domain.model.SingleFilter
 
 interface IFilterState<T : Filter> {
     val filterList: List<T>
@@ -11,21 +13,20 @@ interface IFilterState<T : Filter> {
     fun resetAll()
 }
 
-interface ISingleFilterState<T : Filter.SingleFilter> : IFilterState<T> {
+interface ISingleFilterState<T : SingleFilter> : IFilterState<T> {
     var selectedFilter: T?
     fun setFilter(filter: T?)
 }
 
-interface IMultiFilerState<T : Filter.MultiFilter> : IFilterState<T> {
+interface IMultiFilerState<T : MultiFilter> : IFilterState<T> {
     var selectedFilterList: List<T>
     fun setFilter(filterList: List<T>)
 }
 
-class SingleFilterState<T : Filter.SingleFilter>(
-    initFilter: T? = null,
+class SingleFilterState<T : SingleFilter>(
     override val filterList: List<T>,
 ) : ISingleFilterState<T> {
-    override var selectedFilter by mutableStateOf(initFilter)
+    override var selectedFilter by mutableStateOf<T?>(null)
 
     override fun selectFilter(filter: T) {
         selectedFilter = filter
@@ -40,11 +41,10 @@ class SingleFilterState<T : Filter.SingleFilter>(
     }
 }
 
-open class MultiFilterState<T : Filter.MultiFilter>(
-    initFilterList: List<T> = emptyList(),
+open class MultiFilterState<T : MultiFilter>(
     override val filterList: List<T>,
 ) : IMultiFilerState<T> {
-    override var selectedFilterList by mutableStateOf(initFilterList)
+    override var selectedFilterList by mutableStateOf(emptyList<T>())
 
     override fun selectFilter(filter: T) {
         selectedFilterList = if (filter in selectedFilterList) {
@@ -63,10 +63,9 @@ open class MultiFilterState<T : Filter.MultiFilter>(
     }
 }
 
-class MultiFilterForQueryState<T : Filter.MultiFilter>(
-    initFilterList: List<T> = emptyList(),
+class MultiFilterForQueryState<T : MultiFilter>(
     override val filterList: List<T>,
-) : MultiFilterState<T>(initFilterList, filterList) {
+) : MultiFilterState<T>(filterList) {
 
     override fun selectFilter(filter: T) {
         if (selectedFilterList.size + 1 == filterList.size) {

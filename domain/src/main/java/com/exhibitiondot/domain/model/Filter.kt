@@ -4,21 +4,26 @@ interface Filter {
     val key: String
 }
 
-interface SingleFilter : Filter
+interface SingleFilter : Filter {
+    val displayName: String
+}
 
 interface MultiFilter : Filter
 
-enum class Region(override val key: String) : SingleFilter {
-    SEOUL("seoul"),
-    GYEONGGI("gyeonggi"),
-    CHUNGCHEONG("chungcheong"),
-    JEOLLA("jeolla"),
-    GYEONGSANG("gyeongsang"),
-    GANGWON("gangwon"),
-    JEJU("jeju");
+enum class Region(
+    override val key: String,
+    override val displayName: String,
+) : SingleFilter {
+    SEOUL("seoul", "서울"),
+    GYEONGGI("gyeonggi", "경기도"),
+    CHUNGCHEONG("chungcheong", "충청도"),
+    JEOLLA("jeolla", "전라도"),
+    GYEONGSANG("gyeongsang", "경상도"),
+    GANGWON("gangwon", "강원도"),
+    JEJU("jeju", "제주도");
 
     companion object {
-        private val map = entries.associateBy(Region::key)
+        private val map = entries.associateBy(Region::displayName)
 
         fun fromKey(key: String): Region? = map[key]
     }

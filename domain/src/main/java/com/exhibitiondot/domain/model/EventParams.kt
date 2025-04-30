@@ -14,7 +14,7 @@ data class EventParams(
     }
 
     fun regionText(default: String): String {
-        return region?.name ?: default
+        return region?.displayName ?: default
     }
 
     fun categoryText(default: String): String {
