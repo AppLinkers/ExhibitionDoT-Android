@@ -1,11 +1,19 @@
 package com.exhibitiondot.domain.model
 
-sealed interface Filter {
-    sealed interface SingleFilter : Filter
-    sealed interface MultiFilter : Filter
+interface Filter {
+    val key: String
 }
 
-sealed class Region(val key: String, val name: String) : Filter.SingleFilter {
+interface SingleFilter : Filter {
+    val name: String
+}
+
+interface MultiFilter : Filter
+
+sealed class Region(
+    override val key: String,
+    override val name: String,
+) : SingleFilter {
     data object Seoul : Region(key = "seoul", name = "서울")
     data object Gyeonggi : Region(key = "gyeonggi", name = "경기도")
     data object Chungcheoung : Region(key = "chungcheong", name = "충청도")
@@ -20,7 +28,7 @@ sealed class Region(val key: String, val name: String) : Filter.SingleFilter {
     }
 }
 
-sealed class Category(val key: String) : Filter.MultiFilter {
+sealed class Category(override val key: String) : MultiFilter {
     data object IT : Category("전기/전자/IT")
     data object Interior : Category("건설/건축/인테리어")
     data object Health : Category("의료/건강/스포츠")
@@ -44,7 +52,7 @@ sealed class Category(val key: String) : Filter.MultiFilter {
     }
 }
 
-sealed class EventType(val key: String) : Filter.MultiFilter {
+sealed class EventType(override val key: String) : MultiFilter {
     data object Exhibition : EventType("전시회")
     data object Festival : EventType("행사/축제")
     data object Fair : EventType("박람회")
