@@ -11,7 +11,7 @@ fun User.toUiModel() =
         name = name,
         phone = phone,
         nickname = nickname,
-        region = region.name,
+        region = region.displayName,
         categoryTags = categoryList.joinToString(" ", transform = Category::toTag),
         eventTypeTags = eventTypeList.joinToString(" ", transform = EventType::toTag),
     )

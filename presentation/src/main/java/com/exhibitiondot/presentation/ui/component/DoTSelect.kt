@@ -5,15 +5,12 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.FlowRowScope
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.exhibitiondot.domain.model.Category
-import com.exhibitiondot.domain.model.EventType
-import com.exhibitiondot.domain.model.Filter
-import com.exhibitiondot.domain.model.Region
+import com.exhibitiondot.domain.model.MultiFilter
+import com.exhibitiondot.domain.model.SingleFilter
 import com.exhibitiondot.presentation.R
 import com.exhibitiondot.presentation.ui.state.IMultiFilerState
 import com.exhibitiondot.presentation.ui.state.ISingleFilterState
@@ -36,7 +33,7 @@ private fun FilterSelectScreen(
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun <T : Filter.SingleFilter> SingleFilterSelectScreen(
+fun <T : SingleFilter> SingleFilterSelectScreen(
     modifier: Modifier = Modifier,
     filterState: ISingleFilterState<T>,
     needEntire: Boolean = false,
@@ -53,10 +50,7 @@ fun <T : Filter.SingleFilter> SingleFilterSelectScreen(
         }
         filterState.filterList.forEach { filter ->
             DoTFilterChip(
-                name = when (filter) {
-                    is Region -> filter.name
-                    else -> ""
-                },
+                name = filter.displayName,
                 selected = filter == filterState.selectedFilter,
                 onSelect = { filterState.selectFilter(filter) }
             )
@@ -66,7 +60,7 @@ fun <T : Filter.SingleFilter> SingleFilterSelectScreen(
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun <T : Filter.MultiFilter> MultiFilterSelectScreen(
+fun <T : MultiFilter> MultiFilterSelectScreen(
     modifier: Modifier = Modifier,
     filterState: IMultiFilerState<T>,
     needEntire: Boolean = false,
@@ -83,11 +77,7 @@ fun <T : Filter.MultiFilter> MultiFilterSelectScreen(
         }
         filterState.filterList.forEach { filter ->
             DoTFilterChip(
-                name = when (filter) {
-                    is Category -> filter.key
-                    is EventType -> filter.key
-                    else -> ""
-                },
+                name = filter.key,
                 selected = filter in filterState.selectedFilterList,
                 onSelect = { filterState.selectFilter(filter) }
             )

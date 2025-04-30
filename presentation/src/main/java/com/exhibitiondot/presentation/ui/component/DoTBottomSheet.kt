@@ -25,7 +25,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.exhibitiondot.domain.model.Filter
+import com.exhibitiondot.domain.model.MultiFilter
+import com.exhibitiondot.domain.model.SingleFilter
 import com.exhibitiondot.presentation.R
 import com.exhibitiondot.presentation.ui.state.IMultiFilerState
 import com.exhibitiondot.presentation.ui.state.ISingleFilterState
@@ -125,7 +126,7 @@ private fun HomeFilterSheet(
 }
 
 @Composable
-fun <T : Filter.SingleFilter> HomeSingleFilterSheet(
+fun <T : SingleFilter> HomeSingleFilterSheet(
     title: String,
     scope: CoroutineScope,
     filterState: ISingleFilterState<T>,
@@ -146,7 +147,7 @@ fun <T : Filter.SingleFilter> HomeSingleFilterSheet(
 }
 
 @Composable
-fun <T : Filter.MultiFilter> HomeMultiFilterSheet(
+fun <T : MultiFilter> HomeMultiFilterSheet(
     title: String,
     scope: CoroutineScope,
     filterState: IMultiFilerState<T>,

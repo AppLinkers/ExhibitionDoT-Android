@@ -20,7 +20,7 @@ fun EventDetail.toUiModel() =
         id = id,
         name = name,
         imgUrl = imgUrl,
-        region = region.name,
+        region = region.displayName,
         categoryTags = categoryList.joinToString(" ", transform = Category::toTag),
         eventTypeTags = eventTypeList.joinToString(" ", transform = EventType::toTag),
         date = format(DateFormatStrategy.FullDate(date)),

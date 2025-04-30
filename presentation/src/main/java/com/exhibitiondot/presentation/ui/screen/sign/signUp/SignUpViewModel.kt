@@ -44,12 +44,9 @@ class SignUpViewModel @Inject constructor(
     val nicknameState = EditTextState(maxLength = 10)
     val phoneState = PhoneEditTextState()
 
-    val regionState = SingleFilterState(
-        initFilter = Region.Seoul,
-        filterList = Region.values()
-    )
-    val categoryState = MultiFilterState(filterList = Category.values())
-    val eventTypeState = MultiFilterState(filterList = EventType.values())
+    val regionState = SingleFilterState(Region.entries)
+    val categoryState = MultiFilterState(Category.entries)
+    val eventTypeState = MultiFilterState(EventType.entries)
 
     fun onPrevStep(onBack: () -> Unit) {
         val prevIdx = totalSteps.indexOf(currentStep) - 1
@@ -78,6 +75,7 @@ class SignUpViewModel @Inject constructor(
             SignUpStep.InfoStep -> {
                 nameState.isValidate() && nicknameState.isValidate() && phoneState.isValidate()
             }
+            SignUpStep.RegionStep -> regionState.selectedFilter != null
             else -> true
         }
     }

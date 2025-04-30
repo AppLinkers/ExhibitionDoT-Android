@@ -55,9 +55,9 @@ class HomeViewModel @Inject constructor(
     var uiState by mutableStateOf<HomeUiState>(HomeUiState.Idle)
         private set
 
-    val regionState = SingleFilterState(filterList = Region.values())
-    val categoryState = MultiFilterForQueryState(filterList = Category.values())
-    val eventTypeState = MultiFilterForQueryState(filterList = EventType.values())
+    val regionState = SingleFilterState(Region.entries)
+    val categoryState = MultiFilterForQueryState(Category.entries)
+    val eventTypeState = MultiFilterForQueryState(EventType.entries)
 
     init {
         viewModelScope.launch {
