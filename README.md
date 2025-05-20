@@ -51,16 +51,24 @@ class SignInUseCase @Inject constructor(
 **3. Filter interface 분리를 통한 확장성 확보**
 ```kotlin
 // Filter.kt (domain)
-sealed interface Filter {
-    sealed interface SingleFilter : Filter
-    sealed interface MultiFilter : Filter
+interface Filter {
+    val key: String
 }
 
-sealed class Region(val key: String, val name: String) : Filter.SingleFilter
+interface SingleFilter : Filter {
+    val displayName: String
+}
 
-sealed class Category(val key: String) : Filter.MultiFilter
+interface MultiFilter : Filter
 
-sealed class EventType(val key: String) : Filter.MultiFilter
+enum class Region(
+    override val key: String,
+    override val displayName: String,
+) : SingleFilter
+
+enum class Category(override val key: String) : MultiFilter
+
+enum class EventType(override val key: String) : MultiFilter
 
 // FilterState.kt (presentation)
 interface IFilterState<T : Filter> {
@@ -69,12 +77,12 @@ interface IFilterState<T : Filter> {
     fun resetAll()
 }
 
-interface ISingleFilterState<T : Filter.SingleFilter> : IFilterState<T> {
+interface ISingleFilterState<T : SingleFilter> : IFilterState<T> {
     var selectedFilter: T?
     fun setFilter(filter: T?)
 }
 
-interface IMultiFilerState<T : Filter.MultiFilter> : IFilterState<T> {
+interface IMultiFilerState<T : MultiFilter> : IFilterState<T> {
     var selectedFilterList: List<T>
     fun setFilter(filterList: List<T>)
 }
